@@ -40,7 +40,7 @@
     </target>
 
     <target name="config_go_env">
-        <variable name="env.GOPATH" value="${basedir}"/>
+        <var name="env.GOPATH" value="${basedir}"/>
     </target>
 
     <target name="go-get">
