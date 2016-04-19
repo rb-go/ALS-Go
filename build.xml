@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Business.API" default="build_all">
+    <property environment="env"/>
+
+
+
+
+    <target name="build_all" depends="init, linux_x64, go-build, windows_x64, go-build, copy_config, mail-build-info,show-build-info"/>
+
+    <target name="build_linux_x64" depends="init, linux_x64, mail-build-info,show-build-info"/>
+    <target name="build_windows_x64" depends="init, windows_x64, mail-build-info,show-build-info"/>
+
+
+
+    <target name="init" depends="grab-build-info, clean, go-get, config_go_env"/>
+
+
+
+    <target name="grab-build-info">
+        <tstamp><format property="builtat" pattern="dd.MM.yyyy HH:mm:ss" timezone="Europe/Moscow"/></tstamp>
+        <exec executable="whoami" outputproperty="whoami"/>
+        <exec executable="uname" outputproperty="buildsystem"><arg value="-sin"/></exec>
+        <exec executable="cat" outputproperty="version"><arg value="${basedir}/version"/></exec>
+    </target>
+
+    <target name="clean" description="Cleanup build artifacts">
+
+        <delete file="${basedir}/binary.zip"/>
+
+        <delete includeEmptyDirs="true">
+            <fileset dir="${basedir}/out/*" />
+        </delete>
+
+        <!--
+        <delete dir="${basedir}/.build/result/code-browser"/>
+        <delete dir="${basedir}/.build/result/coverage"/>
+        <delete dir="${basedir}/.build/result/docs"/>
+        <delete dir="${basedir}/.build/result/docx"/>
+        <delete dir="${basedir}/.build/result/logs"/>
+        <delete dir="${basedir}/.build/result/pdepend"/>
+        <move file="${basedir}/config.jenkins.php" tofile="${basedir}/config.php"/>
+        <get src="http://site.ru/file1.zip" dest="file1.zip" />
+        -->
+    </target>
+
+    <target name="go-get">
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2/json2"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/go-sql-driver/mysql"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/jinzhu/gorm"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/yaml.v2"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/patrickmn/go-cache"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/mgo.v2"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/mgo.v2/bson"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/tmc/mgohacks"/></exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/validator.v2"/></exec>
+    </target>
+
+    <target name="config_go_env">
+    </target>
+
+    <target name="windows_x64">
+        <property name="GOARCH" value="amd64"/>
+        <property name="GOOS" value="windows"/>
+        <property name="RESULT_FILE_EXT" value=".exe"/>
+        <property name="RESULT_FILE_NAME" value="windows_x64"/>
+    </target>
+
+    <target name="linux_x64">
+        <property name="GOARCH" value="amd64"/>
+        <property name="GOOS" value="linux"/>
+        <property name="RESULT_FILE_EXT" value=""/>
+    </target>
+
+    <target name="go-build">
+        <exec executable="go build " failonerror="true" taskname="building go">
+            <arg line="build"/>
+            <arg line="-o"/>
+            <arg path="${basedir}/out/alsgo_${env.RESULT_FILE_NAME}${env.RESULT_FILE_EXT}"/>
+        </exec>
+    </target>
+
+    <target name="copy_config">
+        <copy file="${basedir}/config.yml" tofile="${basedir}/out/config.yml"/>
+    </target>
+
+    <target name="go-zip">
+        <zip  destfile="${basedir}/binary.zip" basedir="${basedir}/out" />
+    </target>
+
+    <target name="mail-build-info">
+        <mail tolist="SMorozov@mtt.ru" subject="Build Information" failonerror="false">
+            <from address="jenkins@build.rnd.mtt"/>
+            <message>
+                #################################
+                #           BUILD INFO          #
+                #################################
+                # Build Num:  ${env.BUILD_NUMBER}
+                # Build Time: ${builtat}
+                # Builder:    ${whoami}
+                # Version:    ${version}
+                # System:     ${buildsystem}
+                #################################
+            </message>
+            <attachments>
+                <fileset dir="${basedir}/out">
+                    <include name="./*"/>
+                </fileset>
+                <fileset dir="${basedir}">
+                    <include name="./binary.zip"/>
+                </fileset>
+            </attachments>-->
+        </mail>
+    </target>
+
+    <target name="show-build-info">
+        <echo>
+            #################################
+            #           BUILD INFO          #
+            #################################
+            # Build Num:  ${env.BUILD_NUMBER}
+            # Build Time: ${builtat}
+            # Builder:    ${whoami}
+            # Version:    ${version}
+            # System:     ${buildsystem}
+            #################################
+        </echo>
+    </target>
+</project>
