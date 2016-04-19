@@ -27,7 +27,7 @@
 
         <delete file="${basedir}/binary.zip"/>
 
-        <delete includeEmptyDirs="true">
+        <delete failonerror="false" includeEmptyDirs="true">
             <fileset dir="${basedir}/out" />
         </delete>
 
