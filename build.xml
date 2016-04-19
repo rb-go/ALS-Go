@@ -74,6 +74,9 @@
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/validator.v2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="all"/>
+            <env key="GOPATH" path="${basedir}"/>
+        </exec>
     </target>
 
     <target name="go-build_windows_x64">
