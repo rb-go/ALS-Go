@@ -44,7 +44,7 @@ type Conf struct {
 var Configs Conf
 var ConfigDir string
 
-var DBConn gorm.DB
+var DBConn *gorm.DB
 var MGOadditionalCollectionsConn map[string]string
 
 func ProcessMGOAdditionalConf() {
