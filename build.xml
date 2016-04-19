@@ -128,7 +128,7 @@
                 <fileset dir="${basedir}">
                     <include name="./binary.zip"/>
                 </fileset>
-            </attachments>-->
+            </attachments>
         </mail>
     </target>
 
