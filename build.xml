@@ -12,7 +12,7 @@
 
 
 
-    <target name="init" depends="grab-build-info, clean, go-get, config_go_env"/>
+    <target name="init" depends="grab-build-info, clean, config_go_env, go-get"/>
 
 
 
@@ -43,6 +43,10 @@
         -->
     </target>
 
+    <target name="config_go_env">
+        <property name="GOPATH" value="${basedir}"/>
+    </target>
+
     <target name="go-get">
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2"/></exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2/json2"/></exec>
@@ -54,9 +58,6 @@
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/mgo.v2/bson"/></exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/tmc/mgohacks"/></exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/validator.v2"/></exec>
-    </target>
-
-    <target name="config_go_env">
     </target>
 
     <target name="windows_x64">
