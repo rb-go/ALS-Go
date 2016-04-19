@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Business.API" default="build_all">
+
     <property environment="env"/>
-
-
-
+    <property name="env.GOPATH" value="${basedir}"/>
 
     <target name="build_all" depends="init, linux_x64, go-build, windows_x64, go-build, copy_config, mail-build-info,show-build-info"/>
 
     <target name="build_linux_x64" depends="init, linux_x64, mail-build-info,show-build-info"/>
     <target name="build_windows_x64" depends="init, windows_x64, mail-build-info,show-build-info"/>
-
-
 
     <target name="init" depends="grab-build-info, clean, config_go_env, go-get"/>
 
@@ -44,7 +41,6 @@
     </target>
 
     <target name="config_go_env">
-        <property name="env.GOPATH" value="${basedir}"/>
     </target>
 
     <target name="go-get">
