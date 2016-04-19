@@ -9,52 +9,7 @@
     <JAVADOC />
     <SOURCES />
     <excluded>
-      <root url="file://$PROJECT_DIR$/../../launchpad.net/xmlpath/.bzr" />
-      <root url="file://$PROJECT_DIR$/../../github.com/tinylib/msgp/_generated" />
-      <root url="file://$PROJECT_DIR$/../../github.com/BurntSushi/toml/_examples" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/tomb.v2/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-ini/ini/testdata" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/redis.v3/.test" />
-      <root url="file://$PROJECT_DIR$/../../github.com/jinzhu/inflection/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/tinylib/msgp/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/apsdehal/go-logger/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-ini/ini/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/BurntSushi/toml/.git" />
-      <root url="file://$PROJECT_DIR$/../telegram-bot/.idea" />
-      <root url="file://$PROJECT_DIR$/../../github.com/tmc/mgohacks/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/ergoz/log4go/.git" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/bsm/ratelimit.v1/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/Sirupsen/logrus/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/philhofer/fwd/.git" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/yaml.v2/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/ian-kent/go-log/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-sql-driver/mysql/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/Syfaro/telegram-bot-api/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-ozzo/ozzo-log/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/gorilla/rpc/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-ozzo/ozzo-config/testdata" />
-      <root url="file://$PROJECT_DIR$/../../github.com/heatxsink/go-logstash/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/go-ozzo/ozzo-config/.git" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/mgo.v2/.git" />
-      <root url="file://$PROJECT_DIR$/../.idea" />
-      <root url="file://$PROJECT_DIR$/../GoProcto/.idea" />
-      <root url="file://$PROJECT_DIR$/../Go-RPC-Server/.idea" />
-      <root url="file://$PROJECT_DIR$/../RutorParser-GoLang/.idea" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/check.v1/.git" />
       <root url="file://$PROJECT_DIR$" />
-      <root url="file://$PROJECT_DIR$/.idea" />
-      <root url="file://$PROJECT_DIR$/../../github.com/technoweenie/multipartstreamer/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/lib/pq/.git" />
-      <root url="file://$PROJECT_DIR$/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/op/go-logging/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/t-k/fluent-logger-golang/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/hnakamur/jsonpreprocess/.git" />
-      <root url="file://$PROJECT_DIR$/../../github.com/patrickmn/go-cache/.git" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/validator.v2/.git" />
-      <root url="file://$PROJECT_DIR$/../../gopkg.in/redis.v3/.git" />
-      <root url="file://$PROJECT_DIR$/../LogStash_Test/.idea" />
-      <root url="file://$PROJECT_DIR$/../../github.com/t-k/fluent-logger-golang/_examples" />
-      <root url="file://$PROJECT_DIR$/../../github.com/jinzhu/gorm/.git" />
     </excluded>
   </library>
 </component>

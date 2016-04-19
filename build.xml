@@ -44,7 +44,7 @@
     </target>
 
     <target name="config_go_env">
-        <property name="GOPATH" value="${basedir}"/>
+        <property name="env.GOPATH" value="${basedir}"/>
     </target>
 
     <target name="go-get">
@@ -61,16 +61,17 @@
     </target>
 
     <target name="windows_x64">
-        <property name="GOARCH" value="amd64"/>
-        <property name="GOOS" value="windows"/>
-        <property name="RESULT_FILE_EXT" value=".exe"/>
-        <property name="RESULT_FILE_NAME" value="windows_x64"/>
+        <property name="env.GOARCH" value="amd64"/>
+        <property name="env.GOOS" value="windows"/>
+        <property name="env.RESULT_FILE_EXT" value=".exe"/>
+        <property name="env.RESULT_FILE_NAME" value="windows_x64"/>
     </target>
 
     <target name="linux_x64">
-        <property name="GOARCH" value="amd64"/>
-        <property name="GOOS" value="linux"/>
-        <property name="RESULT_FILE_EXT" value=""/>
+        <property name="env.GOARCH" value="amd64"/>
+        <property name="env.GOOS" value="linux"/>
+        <property name="env.RESULT_FILE_EXT" value=""/>
+        <property name="env.RESULT_FILE_NAME" value="linux_x64"/>
     </target>
 
     <target name="go-build">
