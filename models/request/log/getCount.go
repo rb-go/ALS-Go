@@ -6,7 +6,7 @@ import (
 
 type GetCount struct {
 	Category string `validate:"nonzero"`
-	Search_filter map[string]interface{}
+	SearchFilter map[string]interface{}
 }
 
 func (c GetCount) Validate() error {

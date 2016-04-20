@@ -136,7 +136,7 @@ func (h *Log) Get(r *http.Request, args *logReq.GetLog, reply *logResp.Get) erro
 	defer session.Close()
 
 
-	reply.LogList = mgolibs.GetFromMGO(collection, args.Search_filter, args.Limit, args.Offset, args.Sort)
+	reply.LogList = mgolibs.GetFromMGO(collection, args.SearchFilter, args.Limit, args.Offset, args.Sort)
 
 	return nil
 }
@@ -165,7 +165,7 @@ func (h *Log) GetCount(r *http.Request, args *logReq.GetCount, reply *struct{Log
 	}
 	defer session.Close()
 
-	count, err := mgolibs.GetCountMGO(collection, args.Search_filter)
+	count, err := mgolibs.GetCountMGO(collection, args.SearchFilter)
 	if err != nil {
 		log.Println("GetCountMGO: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Data Problems"}
@@ -222,7 +222,7 @@ func (h *Log) Remove(r *http.Request, args *logReq.RemoveLog, reply *logResp.Rem
 	defer session.Close()
 
 
-	info, err := mgolibs.RemoveAllFromMGO(collection, args.Search_filter)
+	info, err := mgolibs.RemoveAllFromMGO(collection, args.SearchFilter)
 	if err != nil {
 		log.Println("RemoveAllFromMGO: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: fmt.Sprintf("%s", err)}
@@ -290,7 +290,7 @@ func (h *Log) Transfer(r *http.Request, args *logReq.TransferLog, reply *logResp
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 
-	found := mgolibs.GetFromMGO(collectionFrom, args.Search_filter, 0, 0, nil)
+	found := mgolibs.GetFromMGO(collectionFrom, args.SearchFilter, 0, 0, nil)
 
 
 	//CONNECT TO "TO" DB

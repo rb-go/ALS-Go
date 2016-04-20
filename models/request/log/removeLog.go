@@ -4,7 +4,7 @@ import "gopkg.in/validator.v2"
 
 type RemoveLog struct {
 	Category string `validate:"nonzero"`
-	Search_filter map[string]interface{}
+	SearchFilter map[string]interface{}
 }
 
 
