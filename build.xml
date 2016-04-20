@@ -102,12 +102,12 @@
     </target>
 
     <target name="go-zip">
-        <exec executable="tar" failonerror="true" dir="${basedir}/out" taskname="ziping go binaries">
-            <arg value="-czvf"/>
+        <exec executable="tar" failonerror="true" dir="${basedir}/out">
+            <arg line="-czvf"/>
             <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
             <arg value="-C"/>
             <arg path="${basedir}/out/"/>
-            <arg line="*"/>
+            <arg value="*"/>
         </exec>
     </target>
 
