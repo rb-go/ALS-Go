@@ -99,8 +99,8 @@
             <env key="GOPATH" path="${basedir}"/>
             <env key="GOARCH" value="amd64"/>
             <env key="GOOS" value="linux"/>
-            <arg line="build"/>
-            <arg line="-o"/>
+            <arg value="build"/>
+            <arg value="-o"/>
             <arg path="${basedir}/out/alsgo_linux_x64"/>
         </exec>
     </target>
@@ -111,7 +111,9 @@
 
     <target name="go-zip">
         <exec executable="zip" failonerror="true" taskname="ziping go binaries">
-            <arg line="-r9 ${basedir}/release-${version}.${env.BUILD_NUMBER}-bin.zip ${basedir}/out/*"/>
+            <arg value="-r9"/>
+            <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip"/>
+            <arg value="${basedir}/out/*"/>
         </exec>
     </target>
 
