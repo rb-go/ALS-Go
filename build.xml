@@ -50,34 +50,34 @@
     </target>
 
     <target name="go-get">
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/gorilla/rpc/v2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/gorilla/rpc/v2/json2"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/gorilla/rpc/v2/json2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/go-sql-driver/mysql"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/go-sql-driver/mysql"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/jinzhu/gorm"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/jinzhu/gorm"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/yaml.v2"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/yaml.v2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/patrickmn/go-cache"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/patrickmn/go-cache"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/mgo.v2"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/mgo.v2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/mgo.v2/bson"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/mgo.v2/bson"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="github.com/tmc/mgohacks"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/tmc/mgohacks"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="gopkg.in/validator.v2"/>
+        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/validator.v2"/>
             <env key="GOPATH" path="${basedir}"/>
         </exec>
     </target>
