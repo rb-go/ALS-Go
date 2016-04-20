@@ -107,13 +107,6 @@
                 <include name="*"/>
             </tarfileset>
         </tar>
-        <!--<exec executable="tar" failonerror="true" dir="${basedir}/out">
-            <arg line="-czvf"/>
-            <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
-            <arg value="-C"/>
-            <arg path="${basedir}/out/"/>
-            <arg value="*"/>
-        </exec>-->
     </target>
 
     <target name="mail-build-info">
@@ -132,7 +125,7 @@
             </message>
             <attachments>
                 <fileset dir="${basedir}">
-                    <include name="./release-${version}.${env.BUILD_NUMBER}-${builtat}.*"/>
+                    <include name="./release-${version}.${env.BUILD_NUMBER}*.*"/>
                 </fileset>
             </attachments>
         </mail>
