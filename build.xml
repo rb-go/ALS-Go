@@ -3,10 +3,10 @@
 
     <property environment="env"/>
 
-    <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip, mail-build-info,show-build-info"/>
+    <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip, mail-build-info, show-build-info"/>
 
-    <target name="build_linux_x64" depends="init, go-build_linux_x64, go-zip, mail-build-info, show-build-info"/>
-    <target name="build_windows_x64" depends="init, go-build_windows_x64, go-zip, mail-build-info, show-build-info"/>
+    <target name="build_linux_x64" depends="init, go-build_linux_x64, copy_config, go-zip, mail-build-info, show-build-info"/>
+    <target name="build_windows_x64" depends="init, go-build_windows_x64, copy_config, go-zip, mail-build-info, show-build-info"/>
 
     <target name="init" depends="grab-build-info, clean, go-get"/>
 
@@ -110,7 +110,13 @@
     </target>
 
     <target name="go-zip">
-        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar" basedir="${basedir}/out" />
+        <tar  basedir="${basedir}/out/*" />
+        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar">
+            <tarfileset dir="${basedir}/">
+                <include name="**/**"/>
+                <exclude name="${basedir}/bootstrap.sh"/>
+            </tarfileset>
+        </tar>
     </target>
 
     <target name="mail-build-info">
