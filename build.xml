@@ -102,7 +102,7 @@
     </target>
 
     <target name="go-zip">
-        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar">
+        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar" compression="gzip">
             <tarfileset dir="${basedir}/out" filemode="777">
                 <include name="*"/>
             </tarfileset>
