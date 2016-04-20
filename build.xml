@@ -37,16 +37,6 @@
             <fileset dir="${basedir}/pkg/*" />
         </delete>
 
-        <!--
-        <delete dir="${basedir}/.build/result/code-browser"/>
-        <delete dir="${basedir}/.build/result/coverage"/>
-        <delete dir="${basedir}/.build/result/docs"/>
-        <delete dir="${basedir}/.build/result/docx"/>
-        <delete dir="${basedir}/.build/result/logs"/>
-        <delete dir="${basedir}/.build/result/pdepend"/>
-        <move file="${basedir}/config.jenkins.php" tofile="${basedir}/config.php"/>
-        <get src="http://site.ru/file1.zip" dest="file1.zip" />
-        -->
     </target>
 
     <target name="go-get">
@@ -88,7 +78,7 @@
             <env key="GOOS" value="windows"/>
             <env key="GOARCH" value="amd64"/>
             <arg value="build"/>
-            <arg value="-v"/>
+            <!--<arg value="-v"/>-->
             <arg value="-o"/>
             <arg path="${basedir}/out/alsgo_windows_x64.exe"/>
         </exec>
@@ -101,7 +91,7 @@
             <env key="GOOS" value="linux"/>
             <env key="GOARCH" value="amd64"/>
             <arg value="build"/>
-            <arg value="-v"/>
+            <!--<arg value="-v"/>-->
             <arg value="-o"/>
             <arg path="${basedir}/out/alsgo_linux_x64"/>
         </exec>
@@ -112,7 +102,7 @@
     </target>
 
     <target name="go-zip">
-        <exec executable="tar" failonerror="true" dir="${basedir}/out/" taskname="ziping go binaries">
+        <exec executable="tar" failonerror="true" dir="${basedir}/out" taskname="ziping go binaries">
             <arg value="-czvf"/>
             <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
             <arg path="*"/>
