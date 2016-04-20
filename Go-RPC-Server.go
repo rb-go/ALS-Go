@@ -32,6 +32,7 @@ func initConfigs() {
 	data, err := ioutil.ReadFile(configs.ConfigDir + "/config.yml")
 	if err != nil {
 		log.Println(err.Error())
+		os.Exit(1)
 	}
 
 	err = yaml.Unmarshal(data, &configs.Configs)
