@@ -136,7 +136,7 @@ func (h *Log) Get(r *http.Request, args *logReq.GetLog, reply *logResp.Get) erro
 	defer session.Close()
 
 
-	reply.LogList = mgolibs.GetFromMGO(collection, args.Search_filter, 10)
+	reply.LogList = mgolibs.GetFromMGO(collection, args.Search_filter, args.Limit, args.Offset, args.Sort)
 
 	return nil
 }

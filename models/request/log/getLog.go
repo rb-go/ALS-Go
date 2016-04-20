@@ -7,8 +7,7 @@ type GetLog struct {
 	Search_filter map[string]interface{}
 	Limit int
 	Offset int
-	Sort_field string
-	Sort_type string
+	Sort []string
 }
 
 
