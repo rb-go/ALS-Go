@@ -5,7 +5,7 @@ import "gopkg.in/validator.v2"
 type GetLog struct {
 	Category string `validate:"nonzero"`
 	Search_filter map[string]interface{}
-	Limit int
+	Limit int `validate:"max=1000, min=1"`
 	Offset int
 	Sort []string
 }

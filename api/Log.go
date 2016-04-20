@@ -290,7 +290,7 @@ func (h *Log) Transfer(r *http.Request, args *logReq.TransferLog, reply *logResp
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 
-	found := mgolibs.GetFromMGO(collectionFrom, args.Search_filter, 0)
+	found := mgolibs.GetFromMGO(collectionFrom, args.Search_filter, 0, 0, nil)
 
 
 	//CONNECT TO "TO" DB
