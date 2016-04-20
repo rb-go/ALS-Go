@@ -110,7 +110,10 @@
     </target>
 
     <target name="go-zip">
-        <zip destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip" basedir="${basedir}/out" filesonly="true" includes="**/*" excludes="dont*.*" />
+        <exec executable="zip" failonerror="true" taskname="ziping go binaries">
+            <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}"/>
+            <arg path="${basedir}/out/*"/>
+        </exec>
     </target>
 
     <target name="mail-build-info">
