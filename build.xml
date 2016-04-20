@@ -22,7 +22,7 @@
     <target name="clean" description="Cleanup build artifacts">
 
         <delete>
-            <fileset dir="${basedir}" includes="**/*.zip"/>
+            <fileset dir="${basedir}" includes="**/release-*.*"/>
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
