@@ -33,6 +33,10 @@
             <fileset dir="${basedir}/pkg" />
         </delete>
 
+        <delete failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${basedir}/src" />
+        </delete>
+
         <!--
         <delete dir="${basedir}/.build/result/code-browser"/>
         <delete dir="${basedir}/.build/result/coverage"/>
