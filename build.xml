@@ -105,6 +105,8 @@
         <exec executable="tar" failonerror="true" dir="${basedir}/out" taskname="ziping go binaries">
             <arg value="-czvf"/>
             <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
+            <arg value="-C"/>
+            <arg path="${basedir}/out/"/>
             <arg line="*"/>
         </exec>
     </target>
