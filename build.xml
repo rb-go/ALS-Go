@@ -112,8 +112,7 @@
     <target name="go-zip">
         <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar">
             <tarfileset dir="${basedir}/out/">
-                <include name="./*"/>
-                <exclude name="${basedir}/bootstrap.sh"/>
+                <include name="*"/>
             </tarfileset>
         </tar>
     </target>
