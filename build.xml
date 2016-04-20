@@ -83,23 +83,25 @@
     </target>
 
     <target name="go-build_windows_x64">
-        <exec executable="go" failonerror="true" taskname="building go">
+        <exec executable="go" failonerror="true" taskname="building go for win64">
             <env key="GOPATH" path="${basedir}"/>
-            <env key="GOARCH" value="amd64"/>
             <env key="GOOS" value="windows"/>
-            <arg line="build"/>
-            <arg line="-o"/>
+            <env key="GOARCH" value="amd64"/>
+            <arg value="build"/>
+            <arg value="-v"/>
+            <arg value="-o"/>
             <arg path="${basedir}/out/alsgo_windows_x64.exe"/>
         </exec>
     </target>
 
 
     <target name="go-build_linux_x64">
-        <exec executable="go" failonerror="true" taskname="building go">
+        <exec executable="go" failonerror="true" taskname="building go for linux64">
             <env key="GOPATH" path="${basedir}"/>
-            <env key="GOARCH" value="amd64"/>
             <env key="GOOS" value="linux"/>
+            <env key="GOARCH" value="amd64"/>
             <arg value="build"/>
+            <arg value="-v"/>
             <arg value="-o"/>
             <arg path="${basedir}/out/alsgo_linux_x64"/>
         </exec>
@@ -110,11 +112,10 @@
     </target>
 
     <target name="go-zip">
-        <exec executable="zip" failonerror="true" taskname="ziping go binaries">
-            <arg value="-r"/>
-            <arg value="-9"/>
-            <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip"/>
-            <arg path="${basedir}/out/"/>
+        <exec executable="tar" failonerror="true" dir="${basedir}/out/" taskname="ziping go binaries">
+            <arg value="-czvf"/>
+            <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
+            <arg path="*"/>
         </exec>
     </target>
 
