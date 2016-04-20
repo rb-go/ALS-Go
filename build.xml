@@ -8,7 +8,7 @@
     <target name="build_linux_x64" depends="init, go-build_linux_x64, go-zip, mail-build-info, show-build-info"/>
     <target name="build_windows_x64" depends="init, go-build_windows_x64, go-zip, mail-build-info, show-build-info"/>
 
-    <target name="init" depends="grab-build-info, clean, config_go_env, go-get"/>
+    <target name="init" depends="grab-build-info, clean, go-get"/>
 
 
 
@@ -30,11 +30,11 @@
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/pkg" />
+            <fileset dir="${basedir}/src" />
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/src" />
+            <fileset dir="${basedir}/pkg" />
         </delete>
 
         <!--
@@ -47,10 +47,6 @@
         <move file="${basedir}/config.jenkins.php" tofile="${basedir}/config.php"/>
         <get src="http://site.ru/file1.zip" dest="file1.zip" />
         -->
-    </target>
-
-    <target name="config_go_env">
-
     </target>
 
     <target name="go-get">
