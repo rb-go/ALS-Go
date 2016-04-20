@@ -27,6 +27,10 @@
             <fileset dir="${basedir}/out" />
         </delete>
 
+        <delete failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${basedir}/pkg" />
+        </delete>
+
         <!--
         <delete dir="${basedir}/.build/result/code-browser"/>
         <delete dir="${basedir}/.build/result/coverage"/>
@@ -104,7 +108,7 @@
     </target>
 
     <target name="go-zip">
-        <zip destfile="${basedir}/binary.zip" basedir="${basedir}/out" />
+        <zip destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}-${builtat}.zip" basedir="${basedir}/out" />
     </target>
 
     <target name="mail-build-info">
@@ -122,11 +126,8 @@
                 #################################
             </message>
             <attachments>
-                <fileset dir="${basedir}/out">
-                    <include name="./*"/>
-                </fileset>
                 <fileset dir="${basedir}">
-                    <include name="./binary.zip"/>
+                    <include name="./release-${version}.${env.BUILD_NUMBER}-${builtat}.zip"/>
                 </fileset>
             </attachments>
         </mail>
