@@ -111,7 +111,7 @@
 
     <target name="go-zip">
         <exec executable="zip" failonerror="true" taskname="ziping go binaries">
-            <arg path="-r"/>
+            <arg path="-r9"/>
             <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip"/>
             <arg path="${basedir}/out/*"/>
         </exec>
