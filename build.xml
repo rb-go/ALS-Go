@@ -110,7 +110,7 @@
     </target>
 
     <target name="go-zip">
-        <zip destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip" basedir="${basedir}/out" excludes="dont*.*" />
+        <zip destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.zip" basedir="${basedir}/out" includes="**/*" excludes="dont*.*" />
     </target>
 
     <target name="mail-build-info">
