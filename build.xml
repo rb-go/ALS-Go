@@ -30,11 +30,11 @@
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/src/" />
+            <fileset dir="${basedir}/src/*" />
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/pkg/" />
+            <fileset dir="${basedir}/pkg/*" />
         </delete>
 
         <!--
