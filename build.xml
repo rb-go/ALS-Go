@@ -3,10 +3,10 @@
 
     <property environment="env"/>
 
-    <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, mail-build-info,show-build-info"/>
+    <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip, mail-build-info,show-build-info"/>
 
-    <target name="build_linux_x64" depends="init, go-build_linux_x64, mail-build-info,show-build-info"/>
-    <target name="build_windows_x64" depends="init, go-build_windows_x64, mail-build-info,show-build-info"/>
+    <target name="build_linux_x64" depends="init, go-build_linux_x64, go-zip, mail-build-info, show-build-info"/>
+    <target name="build_windows_x64" depends="init, go-build_windows_x64, go-zip, mail-build-info, show-build-info"/>
 
     <target name="init" depends="grab-build-info, clean, config_go_env, go-get"/>
 
@@ -104,7 +104,7 @@
     </target>
 
     <target name="go-zip">
-        <zip  destfile="${basedir}/binary.zip" basedir="${basedir}/out" />
+        <zip destfile="${basedir}/binary.zip" basedir="${basedir}/out" />
     </target>
 
     <target name="mail-build-info">
