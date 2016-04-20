@@ -102,13 +102,18 @@
     </target>
 
     <target name="go-zip">
-        <exec executable="tar" failonerror="true" dir="${basedir}/out">
+        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz" compression="gzip">
+            <tarfileset dir="${basedir}/out" filemode="644">
+                <include name="*"/>
+            </tarfileset>
+        </tar>
+        <!--<exec executable="tar" failonerror="true" dir="${basedir}/out">
             <arg line="-czvf"/>
             <arg path="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz"/>
             <arg value="-C"/>
             <arg path="${basedir}/out/"/>
             <arg value="*"/>
-        </exec>
+        </exec>-->
     </target>
 
     <target name="mail-build-info">
