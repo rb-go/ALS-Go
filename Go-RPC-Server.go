@@ -29,7 +29,7 @@ import (
 
 func initConfigs() {
 
-	data, err := ioutil.ReadFile(configs.ConfigDir + "/config.yml")
+	data, err := ioutil.ReadFile(configs.ConfigPath)
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
@@ -72,7 +72,7 @@ func init() {
 
 	log.SetFlags(log.LstdFlags + log.Lshortfile)
 
-	flag.StringVar(&configs.ConfigDir, "config-dir", ".", "Path to config.yml without tralling slash at the end, like /etc/als-go")
+	flag.StringVar(&configs.ConfigPath, "-c", "./config.yml", "Path to config.yml without tralling slash at the end, like /etc/als-go")
 	flag.Parse()
 
 	time.Sleep(1 * time.Second)

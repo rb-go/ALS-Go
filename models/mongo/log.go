@@ -6,10 +6,10 @@ import (
 )
 
 type Log struct {
-	ID bson.ObjectId `bson:"_id,omitempty"`
-	Category string
-	Level string
-	Message string
-	Timestamp int64
-	ExpiresAt time.Time `bson:"expiresAt"`
+	ID bson.ObjectId `bson:"_id,omitempty" json:"_id"`
+	Category string `json:"category"`
+	Level string `json:"level"`
+	Message string `json:"message"`
+	Timestamp int64 `json:"timestamp"`
+	ExpiresAt time.Time `bson:"expiresAt"  json:"expiresAt"`
 }

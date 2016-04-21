@@ -42,7 +42,7 @@ type Conf struct {
 }
 
 var Configs Conf
-var ConfigDir string
+var ConfigPath string
 
 var DBConn *gorm.DB
 var MGOadditionalCollectionsConn map[string]string

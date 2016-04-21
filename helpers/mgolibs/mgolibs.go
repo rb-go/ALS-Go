@@ -46,18 +46,11 @@ func InsertMGO(c *mgo.Collection, args interface{}) error{
 
 func GetFromMGO(c *mgo.Collection, args map[string]interface{}, limit int, offset int, sortBy []string) []mongo.CustomLog {
 	var results []mongo.CustomLog
-	query := c.Find(&args)
-	if limit > 0 {
-		query = query.Limit(limit)
+	if limit < 0 {
+		c.Find(&args).Sort(sortBy...).Skip(offset).All(&results)
+	} else {
+		c.Find(&args).Sort(sortBy...).Skip(offset).Limit(limit).All(&results)
 	}
-	if offset > 0 {
-		query = query.Skip(limit)
-	}
-	if sortBy != nil {
-		query = query.Sort(sortBy...)
-	}
-
-	query.All(&results)
 	return results
 }
 

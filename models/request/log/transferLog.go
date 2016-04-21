@@ -3,8 +3,8 @@ package log
 import "gopkg.in/validator.v2"
 
 type TransferLog struct {
-	Old_category string `validate:"nonzero"`
-	New_category string `validate:"nonzero"`
+	OldCategory string `validate:"nonzero"`
+	NewCategory string `validate:"nonzero"`
 	SearchFilter map[string]interface{}
 }
 

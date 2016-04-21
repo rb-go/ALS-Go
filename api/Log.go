@@ -122,6 +122,9 @@ func (h *Log) Get(r *http.Request, args *logReq.GetLog, reply *logResp.Get) erro
 		return errs
 	}
 
+
+	helpers.PrintObject(args.SearchFilter)
+
 	connectionString := mgolibs.GetConnectionStringByCategory(args.Category)
 	session, err := mgolibs.CreateMGOConnection(connectionString)
 	if err != nil {
@@ -276,7 +279,7 @@ func (h *Log) Transfer(r *http.Request, args *logReq.TransferLog, reply *logResp
 
 
 	//CONNECT TO "FROM" DB AND GET DATA
-	connectionStringFrom := mgolibs.GetConnectionStringByCategory(args.Old_category)
+	connectionStringFrom := mgolibs.GetConnectionStringByCategory(args.OldCategory)
 
 	sessionFrom, err := mgolibs.CreateMGOConnection(connectionStringFrom)
 	defer sessionFrom.Close()
@@ -284,7 +287,7 @@ func (h *Log) Transfer(r *http.Request, args *logReq.TransferLog, reply *logResp
 		log.Println("CreateMGOConnection: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
-	collectionFrom, err := mgolibs.UseMGOCol(mgolibs.UseMGODB(sessionFrom, auth.GetUser(r)), args.Old_category)
+	collectionFrom, err := mgolibs.UseMGOCol(mgolibs.UseMGODB(sessionFrom, auth.GetUser(r)), args.OldCategory)
 	if err != nil {
 		log.Println("UseMGOCol: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
@@ -294,14 +297,14 @@ func (h *Log) Transfer(r *http.Request, args *logReq.TransferLog, reply *logResp
 
 
 	//CONNECT TO "TO" DB
-	connectionStringTo := mgolibs.GetConnectionStringByCategory(args.New_category)
+	connectionStringTo := mgolibs.GetConnectionStringByCategory(args.NewCategory)
 	sessionTo, err := mgolibs.CreateMGOConnection(connectionStringTo)
 	defer sessionTo.Close()
 	if err != nil {
 		log.Println("CreateMGOConnection: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
-	collectionTo, err := mgolibs.UseMGOCol(mgolibs.UseMGODB(sessionTo, auth.GetUser(r)), args.New_category)
+	collectionTo, err := mgolibs.UseMGOCol(mgolibs.UseMGODB(sessionTo, auth.GetUser(r)), args.NewCategory)
 	if err != nil {
 		log.Println("UseMGOCol: "+err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}

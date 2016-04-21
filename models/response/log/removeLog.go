@@ -1,6 +1,6 @@
 package log
 
 type RemoveLog struct {
-	Matched int
-	Removed int
+	Matched int `json:"matched"`
+	Removed int `json:"removed"`
 }

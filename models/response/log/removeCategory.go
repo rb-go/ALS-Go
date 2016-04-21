@@ -1,5 +1,5 @@
 package log
 
 type RemoveCategory struct {
-	Success int
+	Success int `json:"success"`
 }

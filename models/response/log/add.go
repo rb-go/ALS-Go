@@ -1,5 +1,5 @@
 package log
 
 type Add struct {
-	LogId string
+	LogId string `json:"logId"`
 }

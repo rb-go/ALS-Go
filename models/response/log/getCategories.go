@@ -1,5 +1,5 @@
 package log
 
 type GetCategories struct {
-	CategoriesList []string
+	CategoriesList []string `json:"categoriesList"`
 }
