@@ -1,7 +1,7 @@
 package models
 
-import "../configs"
-import "../models/db"
+import "gitlab.com/ergoz/ALS-Go/configs"
+import "gitlab.com/ergoz/ALS-Go/models/db"
 
 func InitDatabaseStructure() {
 	configs.DBConn.AutoMigrate(&db.Method{},&db.User{})

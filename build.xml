@@ -41,40 +41,40 @@
 
     <target name="go-get">
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/gorilla/rpc/v2"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/gorilla/rpc/v2/json2"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/go-sql-driver/mysql"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/jinzhu/gorm"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/yaml.v2"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/patrickmn/go-cache"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/mgo.v2"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/mgo.v2/bson"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="github.com/tmc/mgohacks"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!--<env key="GOPATH" path="${basedir}"/>-->
         </exec>
         <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/> <arg value="gopkg.in/validator.v2"/>
-            <env key="GOPATH" path="${basedir}"/>
+            <!-- <env key="GOPATH" path="${basedir}"/> -->
         </exec>
     </target>
 
     <target name="go-build_windows_x64">
         <exec executable="go" failonerror="true" taskname="building go for win64">
-            <env key="GOPATH" path="${basedir}"/>
+            <!-- <env key="GOPATH" path="${basedir}"/> -->
             <env key="GOOS" value="windows"/>
             <env key="GOARCH" value="amd64"/>
             <arg value="build"/>
@@ -87,7 +87,7 @@
 
     <target name="go-build_linux_x64">
         <exec executable="go" failonerror="true" taskname="building go for linux64">
-            <env key="GOPATH" path="${basedir}"/>
+            <!-- <env key="GOPATH" path="${basedir}"/> -->
             <env key="GOOS" value="linux"/>
             <env key="GOARCH" value="amd64"/>
             <arg value="build"/>

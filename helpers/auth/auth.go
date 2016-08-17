@@ -3,8 +3,8 @@ package auth
 import (
 	"net/http"
 	"fmt"
-	"../../configs"
-	"../../models/db"
+	"gitlab.com/ergoz/ALS-Go/configs"
+	"gitlab.com/ergoz/ALS-Go/models/db"
 	"log"
 	"github.com/patrickmn/go-cache"
 )

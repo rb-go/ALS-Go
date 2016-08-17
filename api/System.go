@@ -1,7 +1,7 @@
 package api
 import (
-	"../helpers/auth"
-	"../configs"
+	"gitlab.com/ergoz/ALS-Go/helpers/auth"
+	"gitlab.com/ergoz/ALS-Go/configs"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
 	"time"

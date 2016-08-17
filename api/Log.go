@@ -6,13 +6,13 @@ import (
 	"time"
 	"fmt"
 
-	logReq "../models/request/log"
-	logResp "../models/response/log"
-	mongoModel "../models/mongo"
+	logReq "gitlab.com/ergoz/ALS-Go/models/request/log"
+	logResp "gitlab.com/ergoz/ALS-Go/models/response/log"
+	mongoModel "gitlab.com/ergoz/ALS-Go/models/mongo"
 
-	"../helpers/auth"
-	"../helpers/mgolibs"
-	"../helpers"
+	"gitlab.com/ergoz/ALS-Go/helpers/auth"
+	"gitlab.com/ergoz/ALS-Go/helpers/mgolibs"
+	"gitlab.com/ergoz/ALS-Go/helpers"
 
 	"gopkg.in/mgo.v2/bson"
 	"github.com/gorilla/rpc/v2/json2"

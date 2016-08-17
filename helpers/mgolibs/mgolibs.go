@@ -3,8 +3,8 @@ package mgolibs
 import (
 	"github.com/tmc/mgohacks"
 	"gopkg.in/mgo.v2"
-	"../../configs"
-	"../../models/mongo"
+	"gitlab.com/ergoz/ALS-Go/configs"
+	"gitlab.com/ergoz/ALS-Go/models/mongo"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"../../configs"
+	"gitlab.com/ergoz/ALS-Go/configs"
 	"log"
 	"fmt"
 	"github.com/patrickmn/go-cache"

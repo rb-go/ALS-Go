@@ -22,9 +22,9 @@ import (
 	"os"
 	"encoding/json"
 	"bytes"
-	"./helpers/auth"
-	"./app"
-	"./configs"
+	"gitlab.com/ergoz/ALS-Go/helpers/auth"
+	"gitlab.com/ergoz/ALS-Go/app"
+	"gitlab.com/ergoz/ALS-Go/configs"
 )
 
 func initConfigs() {

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"reflect"
 	"fmt"
-	"../api"
-	"../models"
+	"gitlab.com/ergoz/ALS-Go/api"
+	"gitlab.com/ergoz/ALS-Go/models"
 	"log"
 )
 
