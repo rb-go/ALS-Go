@@ -1,10 +1,8 @@
-package auth
+package main
 
 import (
 	"net/http"
 	"fmt"
-	"gitlab.com/ergoz/ALS-Go/configs"
-	"gitlab.com/ergoz/ALS-Go/models/db"
 	"log"
 	"github.com/patrickmn/go-cache"
 )
@@ -14,7 +12,7 @@ func CheckAuth(r *http.Request) bool {
 	if username == "" && password == "" {
 		return false
 	}
-	return db.CheckUserAuth(username, password)
+	return CheckUserAuth(username, password)
 }
 
 func GetUser(r *http.Request) string {
@@ -26,14 +24,14 @@ func CheckAPIMethodAccess(r *http.Request, json_data map[string]interface{}) boo
 	username := GetUser(r)
 	method_name := json_data["method"].(string)
 
-	access_right, found := configs.Cache.Get(fmt.Sprintf("Access:%s:%s", username, method_name))
+	access_right, found := Cache.Get(fmt.Sprintf("Access:%s:%s", username, method_name))
 	if found == false {
-		if !db.CheckUserAccessToMethod(method_name, username) {
+		if !CheckUserAccessToMethod(method_name, username) {
 			log.Printf("No permissions for user '%s' to method '%s'", username, method_name)
-			configs.Cache.Set(fmt.Sprintf("Access:%s:%s", username, method_name), false, cache.NoExpiration)
+			Cache.Set(fmt.Sprintf("Access:%s:%s", username, method_name), false, cache.NoExpiration)
 			return false
 		} else {
-			configs.Cache.Set(fmt.Sprintf("Access:%s:%s", username, method_name), true, cache.NoExpiration)
+			Cache.Set(fmt.Sprintf("Access:%s:%s", username, method_name), true, cache.NoExpiration)
 			return true
 		}
 	} else {

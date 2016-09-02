@@ -10,17 +10,17 @@ admin:
 
 db:
   #[username[:password]@][protocol[(address)]]/dbname[?param1=value1&...&paramN=valueN]
-  dbConnectionString: "als-go:xsw2zaq1@tcp(192.168.175.44:3306)/als-go?charset=utf8"
+  dbConnectionString: "als-go:p@ssword@tcp(172.16.104.21:3306)/als-go?charset=utf8"
 
 mongo:
   connectionTimeout: 1000 #msec
   commonDB:
-    connection: "192.168.175.44:27017"
+    connection: "172.16.104.228:27017"
 
   additionalDB:
-  #  -
-  #    connection: "192.168.99.100:27018"
-  #    collections: ["capi","bapi_request"]
+    -
+      connection: "172.16.104.255:27017"
+      collections: ["customer_log","archive_customer_contract","archive_customer_data", "archive_customer_log", "monitor"]
   #  -
   #    connection: "192.168.99.100:27019"
   #    collections: ["internal_error","main_error"]

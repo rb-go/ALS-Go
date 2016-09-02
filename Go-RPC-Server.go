@@ -22,32 +22,30 @@ import (
 	"os"
 	"encoding/json"
 	"bytes"
-	"gitlab.com/ergoz/ALS-Go/helpers/auth"
-	"gitlab.com/ergoz/ALS-Go/app"
-	"gitlab.com/ergoz/ALS-Go/configs"
+	"gopkg.in/validator.v2"
 )
 
 func initConfigs() {
 
-	data, err := ioutil.ReadFile(configs.ConfigPath)
+	data, err := ioutil.ReadFile(ConfigPath)
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	err = yaml.Unmarshal(data, &configs.Configs)
+	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
 		log.Printf("error reading config: %v", err)
 	}
 
-	configs.DBConn, err = gorm.Open("mysql", configs.Configs.Db.DbConnectionString)
+	DBConn, err = gorm.Open("mysql", Configs.Db.DbConnectionString)
 	if err != nil {
 		log.Printf("ORM NOT WORKS! - %s", err)
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
-	if !configs.IsDBConnected() {
+	if !IsDBConnected() {
 		log.Printf("DB Connection NOT WORKS! - %s", err.Error())
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
@@ -56,23 +54,29 @@ func initConfigs() {
 		log.Println("DB Data and structs initialized!")
 	}
 
-	configs.Cache = cache.New(5*time.Minute, 30*time.Second)
+	Cache = cache.New(5*time.Minute, 30*time.Second)
 
-	configs.ProcessMGOAdditionalConf()
+	ProcessMGOAdditionalConf()
 }
 
 func initRuntime() {
 	numCpu := runtime.NumCPU()
-	log.Printf("Initializing runtime to use %d CPUs and %d threads", numCpu, configs.Configs.System.MaxThreads)
+	log.Printf("Init runtime to use %d CPUs and %d threads", numCpu, Configs.System.MaxThreads)
 	runtime.GOMAXPROCS(numCpu)
-	debug.SetMaxThreads(configs.Configs.System.MaxThreads)
+	debug.SetMaxThreads(Configs.System.MaxThreads)
+	initValidators()
+}
+
+func initValidators() {
+	validator.SetValidationFunc("CategoryNameValidators", CategoryNameValidator)
 }
 
 func init() {
 
 	log.SetFlags(log.LstdFlags + log.Lshortfile)
 
-	flag.StringVar(&configs.ConfigPath, "-c", "./config.yml", "Path to config.yml without tralling slash at the end, like /etc/als-go")
+	flag.StringVar(&ConfigPath, "c", "./config.yml", "Path to config.yml")
+	time.Sleep(1 * time.Second)
 	flag.Parse()
 
 	time.Sleep(1 * time.Second)
@@ -86,13 +90,13 @@ func init() {
 	rpc_v2.RegisterCodec(json2.NewCodec(), "application/json")
 	rpc_v2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8") // For firefox 11 and other browsers which append the charset=UTF-8
 	rpc_v2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
-	app.Register(rpc_v2)
+	Register(rpc_v2)
 
 	http.Handle("/", Authentificator(rpc_v2))
 
-	log.Printf("Starting server on <%s>", configs.Configs.System.ListenOn)
+	log.Printf("Starting server on <%s>", Configs.System.ListenOn)
 
-	log.Fatal(http.ListenAndServe(configs.Configs.System.ListenOn, nil))
+	log.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
 func main() {
@@ -100,7 +104,7 @@ func main() {
 
 func Authentificator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if auth.CheckAuth(r) {
+		if CheckAuth(r) {
 			rawDataBody := getDataBody(r)
 			if rawDataBody == nil {
 				w.Header().Set("Content-Type", `application/json; charset=utf-8`)
@@ -113,7 +117,7 @@ func Authentificator(next http.Handler) http.Handler {
 					w.WriteHeader(405)
 					w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
 				} else {
-					if auth.CheckAPIMethodAccess(r, json_data) == false {
+					if CheckAPIMethodAccess(r, json_data) == false {
 						w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 						w.WriteHeader(403)
 						w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Permission denied"}, "id": null}`))

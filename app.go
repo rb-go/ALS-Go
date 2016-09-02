@@ -1,30 +1,17 @@
-package app
+package main
 
 import (
 	"github.com/gorilla/rpc/v2"
-	"net/http"
 	"reflect"
 	"fmt"
-	"gitlab.com/ergoz/ALS-Go/api"
-	"gitlab.com/ergoz/ALS-Go/models"
 	"log"
 )
 
 
-type AppEngineAuth struct{}
-
-func (a *AppEngineAuth) CheckAuth(r *http.Request) bool {
-	// return user.IsAdmin(appengine.NewContext(r))
-	user, _, _ := r.BasicAuth()
-	log.Println("Checked auth for: ", user)
-	return true
-}
-
-
 func Register(rpc_v2 *rpc.Server) {
 	log.Println("... REGISTERING METHODS ...")
-	rpc_v2.RegisterService(new(api.System), "")
-	rpc_v2.RegisterService(new(api.Log), "")
+	rpc_v2.RegisterService(new(Log), "")
+	rpc_v2.RegisterService(new(System), "")
 
 	var admin_methods_list []string
 	var basic_methods_list []string
@@ -49,11 +36,11 @@ func Register(rpc_v2 *rpc.Server) {
 		}
 	}
 	log.Println("START EXPORTED METHOD NAMES")
-	list_methods(new(api.System))
-	list_methods(new(api.Log))
+	list_methods(new(System))
+	list_methods(new(Log))
 	log.Println("END EXPORTED METHOD NAMES")
 
-	models.InitDatabaseStructure()
-	models.InitDatabaseData(admin_methods_list, basic_methods_list)
+	InitDatabaseStructure()
+	InitDatabaseData(admin_methods_list, basic_methods_list)
 }
 

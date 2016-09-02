@@ -1,9 +1,9 @@
-package configs
+package main
 
 import (
 	"github.com/jinzhu/gorm"
-	"time"
 	"github.com/patrickmn/go-cache"
+	"time"
 )
 
 var Cache *cache.Cache

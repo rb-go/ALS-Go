@@ -1,11 +1,21 @@
-package db
+package main
+
 
 import (
-	"gitlab.com/ergoz/ALS-Go/configs"
 	"log"
 	"fmt"
 	"github.com/patrickmn/go-cache"
 )
+
+type Method struct {
+	Id           int     `gorm:"primary_key"`
+	Name         string  `sql:"size:255;not null;unique"` // Default size for string is 255, you could reset it with this tag
+							      //Users        []User  `gorm:"many2many:user2method;"` // Many-To-Many relationship, 'user_languages' is join table
+}
+
+func (c Method) TableName() string {
+	return "methods"
+}
 
 type User struct {
 	Id           int      `gorm:"primary_key"`
@@ -22,7 +32,7 @@ func (c User) TableName() string {
 
 func CheckUserAccessToMethod(method, user string) bool {
 	var u User
-	db := configs.DBConn.Preload("Methods", Method{Name:method}).First(&u, User{Login: user})
+	db := DBConn.Preload("Methods", Method{Name:method}).First(&u, User{Login: user})
 	if db.Error != nil {
 		log.Println(db.Error)
 	}
@@ -35,16 +45,16 @@ func CheckUserAccessToMethod(method, user string) bool {
 
 func CheckUserAuth(user, password string) bool {
 
-	access_right, found := configs.Cache.Get(fmt.Sprintf("UserAuth:%s:%s", user,password))
+	access_right, found := Cache.Get(fmt.Sprintf("UserAuth:%s:%s", user,password))
 	if found == false {
 		var u User
-		db := configs.DBConn.First(&u, User{Login: user, Password: password})
+		db := DBConn.First(&u, User{Login: user, Password: password})
 		if db.Error != nil {
-			configs.Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), false, cache.NoExpiration)
+			Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), false, cache.NoExpiration)
 			log.Printf("DB_ERROR: %s",db.Error)
 			return false
 		} else {
-			configs.Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), true, cache.NoExpiration)
+			Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), true, cache.NoExpiration)
 			return true
 		}
 	}

@@ -102,7 +102,7 @@
     </target>
 
     <target name="go-zip">
-        <tar destfile="${basedir}/release-${version}.${env.BUILD_NUMBER}.tar.gz" compression="gzip">
+        <tar destfile="${basedir}/release-${version}.tar.gz" compression="gzip">
             <tarfileset dir="${basedir}/out" filemode="777">
                 <include name="*"/>
             </tarfileset>
@@ -116,7 +116,6 @@
                 #################################
                 #           BUILD INFO          #
                 #################################
-                # Build Num:  ${env.BUILD_NUMBER}
                 # Build Time: ${builtat}
                 # Builder:    ${whoami}
                 # Version:    ${version}
@@ -125,7 +124,7 @@
             </message>
             <attachments>
                 <fileset dir="${basedir}">
-                    <include name="release-${version}.${env.BUILD_NUMBER}*.*"/>
+                    <include name="release-${version}*.*"/>
                 </fileset>
             </attachments>
         </mail>
@@ -136,7 +135,6 @@
             #################################
             #           BUILD INFO          #
             #################################
-            # Build Num:  ${env.BUILD_NUMBER}
             # Build Time: ${builtat}
             # Builder:    ${whoami}
             # Version:    ${version}
