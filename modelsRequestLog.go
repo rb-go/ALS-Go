@@ -28,7 +28,7 @@ func (c *RequestLogAdd) Validate() error {
 
 type RequestLogAddCustom struct {
 	ID bson.ObjectId `bson:"_id,omitempty"`
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 	Level string `validate:"nonzero"`
 	Message string `validate:"nonzero"`
 	Timestamp int64 `validate:"nonzero"`
@@ -46,7 +46,7 @@ func (c RequestLogAddCustom) Validate() error {
 
 
 type RequestLogGetCount struct {
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
 
@@ -60,7 +60,7 @@ func (c RequestLogGetCount) Validate() error {
 
 
 type RequestLogGetLog struct {
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 	Limit int `validate:"max=1000, min=1"`
 	Offset int
@@ -78,7 +78,7 @@ func (c RequestLogGetLog) Validate() error {
 
 
 type RequestLogRemoveCategory struct {
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 }
 
 
@@ -92,7 +92,7 @@ func (c RequestLogRemoveCategory) Validate() error {
 
 
 type RequestLogRemoveLog struct {
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
 
@@ -106,8 +106,8 @@ func (c RequestLogRemoveLog) Validate() error {
 }
 
 type RequestLogTransferLog struct {
-	OldCategory string `validate:"nonzero,CategoryNameValidator"`
-	NewCategory string `validate:"nonzero,CategoryNameValidator"`
+	OldCategory string `validate:"nonzero,CategoryNameValidators"`
+	NewCategory string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (c RequestLogTransferLog) Validate() error {
 
 
 type RequestLogModifyTTL struct {
-	Category string `validate:"nonzero,CategoryNameValidator"`
+	Category string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{} `validate:"nonzero"`
 	NewTTL int64 `validate:"nonzero"`
 }
