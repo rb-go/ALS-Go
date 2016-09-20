@@ -1,4 +1,4 @@
-package main
+package mongomodels
 
 import (
 	"gopkg.in/mgo.v2/bson"

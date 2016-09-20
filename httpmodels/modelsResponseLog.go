@@ -1,7 +1,8 @@
-package main
+package httpmodels
 
 import (
 	"gopkg.in/mgo.v2/bson"
+	"github.com/riftbit/ALS-Go/mongomodels"
 )
 
 type ResponseLogAdd struct {
@@ -10,7 +11,12 @@ type ResponseLogAdd struct {
 
 
 type ResponseLogGet struct {
-	LogList []MongoCustomLog `json:"logList"`
+	LogList []mongomodels.MongoCustomLog `json:"logList"`
+}
+
+
+type ResponseLogGetCount struct {
+	LogCount int `json:"logCount"`
 }
 
 

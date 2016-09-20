@@ -8,12 +8,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
+	"github.com/riftbit/ALS-Go/httpmodels"
+	"github.com/riftbit/ALS-Go/mongomodels"
 )
 
 
 type Log struct{}
 
-func (h *Log) Add(r *http.Request, args *RequestLogAdd, reply *ResponseLogAdd) error {
+func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmodels.ResponseLogAdd) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -35,7 +37,7 @@ func (h *Log) Add(r *http.Request, args *RequestLogAdd, reply *ResponseLogAdd) e
 
 	args.ID = bson.NewObjectId()
 
-	logData := MongoLog{}
+	logData := mongomodels.MongoLog{}
 	logData.ID = args.ID
 	logData.Level = args.Level
 	logData.Message = args.Message
@@ -54,7 +56,7 @@ func (h *Log) Add(r *http.Request, args *RequestLogAdd, reply *ResponseLogAdd) e
 
 
 
-func (h *Log) AddCustom(r *http.Request, args *RequestLogAddCustom, reply *ResponseLogAdd) error {
+func (h *Log) AddCustom(r *http.Request, args *httpmodels.RequestLogAddCustom, reply *httpmodels.ResponseLogAdd) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -76,7 +78,7 @@ func (h *Log) AddCustom(r *http.Request, args *RequestLogAddCustom, reply *Respo
 
 	args.ID = bson.NewObjectId()
 
-	logData := MongoCustomLog{}
+	logData := mongomodels.MongoCustomLog{}
 	logData.ID = args.ID
 	logData.Level = args.Level
 	logData.Message = args.Message
@@ -96,7 +98,7 @@ func (h *Log) AddCustom(r *http.Request, args *RequestLogAddCustom, reply *Respo
 }
 
 
-func (h *Log) Get(r *http.Request, args *RequestLogGetLog, reply *ResponseLogGet) error {
+func (h *Log) Get(r *http.Request, args *httpmodels.RequestLogGetLog, reply *httpmodels.ResponseLogGet) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -123,7 +125,7 @@ func (h *Log) Get(r *http.Request, args *RequestLogGetLog, reply *ResponseLogGet
 }
 
 
-func (h *Log) GetCount(r *http.Request, args *RequestLogGetCount, reply *struct{LogCount int}) error {
+func (h *Log) GetCount(r *http.Request, args *httpmodels.RequestLogGetCount, reply *httpmodels.ResponseLogGetCount) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -155,7 +157,7 @@ func (h *Log) GetCount(r *http.Request, args *RequestLogGetCount, reply *struct{
 
 
 
-func (h *Log) GetCategories(r *http.Request, args *struct{}, reply *ResponseLogGetCategories) error {
+func (h *Log) GetCategories(r *http.Request, args *struct{}, reply *httpmodels.ResponseLogGetCategories) error {
 
 	serverList := GetServersList()
 
@@ -174,7 +176,7 @@ func (h *Log) GetCategories(r *http.Request, args *struct{}, reply *ResponseLogG
 }
 
 
-func (h *Log) Remove(r *http.Request, args *RequestLogRemoveLog, reply *ResponseLogRemoveLog) error {
+func (h *Log) Remove(r *http.Request, args *httpmodels.RequestLogRemoveLog, reply *httpmodels.ResponseLogRemoveLog) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -207,7 +209,7 @@ func (h *Log) Remove(r *http.Request, args *RequestLogRemoveLog, reply *Response
 }
 
 
-func (h *Log) RemoveCategory(r *http.Request, args *RequestLogRemoveCategory, reply *ResponseLogRemoveCategory) error {
+func (h *Log) RemoveCategory(r *http.Request, args *httpmodels.RequestLogRemoveCategory, reply *httpmodels.ResponseLogRemoveCategory) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -240,7 +242,7 @@ func (h *Log) RemoveCategory(r *http.Request, args *RequestLogRemoveCategory, re
 
 
 
-func (h *Log) Transfer(r *http.Request, args *RequestLogTransferLog, reply *ResponseLogTransferLog) error {
+func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, reply *httpmodels.ResponseLogTransferLog) error {
 
 	errs := args.Validate()
 	if errs != nil {
@@ -300,7 +302,7 @@ func (h *Log) Transfer(r *http.Request, args *RequestLogTransferLog, reply *Resp
 
 
 
-func (h *Log) ModifyTTL(r *http.Request, args *RequestLogModifyTTL, reply *ResponseLogModifyTTL) error {
+func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, reply *httpmodels.ResponseLogModifyTTL) error {
 
 	errs := args.Validate()
 	if errs != nil {
