@@ -8,8 +8,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
-	"github.com/riftbit/ALS-Go/httpmodels"
-	"github.com/riftbit/ALS-Go/mongomodels"
+	"github.com/Riftbit/ALS-Go/httpmodels"
+	"github.com/Riftbit/ALS-Go/mongomodels"
 )
 
 
