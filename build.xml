@@ -8,11 +8,7 @@
     <target name="build_linux_x64" depends="init, go-build_linux_x64, copy_config, go-zip"/>
     <target name="build_windows_x64" depends="init, go-build_windows_x64, copy_config, go-zip"/>
 
-    <target name="init" depends="grab-build-info, clean, go-get"/>
-
-    <target name="grab-build-info">
-        <exec executable="cat" outputproperty="version"><arg value="${basedir}/version"/></exec>
-    </target>
+    <target name="init" depends="clean, go-get"/>
 
     <target name="clean" description="Cleanup build artifacts">
 
@@ -24,18 +20,10 @@
             <fileset dir="${basedir}/out" />
         </delete>
 
-        <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/src/*" />
-        </delete>
-
-        <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/pkg/*" />
-        </delete>
-
     </target>
 
     <target name="go-get">
-        <exec executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/></exec>
+        <exec dir="${basedir}" executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/></exec>
     </target>
 
     <target name="go-build_windows_x64">
@@ -66,7 +54,7 @@
     </target>
 
     <target name="go-zip">
-        <tar destfile="${basedir}/release-${version}.tar.gz" compression="gzip">
+        <tar destfile="${basedir}/release.tar.gz" compression="gzip">
             <tarfileset dir="${basedir}/out" filemode="777">
                 <include name="*"/>
             </tarfileset>
