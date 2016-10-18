@@ -1,5 +1,7 @@
 *.iml
 .idea
 out
+build
 config.yml
 release-*.*
+*.exe

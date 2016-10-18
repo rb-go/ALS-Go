@@ -4,12 +4,11 @@ import (
 	"github.com/gorilla/rpc/v2"
 	"reflect"
 	"fmt"
-	"log"
 )
 
 
 func Register(rpc_v2 *rpc.Server) {
-	log.Println("... REGISTERING METHODS ...")
+	Logger.Info("Registering exported methods")
 	rpc_v2.RegisterService(new(Log), "")
 	rpc_v2.RegisterService(new(System), "")
 
@@ -27,7 +26,7 @@ func Register(rpc_v2 *rpc.Server) {
 			method := fooType.Method(i)
 			args := reflect.New(method.Type.In(2).Elem()).Elem().Interface()
 			resp := reflect.New(method.Type.In(3).Elem()).Elem().Interface()
-			log.Printf("request = api.call('%s.%s', %+v) # response: %+v", typ.Name(), method.Name, args, resp)
+			Logger.Debugf("request = api.call('%s.%s', %+v) # response: %+v", typ.Name(), method.Name, args, resp)
 			if typ.Name() == "System" {
 				admin_methods_list = append(admin_methods_list, fmt.Sprintf("%s.%s", typ.Name(), method.Name))
 			} else {
@@ -35,10 +34,10 @@ func Register(rpc_v2 *rpc.Server) {
 			}
 		}
 	}
-	log.Println("START EXPORTED METHOD NAMES")
+	Logger.Debug("Start exported methods names")
 	list_methods(new(System))
 	list_methods(new(Log))
-	log.Println("END EXPORTED METHOD NAMES")
+	Logger.Debug("End exporten methods names")
 
 	InitDatabaseStructure()
 	InitDatabaseData(admin_methods_list, basic_methods_list)

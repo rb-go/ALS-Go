@@ -4,9 +4,13 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/patrickmn/go-cache"
 	"time"
+	"github.com/Sirupsen/logrus"
+	"strings"
+	"os"
 )
 
 var Cache *cache.Cache
+var Logger *logrus.Logger
 
 type MongoCommonServerConf struct {
 	ConnectionString string  `yaml:"connection"`
@@ -14,31 +18,31 @@ type MongoCommonServerConf struct {
 
 type MongoAdditionalServerConf struct {
 	ConnectionString string  `yaml:"connection"`
-	Collections  []string `yaml:"collections"`
+	Collections      []string `yaml:"collections"`
 }
 
 type Conf struct {
-
 	System struct {
-	       		MaxThreads int  `yaml:"maxThreads"`
-	       		ListenOn  string `yaml:"listenOn"`
-		}
-
-	Admin struct {
-		      RootUser string `yaml:"rootUser"`
-		      RootPassword string `yaml:"rootPassword"`
-		      RootEmail string `yaml:"rootEmail"`
-	      }
-
-	Db struct {
-		   DbConnectionString string `yaml:"dbConnectionString"`
-	   }
-
-	Mongo struct {
-		      ConnectionTimeout time.Duration  `yaml:"connectionTimeout"`
-		      CommonDB MongoCommonServerConf `yaml:"commonDB"`
-		      AdditionalDB []MongoAdditionalServerConf `yaml:"additionalDB"`
-	      }
+		       MaxThreads int  `yaml:"maxThreads"`
+		       ListenOn   string `yaml:"listenOn"`
+	       }
+	Admin  struct {
+		       RootUser     string `yaml:"rootUser"`
+		       RootPassword string `yaml:"rootPassword"`
+		       RootEmail    string `yaml:"rootEmail"`
+	       }
+	Db     struct {
+		       DbConnectionString string `yaml:"dbConnectionString"`
+	       }
+	Log    struct {
+		       Formatter   string `yaml:"formatter"`   //text, json
+		       LogLevel    string `yaml:"logLevel"`    // panic, fatal, error, warn, warning, info, debug
+	       }
+	Mongo  struct {
+		       ConnectionTimeout time.Duration  `yaml:"connectionTimeout"`
+		       CommonDB          MongoCommonServerConf `yaml:"commonDB"`
+		       AdditionalDB      []MongoAdditionalServerConf `yaml:"additionalDB"`
+	       }
 }
 
 var Configs Conf
@@ -60,12 +64,38 @@ func ProcessMGOAdditionalConf() {
 	}
 }
 
-
 func IsDBConnected() bool {
 	err := DBConn.DB().Ping()
 	if err != nil {
 		return false
 	} else {
 		return true
+	}
+}
+
+func initLogger() {
+	var formatter logrus.Formatter
+
+	switch strings.ToLower(Configs.Log.Formatter) {
+	case "text":
+		formatter = &logrus.TextFormatter{}
+		break
+	case "json":
+		formatter = &logrus.JSONFormatter{}
+		break
+	default:
+
+		break
+	}
+
+	level, err := logrus.ParseLevel(Configs.Log.LogLevel)
+	if err != nil {
+		panic(err)
+	}
+
+	Logger = &logrus.Logger{
+		Out: os.Stdout,
+		Formatter: formatter,
+		Level: level,
 	}
 }

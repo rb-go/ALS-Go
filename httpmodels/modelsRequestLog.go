@@ -4,7 +4,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/validator.v2"
 	"regexp"
-	"fmt"
 	"reflect"
 	"errors"
 )
@@ -141,7 +140,7 @@ func CategoryNameValidator(v interface{}, param string) error {
 	}
 	catNameValidator, err := regexp.Compile(`^[a-zA-Z0-9_]+$`)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	isMatch := catNameValidator.MatchString(st.String())
 	if isMatch == false {

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"log"
 	"encoding/json"
 	"runtime"
+	"fmt"
 )
 
 func PrintObject(v interface{}) {
 	res2B, _ := json.Marshal(v)
-	log.Println(string(res2B))
+	fmt.Println(string(res2B))
 }
 
 func GetFuncName(level int) string {

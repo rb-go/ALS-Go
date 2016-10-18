@@ -2,7 +2,6 @@ package main
 
 
 import (
-	"log"
 	"fmt"
 	"github.com/patrickmn/go-cache"
 )
@@ -34,7 +33,7 @@ func CheckUserAccessToMethod(method, user string) bool {
 	var u User
 	db := DBConn.Preload("Methods", Method{Name:method}).First(&u, User{Login: user})
 	if db.Error != nil {
-		log.Println(db.Error)
+		Logger.Error(db.Error)
 	}
 	if u.Methods == nil {
 		return false
@@ -51,7 +50,7 @@ func CheckUserAuth(user, password string) bool {
 		db := DBConn.First(&u, User{Login: user, Password: password})
 		if db.Error != nil {
 			Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), false, cache.NoExpiration)
-			log.Printf("DB_ERROR: %s",db.Error)
+			Logger.Errorf("DB_ERROR: %s",db.Error)
 			return false
 		} else {
 			Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), true, cache.NoExpiration)

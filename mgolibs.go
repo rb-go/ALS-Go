@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/patrickmn/go-cache"
 	"fmt"
+	"github.com/Riftbit/ALS-Go/mongomodels"
 )
 
 func CreateMGOConnection(connectionString string) (*mgo.Session, error ){
@@ -51,8 +52,8 @@ func InsertMGO(c *mgo.Collection, args interface{}) error{
 }
 
 
-func GetFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []MongoCustomLog {
-	var results []MongoCustomLog
+func GetFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []mongomodels.MongoCustomLog {
+	var results []mongomodels.MongoCustomLog
 	searchFilter = PrepareSearchFilter(searchFilter)
 	if limit < 0 {
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).All(&results)
@@ -123,8 +124,7 @@ func GetCollectionsList(server string, dbName string) ([]string, error) {
 func PrepareSearchFilter(searchFilter map[string]interface{}) map[string]interface{} {
 	for key, _ := range searchFilter {
 		if key == "_id" {
-			FindIDKeyValesAndFixThem(&searchFilter, key)
-			//break
+			FindIDKeyValuesAndFixThem(&searchFilter, key)
 		}
 		if md, ok := searchFilter[key].(map[string]interface{}) ; ok {
 			PrepareSearchFilter(md)
@@ -140,7 +140,7 @@ func PrepareSearchFilter(searchFilter map[string]interface{}) map[string]interfa
 	return searchFilter
 }
 
-func FindIDKeyValesAndFixThem(searchFilter *map[string]interface{}, baseKey string) {
+func FindIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey string) {
 	if baseKey == "" {
 		baseKey = "_id"
 	}
@@ -153,7 +153,7 @@ func FindIDKeyValesAndFixThem(searchFilter *map[string]interface{}, baseKey stri
 	if currentType == reflect.Map {
 		for k,_ := range data[baseKey].(map[string]interface{}) {
 			newlevel := data[baseKey].(map[string]interface{})
-			FindIDKeyValesAndFixThem(&newlevel, k)
+			FindIDKeyValuesAndFixThem(&newlevel, k)
 		}
 	}
 	if currentType == reflect.Slice {

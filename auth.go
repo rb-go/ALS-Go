@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"fmt"
-	"log"
 	"github.com/patrickmn/go-cache"
 )
 
@@ -27,7 +26,7 @@ func CheckAPIMethodAccess(r *http.Request, json_data map[string]interface{}) boo
 	access_right, found := Cache.Get(fmt.Sprintf("Access:%s:%s", username, method_name))
 	if found == false {
 		if !CheckUserAccessToMethod(method_name, username) {
-			log.Printf("No permissions for user '%s' to method '%s'", username, method_name)
+			Logger.Warnf("No permissions for user '%s' to method '%s'", username, method_name)
 			Cache.Set(fmt.Sprintf("Access:%s:%s", username, method_name), false, cache.NoExpiration)
 			return false
 		} else {

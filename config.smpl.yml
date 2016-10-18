@@ -12,6 +12,10 @@ db:
   #[username[:password]@][protocol[(address)]]/dbname[?param1=value1&...&paramN=valueN]
   dbConnectionString: "als-go:p@ssword@tcp(172.16.104.21:3306)/als-go?charset=utf8"
 
+log:
+  formatter: "text"
+  logLevel: "info"
+
 mongo:
   connectionTimeout: 1000 #msec
   commonDB:

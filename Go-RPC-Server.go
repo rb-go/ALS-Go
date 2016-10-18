@@ -17,41 +17,44 @@ import (
 	"runtime"
 	"runtime/debug"
 	"flag"
-	"log"
 	"io/ioutil"
 	"os"
 	"encoding/json"
 	"bytes"
 	"gopkg.in/validator.v2"
+	"fmt"
+	"github.com/Riftbit/ALS-Go/httpmodels"
 )
 
 func initConfigs() {
 
 	data, err := ioutil.ReadFile(ConfigPath)
 	if err != nil {
-		log.Println(err.Error())
+		Logger.Fatal(err.Error())
 		os.Exit(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
-		log.Printf("error reading config: %v", err)
+		panic(fmt.Sprintf("error reading config: %v", err))
 	}
+
+	initLogger()
 
 	DBConn, err = gorm.Open("mysql", Configs.Db.DbConnectionString)
 	if err != nil {
-		log.Printf("ORM NOT WORKS! - %s", err)
+		Logger.Fatalf("ORM NOT WORKS! - %s", err)
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
 	if !IsDBConnected() {
-		log.Printf("DB Connection NOT WORKS! - %s", err.Error())
+		Logger.Fatalf("DB Connection NOT WORKS! - %s", err.Error())
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	} else {
-		log.Println("DB Connection WORKS!")
-		log.Println("DB Data and structs initialized!")
+		Logger.Info("DB Connection WORKS!")
+		Logger.Info("DB Data and structs initialized!")
 	}
 
 	Cache = cache.New(5*time.Minute, 30*time.Second)
@@ -61,20 +64,20 @@ func initConfigs() {
 
 func initRuntime() {
 	numCpu := runtime.NumCPU()
-	log.Printf("Init runtime to use %d CPUs and %d threads", numCpu, Configs.System.MaxThreads)
+	Logger.Infof("Init runtime to use %d CPUs and %d threads", numCpu, Configs.System.MaxThreads)
 	runtime.GOMAXPROCS(numCpu)
 	debug.SetMaxThreads(Configs.System.MaxThreads)
 	initValidators()
 }
 
 func initValidators() {
-	validator.SetValidationFunc("CategoryNameValidators", CategoryNameValidator)
+	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 }
 
 func init() {
+}
 
-	log.SetFlags(log.LstdFlags + log.Lshortfile)
-
+func main() {
 	flag.StringVar(&ConfigPath, "c", "./config.yml", "Path to config.yml")
 	time.Sleep(1 * time.Second)
 	flag.Parse()
@@ -94,12 +97,9 @@ func init() {
 
 	http.Handle("/", Authentificator(rpc_v2))
 
-	log.Printf("Starting server on <%s>", Configs.System.ListenOn)
+	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 
-	log.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
-}
-
-func main() {
+	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
 func Authentificator(next http.Handler) http.Handler {
@@ -143,7 +143,7 @@ func (m myReader) Close() error { return nil }
 func getDataBody(r *http.Request) []byte {
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("%s", err)
+		Logger.Error(err)
 		return nil
 	}
 	rdr1 := myReader{bytes.NewBuffer(buf)}
@@ -153,7 +153,7 @@ func getDataBody(r *http.Request) []byte {
 	rdr1.Close()
 	rdr2.Close()
 	if err != nil {
-		log.Printf("%s", err)
+		Logger.Error(err)
 		return nil
 	}
 	return data

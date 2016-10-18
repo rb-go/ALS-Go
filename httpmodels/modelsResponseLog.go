@@ -2,7 +2,7 @@ package httpmodels
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"github.com/riftbit/ALS-Go/mongomodels"
+	"github.com/Riftbit/ALS-Go/mongomodels"
 )
 
 type ResponseLogAdd struct {
