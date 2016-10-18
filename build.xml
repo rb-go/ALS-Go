@@ -3,6 +3,8 @@
 
     <property environment="env"/>
 
+    <target name="jenkins_build_all" depends="init, go-get-for-jenkins, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
+
     <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
     <target name="build_linux_x64" depends="init, go-build_linux_x64, copy_config, go-zip"/>
@@ -21,6 +23,17 @@
         </delete>
 
     </target>
+
+
+	<target name="go-get-for-jenkins">
+
+		<exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/>
+			<arg value="-u"/>
+			<arg value="github.com/Riftbit/ALS-Go"/>
+		</exec>
+
+	</target>
 
     <target name="go-get-with-update">
 	
