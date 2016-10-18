@@ -30,13 +30,16 @@ func initConfigs() {
 
 	data, err := ioutil.ReadFile(ConfigPath)
 	if err != nil {
-		Logger.Fatal(err.Error())
+		fmt.Println(err.Error())
+		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
-		panic(fmt.Sprintf("error reading config: %v", err))
+		fmt.Println("error reading config", err)
+		time.Sleep(1 * time.Second)
+		os.Exit(1)
 	}
 
 	initLogger()
@@ -57,7 +60,7 @@ func initConfigs() {
 		Logger.Info("DB Data and structs initialized!")
 	}
 
-	Cache = cache.New(5*time.Minute, 30*time.Second)
+	Cache = cache.New(10*time.Minute, 30*time.Second)
 
 	ProcessMGOAdditionalConf()
 }
@@ -79,14 +82,9 @@ func init() {
 
 func main() {
 	flag.StringVar(&ConfigPath, "c", "./config.yml", "Path to config.yml")
-	time.Sleep(1 * time.Second)
 	flag.Parse()
-
-	time.Sleep(1 * time.Second)
 	initConfigs()
-	time.Sleep(1 * time.Second)
 	initRuntime()
-	time.Sleep(1 * time.Second)
 
 	rpc_v2 := rpc.NewServer()
 	rpc_v2.RegisterCodec(json2.NewCodec(), "text/plain")

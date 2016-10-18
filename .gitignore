@@ -3,7 +3,7 @@
 out
 build
 config.yml
-release-*.*
+*.tar.gz
 *.exe
 vendor/*
 .gradle
