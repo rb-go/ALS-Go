@@ -23,7 +23,18 @@
     </target>
 
     <target name="go-get">
-        <exec dir="${basedir}" executable="go" failonerror="true" ><arg value="get"/> <arg value="-u"/></exec>
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="github.com/tools/godep"/>
+			<arg value="-u"/>
+		</exec>
+		
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="install"/> 
+			<arg value="github.com/tools/godep"/>
+		</exec>
+		
+        <exec dir="${basedir}" executable="godep" failonerror="true" ><arg value="restore"/></exec>
     </target>
 
     <target name="go-build_windows_x64">
