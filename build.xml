@@ -23,18 +23,73 @@
     </target>
 
     <target name="go-get">
+	
         <exec dir="${basedir}" executable="go" failonerror="true" >
 			<arg value="get"/> 
 			<arg value="-u"/>
-			<arg value="github.com/tools/godep"/>
+			<arg value="github.com/Sirupsen/logrus"/>
 		</exec>
-		
+	
         <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="install"/> 
-			<arg value="github.com/tools/godep"/>
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/go-sql-driver/mysql"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/gorilla/rpc/v2"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/gorilla/rpc/v2/json2"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/jinzhu/gorm"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/jinzhu/inflection"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/patrickmn/go-cache"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/tmc/mgohacks"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="gopkg.in/mgo.v2"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="gopkg.in/validator.v2"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="gopkg.in/yaml.v2"/>
 		</exec>
 		
-        <exec dir="${basedir}" executable="godep" failonerror="true" ><arg value="restore"/></exec>
     </target>
 
     <target name="go-build_windows_x64">

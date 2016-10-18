@@ -5,3 +5,5 @@ build
 config.yml
 release-*.*
 *.exe
+vendor/*
+.gradle
