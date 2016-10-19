@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/rpc/v2"
-	"reflect"
 	"fmt"
-)
+	"reflect"
 
+	"github.com/gorilla/rpc/v2"
+)
 
 func register(rpcV2 *rpc.Server) {
 	Logger.Info("Registering exported methods")
@@ -42,4 +42,3 @@ func register(rpcV2 *rpc.Server) {
 	initDatabaseStructure()
 	initDatabaseData(adminMethodsList, basicMethodsList)
 }
-

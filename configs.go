@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/Sirupsen/logrus"
 	"github.com/jinzhu/gorm"
 	"github.com/patrickmn/go-cache"
-	"time"
-	"github.com/Sirupsen/logrus"
-	"strings"
-	"os"
-	"fmt"
 )
 
 //Cache ...
@@ -17,40 +18,39 @@ var Cache *cache.Cache
 var Logger *logrus.Logger
 
 type mongoCommonServerConf struct {
-	ConnectionString string  `yaml:"connection"`
+	ConnectionString string `yaml:"connection"`
 }
 
 type mongoAdditionalServerConf struct {
-	ConnectionString string  `yaml:"connection"`
+	ConnectionString string   `yaml:"connection"`
 	Collections      []string `yaml:"collections"`
 }
 
 type conf struct {
 	System struct {
-		       MaxThreads int  `yaml:"maxThreads"`
-		       ListenOn   string `yaml:"listenOn"`
-	       }
-	Admin  struct {
-		       RootUser     string `yaml:"rootUser"`
-		       RootPassword string `yaml:"rootPassword"`
-		       RootEmail    string `yaml:"rootEmail"`
-	       }
-	Db     struct {
-		       DbConnectionString string `yaml:"dbConnectionString"`
-	       }
-	Log    struct {
-		       Formatter       string `yaml:"formatter"` //text, json
-		       LogLevel        string `yaml:"logLevel"`  // panic, fatal, error, warn, warning, info, debug
-		       DisableColors   bool `yaml:"disableColors"`
-		       TimestampFormat string `yaml:"timestampFormat"`
-	       }
-	Mongo  struct {
-		       ConnectionTimeout time.Duration  `yaml:"connectionTimeout"`
-		       CommonDB          mongoCommonServerConf `yaml:"commonDB"`
-		       AdditionalDB      []mongoAdditionalServerConf `yaml:"additionalDB"`
-	       }
+		MaxThreads int    `yaml:"maxThreads"`
+		ListenOn   string `yaml:"listenOn"`
+	}
+	Admin struct {
+		RootUser     string `yaml:"rootUser"`
+		RootPassword string `yaml:"rootPassword"`
+		RootEmail    string `yaml:"rootEmail"`
+	}
+	Db struct {
+		DbConnectionString string `yaml:"dbConnectionString"`
+	}
+	Log struct {
+		Formatter       string `yaml:"formatter"` //text, json
+		LogLevel        string `yaml:"logLevel"`  // panic, fatal, error, warn, warning, info, debug
+		DisableColors   bool   `yaml:"disableColors"`
+		TimestampFormat string `yaml:"timestampFormat"`
+	}
+	Mongo struct {
+		ConnectionTimeout time.Duration               `yaml:"connectionTimeout"`
+		CommonDB          mongoCommonServerConf       `yaml:"commonDB"`
+		AdditionalDB      []mongoAdditionalServerConf `yaml:"additionalDB"`
+	}
 }
-
 
 //Configs ...
 var Configs conf
@@ -86,20 +86,20 @@ func isDBConnected() bool {
 func initLogger() {
 
 	allowedTimestampsFormat := map[string]int{
-		"Mon Jan _2 15:04:05 2006": 1,
-		"Mon Jan _2 15:04:05 MST 2006": 1,
-		"Mon Jan 02 15:04:05 -0700 2006": 1,
-		"02 Jan 06 15:04 MST": 1,
-		"02 Jan 06 15:04 -0700": 1,
-		"Monday, 02-Jan-06 15:04:05 MST": 1,
-		"Mon, 02 Jan 2006 15:04:05 MST": 1,
-		"Mon, 02 Jan 2006 15:04:05 -0700": 1,
-		"2006-01-02T15:04:05Z07:00": 1,
+		"Mon Jan _2 15:04:05 2006":            1,
+		"Mon Jan _2 15:04:05 MST 2006":        1,
+		"Mon Jan 02 15:04:05 -0700 2006":      1,
+		"02 Jan 06 15:04 MST":                 1,
+		"02 Jan 06 15:04 -0700":               1,
+		"Monday, 02-Jan-06 15:04:05 MST":      1,
+		"Mon, 02 Jan 2006 15:04:05 MST":       1,
+		"Mon, 02 Jan 2006 15:04:05 -0700":     1,
+		"2006-01-02T15:04:05Z07:00":           1,
 		"2006-01-02T15:04:05.999999999Z07:00": 1,
-		"3:04PM": 1,
-		"Jan _2 15:04:05": 1,
-		"Jan _2 15:04:05.000": 1,
-		"Jan _2 15:04:05.000000": 1,
+		"3:04PM":                    1,
+		"Jan _2 15:04:05":           1,
+		"Jan _2 15:04:05.000":       1,
+		"Jan _2 15:04:05.000000":    1,
 		"Jan _2 15:04:05.000000000": 1,
 	}
 
@@ -109,7 +109,6 @@ func initLogger() {
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
 	}
-
 
 	var formatter logrus.Formatter
 
@@ -135,8 +134,8 @@ func initLogger() {
 	}
 
 	Logger = &logrus.Logger{
-		Out: os.Stdout,
+		Out:       os.Stdout,
 		Formatter: formatter,
-		Level: level,
+		Level:     level,
 	}
 }

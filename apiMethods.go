@@ -1,15 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
-	"fmt"
-	"gopkg.in/mgo.v2/bson"
-	"github.com/gorilla/rpc/v2/json2"
-	"github.com/patrickmn/go-cache"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/Riftbit/ALS-Go/mongomodels"
-
+	"github.com/gorilla/rpc/v2/json2"
+	"github.com/patrickmn/go-cache"
+	"gopkg.in/mgo.v2/bson"
 )
 
 //Log area
@@ -26,12 +26,12 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("[" + getFuncName(1) + "] createMGOConnection: "+err.Error())
+		Logger.Error("[" + getFuncName(1) + "] createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
@@ -47,14 +47,13 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 	logData.ExpiresAtShow = args.ExpiresAt
 
 	if insertMGO(collection, logData) != nil {
-		Logger.Error("InsertMGO: "+err.Error())
+		Logger.Error("InsertMGO: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Insert Problems"}
 	}
 
-	reply.LogID=args.ID.Hex()
+	reply.LogID = args.ID.Hex()
 	return nil
 }
-
 
 //AddCustom Method to add Log with additional params
 func (h *Log) AddCustom(r *http.Request, args *httpmodels.RequestLogAddCustom, reply *httpmodels.ResponseLogAdd) error {
@@ -67,12 +66,12 @@ func (h *Log) AddCustom(r *http.Request, args *httpmodels.RequestLogAddCustom, r
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
@@ -90,14 +89,13 @@ func (h *Log) AddCustom(r *http.Request, args *httpmodels.RequestLogAddCustom, r
 	logData.AdditionalData = args.AdditionalData
 
 	if insertMGO(collection, logData) != nil {
-		Logger.Error("InsertMGO: "+err.Error())
+		Logger.Error("InsertMGO: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Insert Problems"}
 	}
 
-	reply.LogID=args.ID.Hex()
+	reply.LogID = args.ID.Hex()
 	return nil
 }
-
 
 //Get Method to get Log/Logs
 func (h *Log) Get(r *http.Request, args *httpmodels.RequestLogGetLog, reply *httpmodels.ResponseLogGet) error {
@@ -110,22 +108,20 @@ func (h *Log) Get(r *http.Request, args *httpmodels.RequestLogGetLog, reply *htt
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
-
 
 	reply.LogList = getFromMGO(collection, args.SearchFilter, args.Limit, args.Offset, args.Sort)
 
 	return nil
 }
-
 
 //GetCount Method to get Log counts
 func (h *Log) GetCount(r *http.Request, args *httpmodels.RequestLogGetCount, reply *httpmodels.ResponseLogGetCount) error {
@@ -138,26 +134,25 @@ func (h *Log) GetCount(r *http.Request, args *httpmodels.RequestLogGetCount, rep
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
 
 	count, err := getCountMGO(collection, args.SearchFilter)
 	if err != nil {
-		Logger.Error("GetCountMGO: "+err.Error())
+		Logger.Error("GetCountMGO: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Data Problems"}
 	}
 
 	reply.LogCount = count
 	return nil
 }
-
 
 //GetCategories Method to get Log categories
 func (h *Log) GetCategories(r *http.Request, args *struct{}, reply *httpmodels.ResponseLogGetCategories) error {
@@ -167,17 +162,16 @@ func (h *Log) GetCategories(r *http.Request, args *struct{}, reply *httpmodels.R
 	for _, srv := range serverList {
 		collections, err := getCollectionsList(srv, getUser(r))
 		if err != nil {
-			Logger.Error("GetCollectionsList: "+err.Error())
+			Logger.Error("GetCollectionsList: " + err.Error())
 			return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Categories Getting Problems"}
 		}
-		for _,col := range collections {
+		for _, col := range collections {
 			reply.CategoriesList = append(reply.CategoriesList, col)
 		}
 	}
 
 	return nil
 }
-
 
 //Remove Method to remove Log/Logs
 func (h *Log) Remove(r *http.Request, args *httpmodels.RequestLogRemoveLog, reply *httpmodels.ResponseLogRemoveLog) error {
@@ -190,20 +184,19 @@ func (h *Log) Remove(r *http.Request, args *httpmodels.RequestLogRemoveLog, repl
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
 
-
 	info, err := removeAllFromMGO(collection, args.SearchFilter)
 	if err != nil {
-		Logger.Error("RemoveAllFromMGO: "+err.Error())
+		Logger.Error("RemoveAllFromMGO: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: fmt.Sprintf("%s", err)}
 	}
 
@@ -211,7 +204,6 @@ func (h *Log) Remove(r *http.Request, args *httpmodels.RequestLogRemoveLog, repl
 	reply.Removed = info.Removed
 	return nil
 }
-
 
 //RemoveCategory Method to remove Log category
 func (h *Log) RemoveCategory(r *http.Request, args *httpmodels.RequestLogRemoveCategory, reply *httpmodels.ResponseLogRemoveCategory) error {
@@ -224,28 +216,24 @@ func (h *Log) RemoveCategory(r *http.Request, args *httpmodels.RequestLogRemoveC
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
 
-
 	err = collection.DropCollection()
 	if err != nil {
-		Logger.Error("DropCollection: "+err.Error())
+		Logger.Error("DropCollection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: fmt.Sprintf("%s", err)}
 	}
 	reply.Success = 1
 	return nil
 }
-
-
-
 
 //Transfer Method to transfer Log/Logs to another category
 func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, reply *httpmodels.ResponseLogTransferLog) error {
@@ -261,32 +249,30 @@ func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, 
 	sessionFrom, err := createMGOConnection(connectionStringFrom)
 	defer sessionFrom.Close()
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collectionFrom, err := useMGOCol(useMGODB(sessionFrom, getUser(r)), args.OldCategory)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 
 	found := getFromMGO(collectionFrom, args.SearchFilter, 0, 0, nil)
-
 
 	//CONNECT TO "TO" DB
 	connectionStringTo := getConnectionStringByCategory(args.NewCategory)
 	sessionTo, err := createMGOConnection(connectionStringTo)
 	defer sessionTo.Close()
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collectionTo, err := useMGOCol(useMGODB(sessionTo, getUser(r)), args.NewCategory)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
-
 
 	//TRANSFERING DATA "FROM" -> "TO"
 	for _, element := range found {
@@ -304,7 +290,6 @@ func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, 
 	return nil
 }
 
-
 // ModifyTTL Method to modify Log/Logs TTL value
 func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, reply *httpmodels.ResponseLogModifyTTL) error {
 
@@ -316,12 +301,12 @@ func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, r
 	connectionString := getConnectionStringByCategory(args.Category)
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
-		Logger.Error("createMGOConnection: "+err.Error())
+		Logger.Error("createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
 	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
 	if err != nil {
-		Logger.Error("useMGOCol: "+err.Error())
+		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
 	defer session.Close()
@@ -330,7 +315,7 @@ func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, r
 
 	info, err := updateAllMGO(collection, args.SearchFilter, updateData)
 	if err != nil {
-		Logger.Error("UpdateAllMGO: "+err.Error())
+		Logger.Error("UpdateAllMGO: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: fmt.Sprintf("%s", err)}
 	}
 
@@ -341,9 +326,6 @@ func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, r
 	return nil
 }
 
-
-
-
 /*
 -------------------------------------------------
 INTERNAL CALL: Some general system tests, checking/showing how errors and other conditions are handled
@@ -353,19 +335,21 @@ INTERNAL CALL: Some general system tests, checking/showing how errors and other 
 //System ...
 type System struct{}
 
-
 // GetCacheAll cache records
-func (h *System) GetCacheAll(r *http.Request, args *struct{}, reply *struct{ Count int
-									     Items map[string]cache.Item }) error {
+func (h *System) GetCacheAll(r *http.Request, args *struct{}, reply *struct {
+	Count int
+	Items map[string]cache.Item
+}) error {
 	reply.Count = Cache.ItemCount()
 	reply.Items = Cache.Items()
 	return nil
 }
 
-
 // GetCache record by key
-func (h *System) GetCache(r *http.Request, args *struct{Key string}, reply *struct{ Key string
-										    Data interface{} }) error {
+func (h *System) GetCache(r *http.Request, args *struct{ Key string }, reply *struct {
+	Key  string
+	Data interface{}
+}) error {
 	var found bool
 	reply.Key = args.Key
 	reply.Data, found = Cache.Get(args.Key)
@@ -376,16 +360,18 @@ func (h *System) GetCache(r *http.Request, args *struct{Key string}, reply *stru
 }
 
 // DeleteCache record by key
-func (h *System) DeleteCache(r *http.Request, args *struct{Key string}, reply *struct{ Status int }) error {
+func (h *System) DeleteCache(r *http.Request, args *struct{ Key string }, reply *struct{ Status int }) error {
 	Cache.Delete(args.Key)
 	reply.Status = 1
 	return nil
 }
 
 // SetCache for cache element
-func (h *System) SetCache(r *http.Request, args *struct{Key string
-							Data interface{}
-							TTL time.Duration}, reply *struct{ Status int }) error {
+func (h *System) SetCache(r *http.Request, args *struct {
+	Key  string
+	Data interface{}
+	TTL  time.Duration
+}, reply *struct{ Status int }) error {
 	Cache.Set(args.Key, args.Data, args.TTL)
 	reply.Status = 1
 	return nil

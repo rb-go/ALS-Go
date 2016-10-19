@@ -1,21 +1,22 @@
 package httpmodels
 
 import (
+	"errors"
+	"reflect"
+	"regexp"
+
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/validator.v2"
-	"regexp"
-	"reflect"
-	"errors"
 )
 
 //RequestLogAdd Request Struct for LogAdd
 type RequestLogAdd struct {
-	ID bson.ObjectId `bson:"_id,omitempty"`
-	Category string `validate:"nonzero,CategoryNameValidators"`
-	Level string `validate:"nonzero"`
-	Message string `validate:"nonzero"`
-	Timestamp int64 `validate:"nonzero"`
-	ExpiresAt int64 `validate:"nonzero"`
+	ID        bson.ObjectId `bson:"_id,omitempty"`
+	Category  string        `validate:"nonzero,CategoryNameValidators"`
+	Level     string        `validate:"nonzero"`
+	Message   string        `validate:"nonzero"`
+	Timestamp int64         `validate:"nonzero"`
+	ExpiresAt int64         `validate:"nonzero"`
 }
 
 //Validate Struct for LogAdd
@@ -26,16 +27,15 @@ func (c *RequestLogAdd) Validate() error {
 	return nil
 }
 
-
 //RequestLogAddCustom Request Struct for LogAddCustom
 type RequestLogAddCustom struct {
-	ID bson.ObjectId `bson:"_id,omitempty"`
-	Category string `validate:"nonzero,CategoryNameValidators"`
-	Level string `validate:"nonzero"`
-	Message string `validate:"nonzero"`
-	Timestamp int64 `validate:"nonzero"`
-	ExpiresAt int64 `validate:"nonzero"`
-	Tags []string
+	ID             bson.ObjectId `bson:"_id,omitempty"`
+	Category       string        `validate:"nonzero,CategoryNameValidators"`
+	Level          string        `validate:"nonzero"`
+	Message        string        `validate:"nonzero"`
+	Timestamp      int64         `validate:"nonzero"`
+	ExpiresAt      int64         `validate:"nonzero"`
+	Tags           []string
 	AdditionalData interface{}
 }
 
@@ -47,10 +47,9 @@ func (c RequestLogAddCustom) Validate() error {
 	return nil
 }
 
-
 //RequestLogGetCount Request Struct for LogGetCount
 type RequestLogGetCount struct {
-	Category string `validate:"nonzero,CategoryNameValidators"`
+	Category     string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
 
@@ -62,18 +61,14 @@ func (c RequestLogGetCount) Validate() error {
 	return nil
 }
 
-
-
 //RequestLogGetLog Request Struct for LogGetLog
 type RequestLogGetLog struct {
-	Category string `validate:"nonzero,CategoryNameValidators"`
+	Category     string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
-	Limit int `validate:"max=1000, min=1"`
-	Offset int
-	Sort []string
+	Limit        int `validate:"max=1000, min=1"`
+	Offset       int
+	Sort         []string
 }
-
-
 
 //Validate Struct for LogGetLog
 func (c RequestLogGetLog) Validate() error {
@@ -83,13 +78,10 @@ func (c RequestLogGetLog) Validate() error {
 	return nil
 }
 
-
 //RequestLogRemoveCategory Request Struct for LogGetRemoveCategory
 type RequestLogRemoveCategory struct {
 	Category string `validate:"nonzero,CategoryNameValidators"`
 }
-
-
 
 //Validate Struct for LogGetRemoveCategory
 func (c RequestLogRemoveCategory) Validate() error {
@@ -99,14 +91,11 @@ func (c RequestLogRemoveCategory) Validate() error {
 	return nil
 }
 
-
 //RequestLogRemoveLog Request Struct for LogGetRemoveLog
 type RequestLogRemoveLog struct {
-	Category string `validate:"nonzero,CategoryNameValidators"`
+	Category     string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
-
-
 
 //Validate Struct for LogGetRemoveLog
 func (c RequestLogRemoveLog) Validate() error {
@@ -118,12 +107,10 @@ func (c RequestLogRemoveLog) Validate() error {
 
 //RequestLogTransferLog Request Struct for LogTransferLog
 type RequestLogTransferLog struct {
-	OldCategory string `validate:"nonzero,CategoryNameValidators"`
-	NewCategory string `validate:"nonzero,CategoryNameValidators"`
+	OldCategory  string `validate:"nonzero,CategoryNameValidators"`
+	NewCategory  string `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{}
 }
-
-
 
 //Validate Struct for LogTransferLog
 func (c RequestLogTransferLog) Validate() error {
@@ -133,12 +120,11 @@ func (c RequestLogTransferLog) Validate() error {
 	return nil
 }
 
-
 //RequestLogModifyTTL Request Struct for LogModifyTTL
 type RequestLogModifyTTL struct {
-	Category string `validate:"nonzero,CategoryNameValidators"`
+	Category     string                 `validate:"nonzero,CategoryNameValidators"`
 	SearchFilter map[string]interface{} `validate:"nonzero"`
-	NewTTL int64 `validate:"nonzero"`
+	NewTTL       int64                  `validate:"nonzero"`
 }
 
 //Validate Struct for LogModifyTTL

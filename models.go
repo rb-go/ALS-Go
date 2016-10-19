@@ -1,8 +1,7 @@
 package main
 
-
 func initDatabaseStructure() {
-	DBConn.AutoMigrate(&Method{},&User{})
+	DBConn.AutoMigrate(&Method{}, &User{})
 }
 
 func initDatabaseData(adminMethodsList, basicMethodsList []string) {
@@ -10,14 +9,14 @@ func initDatabaseData(adminMethodsList, basicMethodsList []string) {
 	adminMethods := []Method{}
 	otherMethods := []Method{}
 
-	for _,methodName := range adminMethodsList {
+	for _, methodName := range adminMethodsList {
 		var method = Method{}
 		DBConn.FirstOrCreate(&method, Method{Name: methodName})
 		adminMethods = append(adminMethods, method)
 		allMethods = append(allMethods, method)
 	}
 
-	for _,methodName := range basicMethodsList {
+	for _, methodName := range basicMethodsList {
 		var method = Method{}
 		DBConn.FirstOrCreate(&method, Method{Name: methodName})
 		otherMethods = append(otherMethods, method)

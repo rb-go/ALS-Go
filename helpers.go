@@ -2,10 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"runtime"
 	"fmt"
+	"runtime"
 )
-
 
 func printObject(v interface{}) {
 	res2B, _ := json.Marshal(v)

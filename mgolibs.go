@@ -1,17 +1,18 @@
 package main
 
 import (
+	"fmt"
+	"reflect"
+	"time"
+
+	"github.com/Riftbit/ALS-Go/mongomodels"
+	"github.com/patrickmn/go-cache"
 	"github.com/tmc/mgohacks"
 	"gopkg.in/mgo.v2"
-	"time"
-	"reflect"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/patrickmn/go-cache"
-	"fmt"
-	"github.com/Riftbit/ALS-Go/mongomodels"
 )
 
-func createMGOConnection(connectionString string) (*mgo.Session, error ){
+func createMGOConnection(connectionString string) (*mgo.Session, error) {
 	session, err := mgo.DialWithTimeout(connectionString, Configs.Mongo.ConnectionTimeout*time.Millisecond)
 	if err != nil {
 		return nil, err
@@ -32,8 +33,8 @@ func useMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 	indexValue, existIndexCache := Cache.Get(cahceKey)
 	if existIndexCache == false || indexValue != "1" {
 		index := mgo.Index{
-			Key:        []string{"expiresAt"},
-			Background: true,
+			Key:         []string{"expiresAt"},
+			Background:  true,
 			ExpireAfter: 0,
 		}
 		err := mgohacks.EnsureTTLIndex(c, index)
@@ -45,11 +46,10 @@ func useMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 	return c, nil
 }
 
-func insertMGO(c *mgo.Collection, args interface{}) error{
+func insertMGO(c *mgo.Collection, args interface{}) error {
 	err := c.Insert(&args)
 	return err
 }
-
 
 func getFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []mongomodels.MongoCustomLog {
 	var results []mongomodels.MongoCustomLog
@@ -60,18 +60,17 @@ func getFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit in
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).Limit(limit).All(&results)
 	}
 	for i := range results {
-		if(results[i].ExpiresAtShow == 0) {
+		if results[i].ExpiresAtShow == 0 {
 			results[i].ExpiresAtShow = results[i].ExpiresAt.Unix()
 		}
 	}
 	return results
 }
 
-func removeAllFromMGO(c *mgo.Collection, searchFilter map[string]interface{}) (*mgo.ChangeInfo, error){
+func removeAllFromMGO(c *mgo.Collection, searchFilter map[string]interface{}) (*mgo.ChangeInfo, error) {
 	searchFilter = prepareSearchFilter(searchFilter)
 	return c.RemoveAll(&searchFilter)
 }
-
 
 func updateAllMGO(c *mgo.Collection, searchFilter map[string]interface{}, update map[string]interface{}) (*mgo.ChangeInfo, error) {
 	searchFilter = prepareSearchFilter(searchFilter)
@@ -90,7 +89,6 @@ func getConnectionStringByCategory(category string) string {
 	}
 	return connData
 }
-
 
 func getServersList() []string {
 	servers := make(map[string]int)
@@ -119,17 +117,16 @@ func getCollectionsList(server string, dbName string) ([]string, error) {
 	return collectionNames, nil
 }
 
-
 func prepareSearchFilter(searchFilter map[string]interface{}) map[string]interface{} {
 	for key := range searchFilter {
 		if key == "_id" {
 			findIDKeyValuesAndFixThem(&searchFilter, key)
 		}
-		if md, ok := searchFilter[key].(map[string]interface{}) ; ok {
+		if md, ok := searchFilter[key].(map[string]interface{}); ok {
 			prepareSearchFilter(md)
 		}
-		if md, ok := searchFilter[key].([]interface{}) ; ok {
-			for _,v := range md {
+		if md, ok := searchFilter[key].([]interface{}); ok {
+			for _, v := range md {
 				if reflect.TypeOf(v).Kind() == reflect.Map || reflect.TypeOf(v).Kind() == reflect.Slice {
 					prepareSearchFilter(v.(map[string]interface{}))
 				}
@@ -156,8 +153,8 @@ func findIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey str
 		}
 	}
 	if currentType == reflect.Slice {
-		for k,v := range data[baseKey].([]interface{}) {
-			data[baseKey].([]interface {})[k] = bson.ObjectIdHex(v.(string))
+		for k, v := range data[baseKey].([]interface{}) {
+			data[baseKey].([]interface{})[k] = bson.ObjectIdHex(v.(string))
 		}
 	}
 }

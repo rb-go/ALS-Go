@@ -1,24 +1,25 @@
 package main
 
 import (
-	"github.com/gorilla/rpc/v2"
-	"github.com/gorilla/rpc/v2/json2"
-	"github.com/patrickmn/go-cache"
-	"gopkg.in/yaml.v2"
-	"github.com/jinzhu/gorm"
-	_ "github.com/go-sql-driver/mysql"
+	"bytes"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io/ioutil"
 	"net/http"
-	"time"
+	"os"
 	"runtime"
 	"runtime/debug"
-	"flag"
-	"io/ioutil"
-	"os"
-	"encoding/json"
-	"bytes"
-	"gopkg.in/validator.v2"
-	"fmt"
+	"time"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/rpc/v2"
+	"github.com/gorilla/rpc/v2/json2"
+	"github.com/jinzhu/gorm"
+	"github.com/patrickmn/go-cache"
+	"gopkg.in/validator.v2"
+	"gopkg.in/yaml.v2"
 )
 
 func initConfigs() {
@@ -91,7 +92,7 @@ func main() {
 	rpcV2 := rpc.NewServer()
 	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
 	rpcV2.RegisterCodec(json2.NewCodec(), "application/json")
-	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8") // For firefox 11 and other browsers which append the charset=UTF-8
+	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8")       // For firefox 11 and other browsers which append the charset=UTF-8
 	rpcV2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
 	register(rpcV2)
 
@@ -101,7 +102,6 @@ func main() {
 
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
-
 
 func authentificator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -135,10 +135,10 @@ func authentificator(next http.Handler) http.Handler {
 	})
 }
 
-
 type myReader struct {
 	*bytes.Buffer
 }
+
 func (m myReader) Close() error { return nil }
 
 func getDataBody(r *http.Request) []byte {
