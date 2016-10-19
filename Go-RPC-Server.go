@@ -1,10 +1,5 @@
 package main
 
-/*
-    test with curl
-        curl -X POST -H "Content-Type: application/json" -d '{"method":"HelloService.Say","params":[{"Who":"Test"}], "id":"1"}' http://localhost:10000/api
-*/
-
 import (
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json2"
@@ -28,7 +23,7 @@ import (
 
 func initConfigs() {
 
-	data, err := ioutil.ReadFile(ConfigPath)
+	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		time.Sleep(1 * time.Second)
@@ -51,7 +46,7 @@ func initConfigs() {
 		os.Exit(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
-	if !IsDBConnected() {
+	if !isDBConnected() {
 		Logger.Fatalf("DB Connection NOT WORKS! - %s", err.Error())
 		time.Sleep(1 * time.Second)
 		os.Exit(1)
@@ -69,13 +64,13 @@ func initConfigs() {
 
 	Cache = cache.New(10*time.Minute, 30*time.Second)
 
-	ProcessMGOAdditionalConf()
+	processMGOAdditionalConf()
 }
 
 func initRuntime() {
-	numCpu := runtime.NumCPU()
-	Logger.Infof("Init runtime to use %d CPUs and %d threads", numCpu, Configs.System.MaxThreads)
-	runtime.GOMAXPROCS(numCpu)
+	numCPU := runtime.NumCPU()
+	Logger.Infof("Init runtime to use %d CPUs and %d threads", numCPU, Configs.System.MaxThreads)
+	runtime.GOMAXPROCS(numCPU)
 	debug.SetMaxThreads(Configs.System.MaxThreads)
 	initValidators()
 }
@@ -88,41 +83,42 @@ func init() {
 }
 
 func main() {
-	flag.StringVar(&ConfigPath, "c", "./config.yml", "Path to config.yml")
+	flag.StringVar(&configPath, "c", "./config.yml", "Path to config.yml")
 	flag.Parse()
 	initConfigs()
 	initRuntime()
 
-	rpc_v2 := rpc.NewServer()
-	rpc_v2.RegisterCodec(json2.NewCodec(), "text/plain")
-	rpc_v2.RegisterCodec(json2.NewCodec(), "application/json")
-	rpc_v2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8") // For firefox 11 and other browsers which append the charset=UTF-8
-	rpc_v2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
-	Register(rpc_v2)
+	rpcV2 := rpc.NewServer()
+	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
+	rpcV2.RegisterCodec(json2.NewCodec(), "application/json")
+	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8") // For firefox 11 and other browsers which append the charset=UTF-8
+	rpcV2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
+	register(rpcV2)
 
-	http.Handle("/", Authentificator(rpc_v2))
+	http.Handle("/", authentificator(rpcV2))
 
 	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
-func Authentificator(next http.Handler) http.Handler {
+
+func authentificator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if CheckAuth(r) {
+		if checkAuth(r) {
 			rawDataBody := getDataBody(r)
 			if rawDataBody == nil {
 				w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 				w.WriteHeader(405)
 				w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
 			} else {
-				json_data, err := getRequestJson(rawDataBody)
+				jsonData, err := getRequestJSON(rawDataBody)
 				if err != nil {
 					w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 					w.WriteHeader(405)
 					w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
 				} else {
-					if CheckAPIMethodAccess(r, json_data) == false {
+					if checkAPIMethodAccess(r, jsonData) == false {
 						w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 						w.WriteHeader(403)
 						w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Permission denied"}, "id": null}`))
@@ -164,8 +160,8 @@ func getDataBody(r *http.Request) []byte {
 	return data
 }
 
-func getRequestJson(data []byte) (map[string]interface{}, error) {
-	var json_data map[string]interface{}
-	err := json.Unmarshal(data, &json_data)
-	return json_data, err
+func getRequestJSON(data []byte) (map[string]interface{}, error) {
+	var jsonData map[string]interface{}
+	err := json.Unmarshal(data, &jsonData)
+	return jsonData, err
 }

@@ -6,8 +6,6 @@ os:
   - linux
 
 go:
-  - 1.4.3
-  - 1.5.4
   - 1.6.3
   - 1.7.1
   - tip
@@ -15,8 +13,6 @@ go:
 matrix:
   allow_failures:
     - go: tip
-    - go: 1.4.3
-    - go: 1.5.4
 
 branches:
   only:
@@ -25,7 +21,7 @@ branches:
 env:
   global:
     - GOARCH=amd64
-     
+
 notifications:
   email:
     on_success: change
@@ -44,9 +40,11 @@ before_script:
 script:
  - go vet ./...
 # - diff <(goimports -d .) <(printf "")
-# - diff <(golint ./...) <(printf "")
+ - diff <(golint ./...) <(printf "")
  - go test -v -cpu=2 ./...
  - go test -v -cpu=1,2,4 -short -race ./...
+ - GOOS=linux && go build ./...
+ - GOOS=windows && go build ./...
 
 
 after_success:

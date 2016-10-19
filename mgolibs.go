@@ -11,7 +11,7 @@ import (
 	"github.com/Riftbit/ALS-Go/mongomodels"
 )
 
-func CreateMGOConnection(connectionString string) (*mgo.Session, error ){
+func createMGOConnection(connectionString string) (*mgo.Session, error ){
 	session, err := mgo.DialWithTimeout(connectionString, Configs.Mongo.ConnectionTimeout*time.Millisecond)
 	if err != nil {
 		return nil, err
@@ -21,12 +21,12 @@ func CreateMGOConnection(connectionString string) (*mgo.Session, error ){
 	return session, nil
 }
 
-func UseMGODB(session *mgo.Session, dbName string) *mgo.Database {
+func useMGODB(session *mgo.Session, dbName string) *mgo.Database {
 	return session.DB(dbName)
 
 }
 
-func UseMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
+func useMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 	c := mgDB.C(category)
 	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", mgDB.Name, category)
 	indexValue, existIndexCache := Cache.Get(cahceKey)
@@ -39,28 +39,27 @@ func UseMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 		err := mgohacks.EnsureTTLIndex(c, index)
 		if err != nil {
 			return nil, err
-		} else {
-			Cache.Set(cahceKey, "1", cache.NoExpiration)
 		}
+		Cache.Set(cahceKey, "1", cache.NoExpiration)
 	}
 	return c, nil
 }
 
-func InsertMGO(c *mgo.Collection, args interface{}) error{
+func insertMGO(c *mgo.Collection, args interface{}) error{
 	err := c.Insert(&args)
 	return err
 }
 
 
-func GetFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []mongomodels.MongoCustomLog {
+func getFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []mongomodels.MongoCustomLog {
 	var results []mongomodels.MongoCustomLog
-	searchFilter = PrepareSearchFilter(searchFilter)
+	searchFilter = prepareSearchFilter(searchFilter)
 	if limit < 0 {
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).All(&results)
 	} else {
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).Limit(limit).All(&results)
 	}
-	for i,_ := range results {
+	for i := range results {
 		if(results[i].ExpiresAtShow == 0) {
 			results[i].ExpiresAtShow = results[i].ExpiresAt.Unix()
 		}
@@ -68,24 +67,24 @@ func GetFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit in
 	return results
 }
 
-func RemoveAllFromMGO(c *mgo.Collection, searchFilter map[string]interface{}) (*mgo.ChangeInfo, error){
-	searchFilter = PrepareSearchFilter(searchFilter)
+func removeAllFromMGO(c *mgo.Collection, searchFilter map[string]interface{}) (*mgo.ChangeInfo, error){
+	searchFilter = prepareSearchFilter(searchFilter)
 	return c.RemoveAll(&searchFilter)
 }
 
 
-func UpdateAllMGO(c *mgo.Collection, searchFilter map[string]interface{}, update map[string]interface{}) (*mgo.ChangeInfo, error) {
-	searchFilter = PrepareSearchFilter(searchFilter)
+func updateAllMGO(c *mgo.Collection, searchFilter map[string]interface{}, update map[string]interface{}) (*mgo.ChangeInfo, error) {
+	searchFilter = prepareSearchFilter(searchFilter)
 	return c.UpdateAll(searchFilter, update)
 }
 
-func GetCountMGO(c *mgo.Collection, args map[string]interface{}) (int, error) {
+func getCountMGO(c *mgo.Collection, args map[string]interface{}) (int, error) {
 	count, err := c.Find(args).Count()
 	return count, err
 }
 
-func GetConnectionStringByCategory(category string) string {
-	connData := MGOadditionalCollectionsConn[category]
+func getConnectionStringByCategory(category string) string {
+	connData := mGOadditionalCollectionsConn[category]
 	if connData == "" {
 		connData = Configs.Mongo.CommonDB.ConnectionString
 	}
@@ -93,26 +92,26 @@ func GetConnectionStringByCategory(category string) string {
 }
 
 
-func GetServersList() []string {
+func getServersList() []string {
 	servers := make(map[string]int)
 	var result []string
-	for _, coll := range MGOadditionalCollectionsConn {
+	for _, coll := range mGOadditionalCollectionsConn {
 		servers[coll] = 1
 	}
 	servers[Configs.Mongo.CommonDB.ConnectionString] = 1
-	for srv, _ := range servers {
+	for srv := range servers {
 		result = append(result, srv)
 	}
 
 	return result
 }
 
-func GetCollectionsList(server string, dbName string) ([]string, error) {
-	connection, err := CreateMGOConnection(server)
+func getCollectionsList(server string, dbName string) ([]string, error) {
+	connection, err := createMGOConnection(server)
 	if err != nil {
 		return nil, err
 	}
-	db := UseMGODB(connection, dbName)
+	db := useMGODB(connection, dbName)
 	collectionNames, err := db.CollectionNames()
 	if err != nil {
 		return nil, err
@@ -121,18 +120,18 @@ func GetCollectionsList(server string, dbName string) ([]string, error) {
 }
 
 
-func PrepareSearchFilter(searchFilter map[string]interface{}) map[string]interface{} {
-	for key, _ := range searchFilter {
+func prepareSearchFilter(searchFilter map[string]interface{}) map[string]interface{} {
+	for key := range searchFilter {
 		if key == "_id" {
-			FindIDKeyValuesAndFixThem(&searchFilter, key)
+			findIDKeyValuesAndFixThem(&searchFilter, key)
 		}
 		if md, ok := searchFilter[key].(map[string]interface{}) ; ok {
-			PrepareSearchFilter(md)
+			prepareSearchFilter(md)
 		}
 		if md, ok := searchFilter[key].([]interface{}) ; ok {
 			for _,v := range md {
 				if reflect.TypeOf(v).Kind() == reflect.Map || reflect.TypeOf(v).Kind() == reflect.Slice {
-					PrepareSearchFilter(v.(map[string]interface{}))
+					prepareSearchFilter(v.(map[string]interface{}))
 				}
 			}
 		}
@@ -140,7 +139,7 @@ func PrepareSearchFilter(searchFilter map[string]interface{}) map[string]interfa
 	return searchFilter
 }
 
-func FindIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey string) {
+func findIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey string) {
 	if baseKey == "" {
 		baseKey = "_id"
 	}
@@ -151,9 +150,9 @@ func FindIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey str
 	}
 
 	if currentType == reflect.Map {
-		for k,_ := range data[baseKey].(map[string]interface{}) {
+		for k := range data[baseKey].(map[string]interface{}) {
 			newlevel := data[baseKey].(map[string]interface{})
-			FindIDKeyValuesAndFixThem(&newlevel, k)
+			findIDKeyValuesAndFixThem(&newlevel, k)
 		}
 	}
 	if currentType == reflect.Slice {

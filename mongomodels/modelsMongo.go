@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//MongoCustomLog Struc for custom log
 type MongoCustomLog struct {
 	ID bson.ObjectId `bson:"_id,omitempty" json:"_id"`
 	Level string `json:"level"`
@@ -17,6 +18,7 @@ type MongoCustomLog struct {
 }
 
 
+//MongoLog Struc for common log
 type MongoLog struct {
 	ID bson.ObjectId `bson:"_id,omitempty" json:"_id"`
 	Level string `json:"level"`

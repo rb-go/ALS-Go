@@ -10,19 +10,22 @@ import (
 	"fmt"
 )
 
+//Cache ...
 var Cache *cache.Cache
+
+//Logger ...
 var Logger *logrus.Logger
 
-type MongoCommonServerConf struct {
+type mongoCommonServerConf struct {
 	ConnectionString string  `yaml:"connection"`
 }
 
-type MongoAdditionalServerConf struct {
+type mongoAdditionalServerConf struct {
 	ConnectionString string  `yaml:"connection"`
 	Collections      []string `yaml:"collections"`
 }
 
-type Conf struct {
+type conf struct {
 	System struct {
 		       MaxThreads int  `yaml:"maxThreads"`
 		       ListenOn   string `yaml:"listenOn"`
@@ -43,37 +46,41 @@ type Conf struct {
 	       }
 	Mongo  struct {
 		       ConnectionTimeout time.Duration  `yaml:"connectionTimeout"`
-		       CommonDB          MongoCommonServerConf `yaml:"commonDB"`
-		       AdditionalDB      []MongoAdditionalServerConf `yaml:"additionalDB"`
+		       CommonDB          mongoCommonServerConf `yaml:"commonDB"`
+		       AdditionalDB      []mongoAdditionalServerConf `yaml:"additionalDB"`
 	       }
 }
 
-var Configs Conf
-var ConfigPath string
 
+//Configs ...
+var Configs conf
+
+var configPath string
+
+//DBConn ...
 var DBConn *gorm.DB
-var MGOadditionalCollectionsConn map[string]string
 
-func ProcessMGOAdditionalConf() {
-	MGOadditionalCollectionsConn = make(map[string]string)
+var mGOadditionalCollectionsConn map[string]string
+
+func processMGOAdditionalConf() {
+	mGOadditionalCollectionsConn = make(map[string]string)
 	if len(Configs.Mongo.AdditionalDB) > 0 {
 		for _, additDB := range Configs.Mongo.AdditionalDB {
 			if len(additDB.Collections) > 0 {
 				for _, coll := range additDB.Collections {
-					MGOadditionalCollectionsConn[coll] = additDB.ConnectionString
+					mGOadditionalCollectionsConn[coll] = additDB.ConnectionString
 				}
 			}
 		}
 	}
 }
 
-func IsDBConnected() bool {
+func isDBConnected() bool {
 	err := DBConn.DB().Ping()
 	if err != nil {
 		return false
-	} else {
-		return true
 	}
+	return true
 }
 
 func initLogger() {
