@@ -36,6 +36,4 @@ func CheckAPIMethodAccess(r *http.Request, json_data map[string]interface{}) boo
 	} else {
 		return access_right.(bool)
 	}
-
-	return false
 }

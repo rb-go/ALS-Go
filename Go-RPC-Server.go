@@ -60,6 +60,13 @@ func initConfigs() {
 		Logger.Info("DB Data and structs initialized!")
 	}
 
+	//it is to fix:
+	//[mysql] packets.go:33: unexpected EOF
+	//[mysql] packets.go:124: write tcp 127.0.0.1:59804->127.0.0.1:3306: write: broken pipe
+	//DBConn.DB().SetMaxIdleConns(0)
+	//DBConn.DB().SetMaxOpenConns(100)
+	//but now we will try to set in my.cnf wait_timeout=2147483
+
 	Cache = cache.New(10*time.Minute, 30*time.Second)
 
 	ProcessMGOAdditionalConf()
