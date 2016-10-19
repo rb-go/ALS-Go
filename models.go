@@ -2,31 +2,31 @@ package main
 
 
 func initDatabaseStructure() {
-	DBConn.AutoMigrate(&Method{},&User{})
+	DBConn.AutoMigrate(&method{},&user{})
 }
 
 func initDatabaseData(adminMethodsList, basicMethodsList []string) {
-	allMethods := []Method{}
-	adminMethods := []Method{}
-	otherMethods := []Method{}
+	allMethods := []method{}
+	adminMethods := []method{}
+	otherMethods := []method{}
 
 	for _,methodName := range adminMethodsList {
-		var method = Method{}
-		DBConn.FirstOrCreate(&method, Method{Name: methodName})
+		var method = method{}
+		DBConn.FirstOrCreate(&method, method{Name: methodName})
 		adminMethods = append(adminMethods, method)
 		allMethods = append(allMethods, method)
 	}
 
 	for _,methodName := range basicMethodsList {
-		var method = Method{}
-		DBConn.FirstOrCreate(&method, Method{Name: methodName})
+		var method = method{}
+		DBConn.FirstOrCreate(&method, method{Name: methodName})
 		otherMethods = append(otherMethods, method)
 		allMethods = append(allMethods, method)
 	}
 
-	var user = User{}
-	userToCreate := User{Password: Configs.Admin.RootPassword, Email: Configs.Admin.RootPassword, Status: 1, Methods: allMethods}
-	DBConn.Attrs(userToCreate).FirstOrCreate(&user, User{Login: Configs.Admin.RootUser})
+	var user = user{}
+	userToCreate := user{Password: Configs.Admin.RootPassword, Email: Configs.Admin.RootPassword, Status: 1, Methods: allMethods}
+	DBConn.Attrs(userToCreate).FirstOrCreate(&user, user{Login: Configs.Admin.RootUser})
 
 	//DBConn.Model(&user_to_create).Association("Methods").Append(Method{Name: "System.Test"})
 
