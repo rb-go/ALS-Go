@@ -8,15 +8,24 @@ os:
   - windows
 
 go:
-  - 1.5
-  - 1.6
-  - 1.7
+  - 1.6.3
+  - 1.7.1
   - tip
+
+env:
+  global:
+    - GOARCH=amd64
+
+before_install:
+  - sleep 5
+  - go env && pwd
 
 install:
  - go get -t ./...
  - go get -u github.com/golang/lint/golint
  - go get -u golang.org/x/tools/cmd/goimports
+
+before_script:
 
 script:
  - go vet ./...
@@ -24,3 +33,34 @@ script:
  - diff <(golint ./...) <(printf "")
  - go test -v -cpu=2 ./...
  - go test -v -cpu=1,2,4 -short -race ./...
+
+
+after_success:
+  - go env && pwd
+
+after_failure:
+  - go env && pwd
+
+before_deploy:
+
+deploy:
+
+after_deploy:
+
+after_script:
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+
+matrix:
+  allow_failures:
+    - go: tip
+
+# safelist
+branches:
+  only:
+  - master
+  - stable
