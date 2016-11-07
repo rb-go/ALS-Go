@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"testing"
@@ -7,11 +7,15 @@ import (
 )
 
 func TestSomething(t *testing.T) {
-	assert := assert.New(t)
+	ass := assert.New(t)
 
 	// assert equality
-	assert.Equal(123, 123, "they should be equal")
+	ass.Equal(123, 123, "they should be equal")
 
 	// assert inequality
-	assert.NotEqual(123, 456, "they should not be equal")
+	ass.NotEqual(123, 456, "they should not be equal")
+}
+
+func TestAverage(t *testing.T) {
+
 }
