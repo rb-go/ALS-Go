@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//Test method 1
+//TestSomething Test method 1
 func TestSomething(t *testing.T) {
 	ass := assert.New(t)
 
@@ -17,7 +17,7 @@ func TestSomething(t *testing.T) {
 	ass.NotEqual(123, 456, "they should not be equal")
 }
 
-//Test method 2
+//TestAverage Test method 2
 func TestAverage(t *testing.T) {
 
 }
