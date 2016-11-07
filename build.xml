@@ -108,6 +108,30 @@
 			<arg value="-u"/>
 			<arg value="github.com/stretchr/testify/assert"/>
 		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/golang/lint/golint"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="golang.org/x/tools/cmd/goimports"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="golang.org/x/tools/cmd/cover"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/mattn/goveralls"/>
+		</exec>
 		
     </target>
 	
@@ -168,7 +192,83 @@
 			<arg value="get"/> 
 			<arg value="gopkg.in/yaml.v2"/>
 		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/stretchr/testify/assert"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/golang/lint/golint"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="golang.org/x/tools/cmd/goimports"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="golang.org/x/tools/cmd/cover"/>
+		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/mattn/goveralls"/>
+		</exec>
 		
+    </target>
+	
+	
+    <target name="go-tests">
+        <exec executable="go" failonerror="true">
+            <arg value="vet"/>
+            <arg path="./..."/>
+        </exec>
+		
+        <exec executable="diff" failonerror="true">
+            <arg value="<(goimports -d .)"/>
+            <arg value="<(printf \"\")"/>
+        </exec>
+		
+        <exec executable="diff" failonerror="true">
+            <arg value="<(golint ./...)"/>
+            <arg value="<(printf \"\")"/>
+        </exec>
+		
+        <exec executable="go" failonerror="true">
+            <arg value="test"/>
+            <arg value="-v"/>
+            <arg value="-cpu=2"/>
+            <arg path="./..."/>
+        </exec>
+		
+        <exec executable="go" failonerror="true">
+            <arg value="test"/>
+            <arg value="-v"/>
+            <arg value="-cpu=1,2,4"/>
+            <arg value="-race"/>
+            <arg path="./..."/>
+        </exec>
+		
+        <exec executable="go" failonerror="true">
+            <arg value="test"/>
+            <arg value="-v"/>
+            <arg value="-covermode=count"/>
+            <arg value="-coverprofile=coverage.out"/>
+        </exec>
+		
+        <exec executable="goveralls" failonerror="false">
+            <arg value="-coverprofile=coverage.out"/>
+            <arg value="-service=travis-ci"/>
+            <arg value="-repotoken $COVERALLS_TOKEN"/>
+        </exec>
     </target>
 
     <target name="go-build_windows_x64">
