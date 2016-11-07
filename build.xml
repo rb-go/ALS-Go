@@ -102,6 +102,12 @@
 			<arg value="-u"/>
 			<arg value="gopkg.in/yaml.v2"/>
 		</exec>
+	
+        <exec dir="${basedir}" executable="go" failonerror="true" >
+			<arg value="get"/> 
+			<arg value="-u"/>
+			<arg value="github.com/stretchr/testify/assert"/>
+		</exec>
 		
     </target>
 	
