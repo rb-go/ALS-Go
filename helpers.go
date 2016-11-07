@@ -2,13 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"runtime"
 )
 
-func printObject(v interface{}) {
+func printObject(v interface{}) string {
 	res2B, _ := json.Marshal(v)
-	fmt.Println(string(res2B))
+	return string(res2B)
 }
 
 func getFuncName(level int) string {

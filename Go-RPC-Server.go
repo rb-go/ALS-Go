@@ -107,6 +107,7 @@ func authentificator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if checkAuth(r) {
 			rawDataBody := getDataBody(r)
+			Logger.Debug("[authentificator] Received Request: ", string(rawDataBody))
 			if rawDataBody == nil {
 				w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 				w.WriteHeader(405)

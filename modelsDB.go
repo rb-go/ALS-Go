@@ -21,7 +21,7 @@ func (c Method) TableName() string {
 //User struct for db
 type User struct {
 	ID       int      `gorm:"primary_key"`
-	Login    string   `sql:"type:varchar(20);not null;unique"`
+	Login    string   `sql:"type:varchar(40);not null;unique"`
 	Password string   `sql:"type:varchar(40)"`
 	Email    string   `sql:"size:255"`
 	Status   int      `sql:"type:int(2);not null;DEFAULT:0"`
@@ -39,6 +39,7 @@ func checkUserAccessToMethod(method, user string) bool {
 	if db.Error != nil {
 		Logger.Error(db.Error)
 	}
+	Logger.Debug("[checkUserAccessToMethod] ", db.Value)
 	if u.Methods == nil {
 		return false
 	}
@@ -50,9 +51,10 @@ func checkUserAuth(user, password string) bool {
 	if found == false {
 		var u User
 		db := DBConn.First(&u, User{Login: user, Password: password})
+		Logger.Debug("[checkUserAuth] ", db.Value)
 		if db.Error != nil {
 			Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), false, cache.NoExpiration)
-			Logger.Errorf("DB_ERROR: %s", db.Error)
+			Logger.Errorf("DB_ERROR: %s | Params: %s,%s", db.Error, user, password)
 			return false
 		}
 		Cache.Set(fmt.Sprintf("UserAuth:%s:%s", user, password), true, cache.NoExpiration)

@@ -36,7 +36,7 @@ log:
 #StampNano  = "Jan _2 15:04:05.000000000"
 
 mongo:
-  connectionTimeout: 1000 #msec
+  connectionTimeout: 10000 #msec
   commonDB:
     connection: "172.16.104.228:27017"
 

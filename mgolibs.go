@@ -17,6 +17,7 @@ func createMGOConnection(connectionString string) (*mgo.Session, error) {
 	if err != nil {
 		return nil, err
 	}
+	Logger.Debug("[createMGOConnection] Selected connection string: ", connectionString)
 	// Optional. Switch the session to a monotonic behavior.
 	session.SetMode(mgo.Monotonic, true)
 	return session, nil
@@ -29,8 +30,10 @@ func useMGODB(session *mgo.Session, dbName string) *mgo.Database {
 
 func useMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 	c := mgDB.C(category)
+	//Set EnsureIndex if we need it
 	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", mgDB.Name, category)
 	indexValue, existIndexCache := Cache.Get(cahceKey)
+	Logger.Debug("[useMGOCol] Check cache for ", cahceKey)
 	if existIndexCache == false || indexValue != "1" {
 		index := mgo.Index{
 			Key:         []string{"expiresAt"},
@@ -42,11 +45,31 @@ func useMGOCol(mgDB *mgo.Database, category string) (*mgo.Collection, error) {
 			return nil, err
 		}
 		Cache.Set(cahceKey, "1", cache.NoExpiration)
+		Logger.Debug("[useMGOCol] Set cache for ", cahceKey)
 	}
+
+	//Set Index on Timestamp field if we need it
+	cahceKey = fmt.Sprintf("MongoDB:TimestampIndex:%s:%s", mgDB.Name, category)
+	indexValue, existIndexCache = Cache.Get(cahceKey)
+	Logger.Debug("[useMGOCol] Check cache for ", cahceKey)
+	if existIndexCache == false || indexValue != "1" {
+		index := mgo.Index{
+			Key:        []string{"timestamp"},
+			Background: true,
+		}
+		err := c.EnsureIndex(index)
+		if err != nil {
+			return nil, err
+		}
+		Cache.Set(cahceKey, "1", cache.NoExpiration)
+		Logger.Debug("[useMGOCol] Set cache for ", cahceKey)
+	}
+
 	return c, nil
 }
 
 func insertMGO(c *mgo.Collection, args interface{}) error {
+	Logger.Debug("[insertMGO] args: ", printObject(args))
 	err := c.Insert(&args)
 	return err
 }
@@ -54,11 +77,16 @@ func insertMGO(c *mgo.Collection, args interface{}) error {
 func getFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit int, offset int, sortBy []string) []mongomodels.MongoCustomLog {
 	var results []mongomodels.MongoCustomLog
 	searchFilter = prepareSearchFilter(searchFilter)
+	Logger.Debug("[getFromMGO] searchFilter: ", printObject(searchFilter))
 	if limit < 0 {
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).All(&results)
 	} else {
 		c.Find(&searchFilter).Sort(sortBy...).Skip(offset).Limit(limit).All(&results)
 	}
+	Logger.Debug("[getFromMGO] results: ", printObject(results))
+	n, _ := c.Count()
+	Logger.Debug("[getFromMGO] count: ", n)
+
 	for i := range results {
 		if results[i].ExpiresAtShow == 0 {
 			results[i].ExpiresAtShow = results[i].ExpiresAt.Unix()
@@ -69,16 +97,19 @@ func getFromMGO(c *mgo.Collection, searchFilter map[string]interface{}, limit in
 
 func removeAllFromMGO(c *mgo.Collection, searchFilter map[string]interface{}) (*mgo.ChangeInfo, error) {
 	searchFilter = prepareSearchFilter(searchFilter)
+	Logger.Debug("[removeAllFromMGO] searchFilter: ", printObject(searchFilter))
 	return c.RemoveAll(&searchFilter)
 }
 
 func updateAllMGO(c *mgo.Collection, searchFilter map[string]interface{}, update map[string]interface{}) (*mgo.ChangeInfo, error) {
 	searchFilter = prepareSearchFilter(searchFilter)
+	Logger.Debug("[updateAllMGO] searchFilter: ", printObject(searchFilter))
 	return c.UpdateAll(searchFilter, update)
 }
 
 func getCountMGO(c *mgo.Collection, args map[string]interface{}) (int, error) {
 	count, err := c.Find(args).Count()
+	Logger.Debug("[getCountMGO] args: ", printObject(args))
 	return count, err
 }
 
@@ -100,7 +131,7 @@ func getServersList() []string {
 	for srv := range servers {
 		result = append(result, srv)
 	}
-
+	Logger.Debug("[getServersList] ", result)
 	return result
 }
 
@@ -114,6 +145,7 @@ func getCollectionsList(server string, dbName string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	Logger.Debug("[getCollectionsList] ", collectionNames)
 	return collectionNames, nil
 }
 
