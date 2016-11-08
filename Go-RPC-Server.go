@@ -25,7 +25,7 @@ import (
 )
 
 var applicationExitFunction = func(code int) { os.Exit(code) }
-var rpcV2 *rpc.Server = rpc.NewServer()
+var rpcV2 *rpc.Server
 
 func abstractExitFunction(exit int) {
 	applicationExitFunction(exit)
@@ -91,6 +91,7 @@ func parseCommandLineParams() {
 }
 
 func rpcPrepare() {
+	rpcV2 = rpc.NewServer()
 	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
 	rpcV2.RegisterCodec(json2.NewCodec(), "application/json")
 	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8")       // For firefox 11 and other browsers which append the charset=UTF-8
@@ -105,7 +106,7 @@ func main() {
 	initDataBase()
 	rpcPrepare()
 
-	adminMethodsList, basicMethodsList := registerApi(rpcV2)
+	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
 
 	initDatabaseStructure()
 	initDatabaseData(adminMethodsList, basicMethodsList)
@@ -114,7 +115,7 @@ func main() {
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
-func registerApi(rpcV2 *rpc.Server) ([]string, []string) {
+func registerAPI(rpcV2 *rpc.Server) ([]string, []string) {
 	Logger.Info("Registering exported methods")
 	rpcV2.RegisterService(new(Log), "")
 	rpcV2.RegisterService(new(System), "")

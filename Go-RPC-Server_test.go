@@ -9,32 +9,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var rawRequestBody string = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
+var rawRequestBody string
 var rawDataBody []byte
-var okForTest bool = false
+var okForTest bool
 
 func init() {
-	applicationExitFunction = func(c int) { okForTest = true }
+	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
+	applicationExitFunction = func(c int) { okForTest = false }
 }
 
 //TestFailedInitConfigs - negative test
 func TestFailedInitConfigsWhenFileNotExist(t *testing.T) {
 	configPath = "./config.not.exists"
 	initConfigs()
-	if okForTest == false {
+	if okForTest == true {
 		t.Error("Wrong processing initConfigs when file not exists")
 	}
-	okForTest = false
+	okForTest = true
 }
 
 //TestFailedInitConfigs - negative test
 func TestFailedInitConfigs(t *testing.T) {
 	configPath = "./config.wrong.yml"
 	initConfigs()
-	if okForTest == false {
+	if okForTest == true {
 		t.Error("Wrong processing initConfigs when config file not correct")
 	}
-	okForTest = false
+	okForTest = true
 }
 
 func TestInitConfigs(t *testing.T) {
@@ -42,18 +43,14 @@ func TestInitConfigs(t *testing.T) {
 	initConfigs()
 }
 
-func TestInitRuntime(t *testing.T) {
-	initRuntime()
-}
-
 //TestFailInitLoggerWithWrongTimestampFormat - negative test
 func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
 	Configs.Log.TimestampFormat = "wrong"
 	initLogger()
-	if okForTest == false {
+	if okForTest == true {
 		t.Error("Wrong processing initConfigs when wrong Log TimestampFormat")
 	}
-	okForTest = false
+	okForTest = true
 	Configs.Log.TimestampFormat = "2006-01-02T15:04:05.999999999Z07:00"
 }
 
@@ -61,10 +58,10 @@ func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
 func TestFailInitLoggerWithWrongFormatter(t *testing.T) {
 	Configs.Log.Formatter = "wrong"
 	initLogger()
-	if okForTest == false {
+	if okForTest == true {
 		t.Error("Wrong processing initConfigs when wrong Log Formatter")
 	}
-	okForTest = false
+	okForTest = true
 	Configs.Log.Formatter = "text"
 }
 
@@ -72,11 +69,11 @@ func TestFailInitLoggerWithWrongFormatter(t *testing.T) {
 func TestFailInitLoggerWithWrongLogLevel(t *testing.T) {
 	Configs.Log.LogLevel = "wrong"
 	initLogger()
-	if okForTest == false {
+	if okForTest == true {
 		t.Error("Wrong processing initConfigs when wrong LogLevel")
 	}
-	okForTest = false
-	Configs.Log.Formatter = "panic"
+	okForTest = true
+	Configs.Log.LogLevel = "panic"
 }
 
 func TestInitLoggerWithJsonFormatter(t *testing.T) {
@@ -92,8 +89,12 @@ func TestRpcPrepare(t *testing.T) {
 	rpcPrepare()
 }
 
+func TestInitRuntime(t *testing.T) {
+	initRuntime()
+}
+
 func TestRegisterApi(t *testing.T) {
-	adminMethodsList, basicMethodsList := registerApi(rpcV2)
+	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
 	ass := assert.New(t)
 	ass.NotEmpty(adminMethodsList)
 	ass.NotEmpty(basicMethodsList)
