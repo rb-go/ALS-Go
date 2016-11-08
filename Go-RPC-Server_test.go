@@ -139,6 +139,9 @@ func TestGetRequestJSON(t *testing.T) {
 }
 
 func TestRegisterApi(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test; this test not for race or run in more than 1 thread")
+	}
 	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
 	ass := assert.New(t)
 	ass.NotEmpty(adminMethodsList)
