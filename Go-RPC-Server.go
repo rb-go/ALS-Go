@@ -14,8 +14,6 @@ import (
 
 	"reflect"
 
-	"io"
-
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/rpc/v2"
@@ -179,17 +177,13 @@ func authentificator(next http.Handler) http.Handler {
 	})
 }
 
-type nopCloser struct{ io.Reader }
-
-func (nopCloser) Close() error { return nil }
-
 func getDataBody(r *http.Request) []byte {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		Logger.Error(err)
 		return nil
 	}
-	r.Body = &nopCloser{bytes.NewBuffer(data)}
+	r.Body = ioutil.NopCloser(bytes.NewReader(data))
 	return data
 }
 
