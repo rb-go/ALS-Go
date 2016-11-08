@@ -75,14 +75,6 @@ func processMGOAdditionalConf() {
 	}
 }
 
-func isDBConnected() bool {
-	err := DBConn.DB().Ping()
-	if err != nil {
-		return false
-	}
-	return true
-}
-
 func initLogger() {
 
 	allowedTimestampsFormat := map[string]int{
@@ -107,7 +99,7 @@ func initLogger() {
 	if ok == false {
 		fmt.Println("Wrong Timestamp Format value in config!")
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	}
 
 	var formatter logrus.Formatter
@@ -122,7 +114,7 @@ func initLogger() {
 	default:
 		fmt.Println("Error Log config formatter")
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 		break
 	}
 
@@ -130,7 +122,7 @@ func initLogger() {
 	if err != nil {
 		fmt.Println(err)
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	}
 
 	Logger = &logrus.Logger{

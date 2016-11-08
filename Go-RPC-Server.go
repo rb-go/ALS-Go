@@ -24,10 +24,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var application_exit_function func(code int) = os.Exit
+var applicationExitFunction = func(code int) { os.Exit(code) }
 
-func AbstractExitFunction(exit int) {
-	application_exit_function(exit)
+func abstractExitFunction(exit int) {
+	applicationExitFunction(exit)
 }
 
 func initConfigs() {
@@ -36,14 +36,14 @@ func initConfigs() {
 	if err != nil {
 		fmt.Println(err.Error())
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
 		fmt.Println("error reading config", err)
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	}
 
 	initLogger()
@@ -59,13 +59,13 @@ func initDataBase() {
 	if err != nil {
 		Logger.Fatalf("ORM NOT WORKS! - %s", err)
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
 	if !isDBConnected() {
 		Logger.Fatalf("DB Connection NOT WORKS! - %s", err.Error())
 		time.Sleep(1 * time.Second)
-		AbstractExitFunction(1)
+		abstractExitFunction(1)
 	} else {
 		Logger.Info("DB Connection WORKS!")
 		Logger.Info("DB Data and structs initialized!")

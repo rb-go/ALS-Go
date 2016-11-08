@@ -11,20 +11,30 @@ import (
 
 var rawRequestBody string = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 var rawDataBody []byte
-var ok bool = false
+var okForTest bool = false
 
 func init() {
-	application_exit_function = func(c int) { ok = true }
+	applicationExitFunction = func(c int) { okForTest = true }
+}
+
+//TestFailedInitConfigs - negative test
+func TestFailedInitConfigsWhenFileNotExist(t *testing.T) {
+	configPath = "./config.not.exists"
+	initConfigs()
+	if okForTest == false {
+		t.Error("Wrong processing initConfigs when file not exists")
+	}
+	okForTest = false
 }
 
 //TestFailedInitConfigs - negative test
 func TestFailedInitConfigs(t *testing.T) {
-	configPath = "./config.not.exists"
+	configPath = "./config.wrong.yml"
 	initConfigs()
-	if ok == false {
-		t.Error("Wrong processing initConfigs when file not exists")
+	if okForTest == false {
+		t.Error("Wrong processing initConfigs when config file not correct")
 	}
-	ok = false
+	okForTest = false
 }
 
 func TestInitConfigs(t *testing.T) {
@@ -40,10 +50,10 @@ func TestInitRuntime(t *testing.T) {
 func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
 	Configs.Log.TimestampFormat = "wrong"
 	initLogger()
-	if ok == false {
+	if okForTest == false {
 		t.Error("Wrong processing initConfigs when wrong Log TimestampFormat")
 	}
-	ok = false
+	okForTest = false
 	Configs.Log.TimestampFormat = "2006-01-02T15:04:05.999999999Z07:00"
 }
 
@@ -51,10 +61,10 @@ func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
 func TestFailInitLoggerWithWrongFormatter(t *testing.T) {
 	Configs.Log.Formatter = "wrong"
 	initLogger()
-	if ok == false {
+	if okForTest == false {
 		t.Error("Wrong processing initConfigs when wrong Log Formatter")
 	}
-	ok = false
+	okForTest = false
 	Configs.Log.Formatter = "text"
 }
 
@@ -62,11 +72,16 @@ func TestFailInitLoggerWithWrongFormatter(t *testing.T) {
 func TestFailInitLoggerWithWrongLogLevel(t *testing.T) {
 	Configs.Log.LogLevel = "wrong"
 	initLogger()
-	if ok == false {
+	if okForTest == false {
 		t.Error("Wrong processing initConfigs when wrong LogLevel")
 	}
-	ok = false
+	okForTest = false
 	Configs.Log.Formatter = "panic"
+}
+
+func TestInitLoggerWithJsonFormatter(t *testing.T) {
+	Configs.Log.Formatter = "json"
+	initLogger()
 }
 
 func TestInitLogger(t *testing.T) {
@@ -79,8 +94,8 @@ func TestGetDataBody(t *testing.T) {
 		t.Error("getDataBody Not correct http.NewRequest")
 	}
 	rawDataBody = getDataBody(req)
-	if len(rawDataBody) < 10 {
-		t.Error("getDataBody Not returned correct data")
+	if len(rawDataBody) < 1 {
+		t.Error("getDataBody Not returned correct data", len(rawDataBody))
 	}
 }
 

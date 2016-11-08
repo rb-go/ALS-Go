@@ -62,3 +62,11 @@ func checkUserAuth(user, password string) bool {
 	}
 	return accessRight.(bool)
 }
+
+func isDBConnected() bool {
+	err := DBConn.DB().Ping()
+	if err != nil {
+		return false
+	}
+	return true
+}
