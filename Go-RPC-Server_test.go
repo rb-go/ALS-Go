@@ -2,11 +2,10 @@ package main
 
 import (
 	"bytes"
-	"testing"
-
-	"net/http"
-
 	"flag"
+	"fmt"
+	"net/http"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -47,6 +46,7 @@ func TestCommandLineFlags(t *testing.T) {
 
 func TestInitConfigs(t *testing.T) {
 	initConfigs()
+	fmt.Println(Configs.System.MaxThreads)
 }
 
 //TestFailInitLoggerWithWrongTimestampFormat - negative test
@@ -91,12 +91,12 @@ func TestInitLogger(t *testing.T) {
 	initLogger()
 }
 
-func TestRpcPrepare(t *testing.T) {
-	rpcPrepare()
-}
-
 func TestInitRuntime(t *testing.T) {
 	initRuntime()
+}
+
+func TestRpcPrepare(t *testing.T) {
+	rpcPrepare()
 }
 
 func TestGetDataBody(t *testing.T) {
