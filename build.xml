@@ -3,11 +3,13 @@
 
     <property environment="env"/>
 
-    <target name="jenkins_build_all" depends="init, go-get-for-jenkins, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
+    <target name="jenkins_build_all"
+            depends="init, go-get-for-jenkins, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
     <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
-    <target name="build_all_with_test" depends="init, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
+    <target name="build_all_with_test"
+            depends="init, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
     <target name="build_linux_x64" depends="init, go-build_linux_x64, copy_config, go-zip"/>
     <target name="build_windows_x64" depends="init, go-build_windows_x64, copy_config, go-zip"/>
@@ -21,126 +23,86 @@
         </delete>
 
         <delete failonerror="false" includeEmptyDirs="true">
-            <fileset dir="${basedir}/out" />
+            <fileset dir="${basedir}/out"/>
         </delete>
 
     </target>
 
 
-	<target name="go-get-for-jenkins">
+    <target name="go-get-for-jenkins">
 
-		<exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/>
-			<arg value="-u"/>
-			<arg path="./..."/>
-		</exec>
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg path="./..."/>
+        </exec>
 
-	</target>
-
-    <target name="go-get-with-update">
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg path="./..."/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/stretchr/testify/assert"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/golang/lint/golint"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="golang.org/x/tools/cmd/goimports"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="golang.org/x/tools/cmd/cover"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/mattn/goveralls"/>
-		</exec>
-		
     </target>
-	
-	
+
     <target name="go-get">
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg path="./..."/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/stretchr/testify/assert"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/golang/lint/golint"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="golang.org/x/tools/cmd/goimports"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="golang.org/x/tools/cmd/cover"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/mattn/goveralls"/>
-		</exec>
-		
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg path="./..."/>
+        </exec>
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg value="github.com/stretchr/testify/assert"/>
+        </exec>
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg value="github.com/golang/lint/golint"/>
+        </exec>
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg value="golang.org/x/tools/cmd/goimports"/>
+        </exec>
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg value="golang.org/x/tools/cmd/cover"/>
+        </exec>
+
+        <exec dir="${basedir}" executable="go" failonerror="true">
+            <arg value="get"/>
+            <arg value="-u"/>
+            <arg value="github.com/mattn/goveralls"/>
+        </exec>
+
     </target>
-	
-	
+
+
     <target name="go-tests">
         <exec executable="go" failonerror="true">
             <arg value="vet"/>
             <arg path="./..."/>
         </exec>
-		
+
         <exec executable="diff" failonerror="true">
             <arg value="&lt;(goimports -d .)"/>
             <arg value="&lt;(printf '')"/>
         </exec>
-		
+
         <exec executable="diff" failonerror="true">
             <arg value="&lt;(golint ./...)"/>
             <arg value="&lt;(printf '')"/>
         </exec>
-		
+
         <exec executable="go" failonerror="true">
             <arg value="test"/>
             <arg value="-v"/>
             <arg value="-cpu=2"/>
             <arg path="./..."/>
         </exec>
-		
+
         <exec executable="go" failonerror="true">
             <arg value="test"/>
             <arg value="-v"/>
@@ -148,14 +110,14 @@
             <arg value="-race"/>
             <arg path="./..."/>
         </exec>
-		
+
         <exec executable="go" failonerror="true">
             <arg value="test"/>
             <arg value="-v"/>
             <arg value="-covermode=count"/>
             <arg value="-coverprofile=coverage.out"/>
         </exec>
-		
+
         <exec executable="goveralls" failonerror="false">
             <arg value="-coverprofile=coverage.out"/>
             <arg value="-service=travis-ci"/>
