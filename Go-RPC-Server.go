@@ -40,6 +40,13 @@ func initConfigs() {
 
 	initLogger()
 
+	Cache = cache.New(10*time.Minute, 30*time.Second)
+
+	processMGOAdditionalConf()
+}
+
+func initDataBase() {
+	var err error
 	DBConn, err = gorm.Open("mysql", Configs.Db.DbConnectionString)
 	if err != nil {
 		Logger.Fatalf("ORM NOT WORKS! - %s", err)
@@ -55,17 +62,6 @@ func initConfigs() {
 		Logger.Info("DB Connection WORKS!")
 		Logger.Info("DB Data and structs initialized!")
 	}
-
-	//it is to fix:
-	//[mysql] packets.go:33: unexpected EOF
-	//[mysql] packets.go:124: write tcp 127.0.0.1:59804->127.0.0.1:3306: write: broken pipe
-	//DBConn.DB().SetMaxIdleConns(0)
-	//DBConn.DB().SetMaxOpenConns(100)
-	//but now we will try to set in my.cnf wait_timeout=2147483
-
-	Cache = cache.New(10*time.Minute, 30*time.Second)
-
-	processMGOAdditionalConf()
 }
 
 func initRuntime() {
@@ -80,14 +76,12 @@ func initValidators() {
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 }
 
-func init() {
-}
-
 func main() {
 	flag.StringVar(&configPath, "c", "./config.yml", "Path to config.yml")
 	flag.Parse()
 	initConfigs()
 	initRuntime()
+	initDataBase()
 
 	rpcV2 := rpc.NewServer()
 	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
@@ -140,7 +134,9 @@ type myReader struct {
 	*bytes.Buffer
 }
 
-func (m myReader) Close() error { return nil }
+func (m myReader) Close() error {
+	return nil
+}
 
 func getDataBody(r *http.Request) []byte {
 	buf, err := ioutil.ReadAll(r.Body)
