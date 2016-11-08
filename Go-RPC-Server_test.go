@@ -113,8 +113,9 @@ func TestInitRuntime(t *testing.T) {
 
 func TestRpcPrepare(t *testing.T) {
 	if testing.Short() {
-		rpcPrepare()
+		t.Skip("skipping test; this test not for race or run in more than 1 thread")
 	}
+	rpcPrepare()
 }
 
 func TestGetDataBody(t *testing.T) {
