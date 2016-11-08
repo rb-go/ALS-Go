@@ -44,6 +44,10 @@ func TestFailedInitConfigs(t *testing.T) {
 }
 
 func TestCommandLineFlags(t *testing.T) {
+	if testing.Short() {
+		configPath = "./config.smpl.yml"
+		t.Skip("skipping test; this test not for race or run in more than 1 thread")
+	}
 	parseCommandLineParams()
 	configPath = "./config.smpl.yml"
 }
