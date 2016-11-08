@@ -25,6 +25,7 @@ import (
 )
 
 var applicationExitFunction = func(code int) { os.Exit(code) }
+var rpcV2 *rpc.Server = rpc.NewServer()
 
 func abstractExitFunction(exit int) {
 	applicationExitFunction(exit)
@@ -89,26 +90,31 @@ func parseCommandLineParams() {
 	flag.Parse()
 }
 
+func rpcPrepare() {
+	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
+	rpcV2.RegisterCodec(json2.NewCodec(), "application/json")
+	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8")       // For firefox 11 and other browsers which append the charset=UTF-8
+	rpcV2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
+	http.Handle("/", authentificator(rpcV2))
+}
+
 func main() {
 	parseCommandLineParams()
 	initConfigs()
 	initRuntime()
 	initDataBase()
+	rpcPrepare()
 
-	rpcV2 := rpc.NewServer()
-	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain")
-	rpcV2.RegisterCodec(json2.NewCodec(), "application/json")
-	rpcV2.RegisterCodec(json2.NewCodec(), "text/plain; charset=utf-8")       // For firefox 11 and other browsers which append the charset=UTF-8
-	rpcV2.RegisterCodec(json2.NewCodec(), "application/json; charset=UTF-8") // For firefox 11 and other browsers which append the charset=UTF-8
-	register(rpcV2)
+	adminMethodsList, basicMethodsList := registerApi(rpcV2)
 
-	http.Handle("/", authentificator(rpcV2))
+	initDatabaseStructure()
+	initDatabaseData(adminMethodsList, basicMethodsList)
 
 	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
-func register(rpcV2 *rpc.Server) {
+func registerApi(rpcV2 *rpc.Server) ([]string, []string) {
 	Logger.Info("Registering exported methods")
 	rpcV2.RegisterService(new(Log), "")
 	rpcV2.RegisterService(new(System), "")
@@ -139,9 +145,7 @@ func register(rpcV2 *rpc.Server) {
 	listMethods(new(System))
 	listMethods(new(Log))
 	Logger.Debug("End exporten methods names")
-
-	initDatabaseStructure()
-	initDatabaseData(adminMethodsList, basicMethodsList)
+	return adminMethodsList, basicMethodsList
 }
 
 func authentificator(next http.Handler) http.Handler {

@@ -88,6 +88,17 @@ func TestInitLogger(t *testing.T) {
 	initLogger()
 }
 
+func TestRpcPrepare(t *testing.T) {
+	rpcPrepare()
+}
+
+func TestRegisterApi(t *testing.T) {
+	adminMethodsList, basicMethodsList := registerApi(rpcV2)
+	ass := assert.New(t)
+	ass.NotEmpty(adminMethodsList)
+	ass.NotEmpty(basicMethodsList)
+}
+
 func TestGetDataBody(t *testing.T) {
 	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
 	if err != nil {
