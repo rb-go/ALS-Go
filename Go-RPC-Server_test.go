@@ -6,6 +6,8 @@ import (
 
 	"net/http"
 
+	"flag"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,8 +40,12 @@ func TestFailedInitConfigs(t *testing.T) {
 	okForTest = true
 }
 
+func TestCommandLineFlags(t *testing.T) {
+	flag.Set("c", "./config.smpl.yml")
+	parseCommandLineParams()
+}
+
 func TestInitConfigs(t *testing.T) {
-	configPath = "./config.smpl.yml"
 	initConfigs()
 }
 
@@ -93,13 +99,6 @@ func TestInitRuntime(t *testing.T) {
 	initRuntime()
 }
 
-func TestRegisterApi(t *testing.T) {
-	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
-	ass := assert.New(t)
-	ass.NotEmpty(adminMethodsList)
-	ass.NotEmpty(basicMethodsList)
-}
-
 func TestGetDataBody(t *testing.T) {
 	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
 	if err != nil {
@@ -118,4 +117,11 @@ func TestGetRequestJSON(t *testing.T) {
 		t.Error(err)
 	}
 	ass.Equal("55196eba27a55", jsonData["id"], "Request ID should be equal")
+}
+
+func TestRegisterApi(t *testing.T) {
+	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
+	ass := assert.New(t)
+	ass.NotEmpty(adminMethodsList)
+	ass.NotEmpty(basicMethodsList)
 }
