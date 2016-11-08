@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -42,12 +41,11 @@ func TestFailedInitConfigs(t *testing.T) {
 func TestCommandLineFlags(t *testing.T) {
 	flag.Set("config", "./config.smpl.yml")
 	parseCommandLineParams()
-	fmt.Println(configPath)
+	configPath = "./config.smpl.yml"
 }
 
 func TestInitConfigs(t *testing.T) {
 	initConfigs()
-	fmt.Println(Configs.System.MaxThreads)
 }
 
 //TestFailInitLoggerWithWrongTimestampFormat - negative test
