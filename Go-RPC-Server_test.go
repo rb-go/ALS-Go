@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -16,6 +17,12 @@ func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 	applicationExitFunction = func(c int) { okForTest = false }
 }
+
+/*
+====================================================
+	CONFIG TESTS
+====================================================
+*/
 
 //TestFailedInitConfigs - negative test
 func TestFailedInitConfigsWhenFileNotExist(t *testing.T) {
@@ -88,6 +95,12 @@ func TestInitLogger(t *testing.T) {
 	initLogger()
 }
 
+/*
+====================================================
+	Go-RPC-Server TESTS
+====================================================
+*/
+
 func TestInitRuntime(t *testing.T) {
 	initRuntime()
 }
@@ -121,4 +134,43 @@ func TestRegisterApi(t *testing.T) {
 	ass := assert.New(t)
 	ass.NotEmpty(adminMethodsList)
 	ass.NotEmpty(basicMethodsList)
+}
+
+/*
+====================================================
+	HELPERS TESTS
+====================================================
+*/
+
+func TestPrintObject(t *testing.T) {
+	var result string
+	m := make(map[string]int)
+	m["route"] = 66
+	result = printObject(m)
+	ass := assert.New(t)
+	ass.NotEmpty(result)
+	ass.Equal("{\"route\":66}", result, "printObject data be equal")
+}
+
+func TestGetFuncName(t *testing.T) {
+	result := getFuncName(1)
+	ass := assert.New(t)
+	ass.NotEmpty(result)
+	ass.Contains(result, "TestGetFuncName", "getFuncName data be equal")
+}
+
+func TestGetLineCall(t *testing.T) {
+	result := getLineCall(1)
+	fmt.Println(result)
+	ass := assert.New(t)
+	ass.NotZero(result)
+	ass.Equal(getLineCall(1)-4, result, "getLineCall data be equal")
+}
+
+func TestGetFileCall(t *testing.T) {
+	result := getFileCall(1)
+	fmt.Println(result)
+	ass := assert.New(t)
+	ass.NotEmpty(result)
+	ass.Contains(result, "Go-RPC-Server_test.go", "getFileCall data be equal")
 }
