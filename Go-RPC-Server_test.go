@@ -112,7 +112,9 @@ func TestInitRuntime(t *testing.T) {
 }
 
 func TestRpcPrepare(t *testing.T) {
-	rpcPrepare()
+	if testing.Short() {
+		rpcPrepare()
+	}
 }
 
 func TestGetDataBody(t *testing.T) {
