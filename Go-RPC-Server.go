@@ -86,7 +86,7 @@ func initValidators() {
 }
 
 func parseCommandLineParams() {
-	flag.StringVar(&configPath, "c", "./config.yml", "Path to config.yml")
+	flag.StringVar(&configPath, "config", "./config.yml", "Path to config.yml")
 	flag.Parse()
 }
 

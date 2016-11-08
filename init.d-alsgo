@@ -14,7 +14,7 @@
 # Make it executable
 #sudo chmod +x /etc/init.d/alsgo
 # Try it:
-#sudo service myapp start
+#sudo service alsgo start
 # Make it run upon boot:
 #sudo rc-update.d alsgo defaults
 # or
@@ -47,7 +47,7 @@ case "$1" in
             exit 1
         fi
         cd "$BASE_PATH"
-        /bin/su -m -l $USER -c "$BIN_PATH -c $CONFIG_PATH" >> "$BASE_PATH/$NAME.log" 2>&1 &
+        /bin/su -m -l $USER -c "$BIN_PATH -config $CONFIG_PATH" >> "$BASE_PATH/$NAME.log" 2>&1 &
         PID=$!
         echo $PID > "$BASE_PATH/$NAME.pid"
         echo "Started with pid $PID - Logging to $BASE_PATH/$NAME.log" && exit 0
@@ -66,7 +66,7 @@ case "$1" in
         ;;
       restart)
         $0 stop
-        sleep 1
+        sleep 3
         $0 start
         ;;
       status)

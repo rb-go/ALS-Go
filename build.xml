@@ -3,9 +3,11 @@
 
     <property environment="env"/>
 
-    <target name="jenkins_build_all" depends="init, go-get-for-jenkins, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
+    <target name="jenkins_build_all" depends="init, go-get-for-jenkins, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
     <target name="build_all" depends="init, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
+
+    <target name="build_all_with_test" depends="init, go-tests, go-build_linux_x64, build_windows_x64, copy_config, go-zip"/>
 
     <target name="build_linux_x64" depends="init, go-build_linux_x64, copy_config, go-zip"/>
     <target name="build_windows_x64" depends="init, go-build_windows_x64, copy_config, go-zip"/>
@@ -30,7 +32,7 @@
 		<exec dir="${basedir}" executable="go" failonerror="true" >
 			<arg value="get"/>
 			<arg value="-u"/>
-			<arg value="github.com/Riftbit/ALS-Go"/>
+			<arg path="./..."/>
 		</exec>
 
 	</target>
@@ -40,67 +42,7 @@
         <exec dir="${basedir}" executable="go" failonerror="true" >
 			<arg value="get"/> 
 			<arg value="-u"/>
-			<arg value="github.com/Sirupsen/logrus"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/go-sql-driver/mysql"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/gorilla/rpc/v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/gorilla/rpc/v2/json2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/jinzhu/gorm"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/jinzhu/inflection"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/patrickmn/go-cache"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="github.com/tmc/mgohacks"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="gopkg.in/mgo.v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="gopkg.in/validator.v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="-u"/>
-			<arg value="gopkg.in/yaml.v2"/>
+			<arg path="./..."/>
 		</exec>
 	
         <exec dir="${basedir}" executable="go" failonerror="true" >
@@ -140,57 +82,7 @@
 	
         <exec dir="${basedir}" executable="go" failonerror="true" >
 			<arg value="get"/> 
-			<arg value="github.com/Sirupsen/logrus"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/go-sql-driver/mysql"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/gorilla/rpc/v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/gorilla/rpc/v2/json2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/jinzhu/gorm"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/jinzhu/inflection"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/patrickmn/go-cache"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="github.com/tmc/mgohacks"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="gopkg.in/mgo.v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="gopkg.in/validator.v2"/>
-		</exec>
-	
-        <exec dir="${basedir}" executable="go" failonerror="true" >
-			<arg value="get"/> 
-			<arg value="gopkg.in/yaml.v2"/>
+			<arg path="./..."/>
 		</exec>
 	
         <exec dir="${basedir}" executable="go" failonerror="true" >
@@ -233,13 +125,13 @@
         </exec>
 		
         <exec executable="diff" failonerror="true">
-            <arg value="<(goimports -d .)"/>
-            <arg value="<(printf \"\")"/>
+            <arg value="&lt;(goimports -d .)"/>
+            <arg value="&lt;(printf '')"/>
         </exec>
 		
         <exec executable="diff" failonerror="true">
-            <arg value="<(golint ./...)"/>
-            <arg value="<(printf \"\")"/>
+            <arg value="&lt;(golint ./...)"/>
+            <arg value="&lt;(printf '')"/>
         </exec>
 		
         <exec executable="go" failonerror="true">

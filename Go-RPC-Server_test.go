@@ -40,8 +40,9 @@ func TestFailedInitConfigs(t *testing.T) {
 }
 
 func TestCommandLineFlags(t *testing.T) {
-	flag.Set("c", "./config.smpl.yml")
+	flag.Set("config", "./config.smpl.yml")
 	parseCommandLineParams()
+	fmt.Println(configPath)
 }
 
 func TestInitConfigs(t *testing.T) {
