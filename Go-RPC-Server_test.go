@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"net/http"
 	"testing"
 
@@ -39,7 +38,6 @@ func TestFailedInitConfigs(t *testing.T) {
 }
 
 func TestCommandLineFlags(t *testing.T) {
-	flag.Set("config", "./config.smpl.yml")
 	parseCommandLineParams()
 	configPath = "./config.smpl.yml"
 }

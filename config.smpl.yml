@@ -1,5 +1,5 @@
 system:
-  maxThreads: 1
+  maxThreads: 10
   listenOn: ":8080"
 
 admin:
