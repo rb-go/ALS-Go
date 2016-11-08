@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -102,6 +101,9 @@ func TestInitLogger(t *testing.T) {
 */
 
 func TestInitRuntime(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test; this test not for race or run in more than 1 thread")
+	}
 	initRuntime()
 }
 
@@ -161,15 +163,13 @@ func TestGetFuncName(t *testing.T) {
 
 func TestGetLineCall(t *testing.T) {
 	result := getLineCall(1)
-	fmt.Println(result)
 	ass := assert.New(t)
 	ass.NotZero(result)
-	ass.Equal(getLineCall(1)-4, result, "getLineCall data be equal")
+	ass.Equal(getLineCall(1)-3, result, "getLineCall data be equal")
 }
 
 func TestGetFileCall(t *testing.T) {
 	result := getFileCall(1)
-	fmt.Println(result)
 	ass := assert.New(t)
 	ass.NotEmpty(result)
 	ass.Contains(result, "Go-RPC-Server_test.go", "getFileCall data be equal")
