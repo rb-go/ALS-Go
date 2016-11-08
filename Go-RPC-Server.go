@@ -24,20 +24,26 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var application_exit_function func(code int) = os.Exit
+
+func AbstractExitFunction(exit int) {
+	application_exit_function(exit)
+}
+
 func initConfigs() {
 
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		time.Sleep(1 * time.Second)
-		os.Exit(1)
+		AbstractExitFunction(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
 		fmt.Println("error reading config", err)
 		time.Sleep(1 * time.Second)
-		os.Exit(1)
+		AbstractExitFunction(1)
 	}
 
 	initLogger()
@@ -53,13 +59,13 @@ func initDataBase() {
 	if err != nil {
 		Logger.Fatalf("ORM NOT WORKS! - %s", err)
 		time.Sleep(1 * time.Second)
-		os.Exit(1)
+		AbstractExitFunction(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
 	if !isDBConnected() {
 		Logger.Fatalf("DB Connection NOT WORKS! - %s", err.Error())
 		time.Sleep(1 * time.Second)
-		os.Exit(1)
+		AbstractExitFunction(1)
 	} else {
 		Logger.Info("DB Connection WORKS!")
 		Logger.Info("DB Data and structs initialized!")
@@ -175,10 +181,6 @@ type myReader struct {
 	*bytes.Buffer
 }
 
-func (m myReader) Close() error {
-	return nil
-}
-
 func getDataBody(r *http.Request) []byte {
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -189,8 +191,6 @@ func getDataBody(r *http.Request) []byte {
 	rdr2 := myReader{bytes.NewBuffer(buf)}
 	r.Body = rdr2
 	data, err := ioutil.ReadAll(rdr1)
-	rdr1.Close()
-	rdr2.Close()
 	if err != nil {
 		Logger.Error(err)
 		return nil

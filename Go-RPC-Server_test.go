@@ -8,11 +8,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var rawRequestBody string
+var rawRequestBody string = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 var rawDataBody []byte
+var ok bool = false
 
 func init() {
-	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
+	application_exit_function = func(c int) { ok = true }
+}
+
+//TestFailedInitConfigs - negative test
+func TestFailedInitConfigs(t *testing.T) {
+	configPath = "./config.not.exists"
+	initConfigs()
+	if ok == false {
+		t.Error("Wrong processing initConfigs when file not exists")
+	}
+	ok = false
 }
 
 func TestInitConfigs(t *testing.T) {
@@ -22,6 +33,32 @@ func TestInitConfigs(t *testing.T) {
 
 func TestInitRuntime(t *testing.T) {
 	initRuntime()
+}
+
+//TestFailInitLoggerWithWrongTimestampFormat - negative test
+func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
+	Configs.Log.TimestampFormat = "wrong"
+	initLogger()
+	if ok == false {
+		t.Error("Wrong processing initConfigs when file not exists")
+	}
+	ok = false
+	Configs.Log.TimestampFormat = "2006-01-02T15:04:05.999999999Z07:00"
+}
+
+//TestFailInitLoggerWithWrongFormatter - negative test
+func TestFailInitLoggerWithWrongFormatter(t *testing.T) {
+	Configs.Log.Formatter = "wrong"
+	initLogger()
+	if ok == false {
+		t.Error("Wrong processing initConfigs when file not exists")
+	}
+	ok = false
+	Configs.Log.Formatter = "text"
+}
+
+func TestInitLogger(t *testing.T) {
+	initLogger()
 }
 
 func TestGetDataBody(t *testing.T) {
