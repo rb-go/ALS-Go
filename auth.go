@@ -7,12 +7,9 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-func checkAuth(r *http.Request) bool {
+func parseRequestAuthData(r *http.Request) (string, string) {
 	username, password, _ := r.BasicAuth()
-	if username == "" && password == "" {
-		return false
-	}
-	return checkUserAuth(username, password)
+	return username, password
 }
 
 func getUser(r *http.Request) string {
@@ -20,18 +17,15 @@ func getUser(r *http.Request) string {
 	return username
 }
 
-func checkAPIMethodAccess(r *http.Request, jsonData map[string]interface{}) bool {
-	username := getUser(r)
-	methodName := jsonData["method"].(string)
-
-	accessRight, found := Cache.Get(fmt.Sprintf("Access:%s:%s", username, methodName))
+func checkAPIMethodAccess(userName string, methodName string) bool {
+	accessRight, found := Cache.Get(fmt.Sprintf("Access:%s:%s", userName, methodName))
 	if found == false {
-		if !checkUserAccessToMethod(methodName, username) {
-			Logger.Warnf("No permissions for user '%s' to method '%s'", username, methodName)
-			Cache.Set(fmt.Sprintf("Access:%s:%s", username, methodName), false, cache.NoExpiration)
+		if !checkUserAccessToMethod(methodName, userName) {
+			Logger.Warnf("No permissions for user '%s' to method '%s'", userName, methodName)
+			Cache.Set(fmt.Sprintf("Access:%s:%s", userName, methodName), false, cache.NoExpiration)
 			return false
 		}
-		Cache.Set(fmt.Sprintf("Access:%s:%s", username, methodName), true, cache.NoExpiration)
+		Cache.Set(fmt.Sprintf("Access:%s:%s", userName, methodName), true, cache.NoExpiration)
 		return true
 	}
 	return accessRight.(bool)

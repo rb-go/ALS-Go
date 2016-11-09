@@ -5,6 +5,8 @@ sudo: false
 os:
   - linux
 
+services:
+
 go:
   - 1.6.3
   - 1.7.1
@@ -40,13 +42,15 @@ install:
  - go get -u github.com/erikstmartin/go-testdb
 
 before_script:
+# wait mongodb
+  - sleep 15
 
 script:
  - go vet ./...
  - diff <(goimports -d .) <(printf "")
  - diff <(golint ./...) <(printf "")
- - go test -v -cpu=2 -short ./...
- - go test -v -cpu=1,2,4 -short ./...
+# - go test -v -cpu=2 -short ./...
+# - go test -v -cpu=1,2,4 -short ./...
  - go test -v -covermode=count -coverprofile=coverage.out
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
  - GOOS=linux && go build ./...

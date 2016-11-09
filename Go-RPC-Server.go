@@ -90,7 +90,7 @@ func rpcPrepare() {
 	http.Handle("/", authentificator(rpcV2))
 }
 
-func main() {
+func startServerWithConfigs() {
 	parseCommandLineParams()
 	initConfigs()
 	initLogger()
@@ -107,6 +107,10 @@ func main() {
 
 	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
+}
+
+func main() {
+	startServerWithConfigs()
 }
 
 func registerAPI(rpcV2 *rpc.Server) ([]string, []string) {
@@ -145,7 +149,9 @@ func registerAPI(rpcV2 *rpc.Server) ([]string, []string) {
 
 func authentificator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if checkAuth(r) {
+		var userlogin, password, methodName string
+		userlogin, password = parseRequestAuthData(r)
+		if checkUserAuth(userlogin, password) {
 			rawDataBody := getDataBody(r)
 			Logger.Debug("[authentificator] Received Request: ", string(rawDataBody))
 			if rawDataBody == nil {
@@ -159,7 +165,8 @@ func authentificator(next http.Handler) http.Handler {
 					w.WriteHeader(405)
 					w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
 				} else {
-					if checkAPIMethodAccess(r, jsonData) == false {
+					methodName = jsonData["method"].(string)
+					if checkAPIMethodAccess(userlogin, methodName) == false {
 						w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 						w.WriteHeader(403)
 						w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Permission denied"}, "id": null}`))

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	b64 "encoding/base64"
 	"net/http"
 	"os"
 	"strconv"
@@ -20,6 +21,10 @@ var testBasicMethodsList []string
 func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 	applicationExitFunction = func(c int) { okForTest = false }
+}
+
+func TestLogPrintln(t *testing.T) {
+	logPrintln("Starting tests!")
 	os.Setenv("TESTING", "YES")
 }
 
@@ -50,10 +55,6 @@ func TestFailedInitConfigs(t *testing.T) {
 }
 
 func TestCommandLineFlags(t *testing.T) {
-	if testing.Short() {
-		configPath = "./config.smpl.yml"
-		t.Skip("skipping test; this test not for race or run in more than 1 thread")
-	}
 	parseCommandLineParams()
 	configPath = "./config.smpl.yml"
 }
@@ -115,16 +116,6 @@ func TestInitRuntime(t *testing.T) {
 }
 
 func TestRpcPrepare(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test; this test not for race or run in more than 1 thread")
-	}
-	rpcPrepare()
-}
-
-func TestRpcPrepare(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test; this test not for race or run in more than 1 thread")
-	}
 	rpcPrepare()
 }
 
@@ -149,9 +140,6 @@ func TestGetRequestJSON(t *testing.T) {
 }
 
 func TestRegisterApi(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping test; this test not for race or run in more than 1 thread")
-	}
 	testAdminMethodsList, testBasicMethodsList = registerAPI(rpcV2)
 	ass := assert.New(t)
 	ass.NotEmpty(testAdminMethodsList)
@@ -189,11 +177,17 @@ func TestFailCheckUserAuth(t *testing.T) {
 	result := checkUserAuth("asdasd", "321")
 	ass := assert.New(t)
 	ass.Equal(false, result, "checkUserAuth should be wrong in this test")
+	//cached
+	result = checkUserAuth("asdasd", "321")
+	ass.Equal(false, result, "checkUserAuth should be wrong in this test")
 }
 
 func TestCheckUserAuth(t *testing.T) {
 	result := checkUserAuth(Configs.Admin.RootUser, Configs.Admin.RootPassword)
 	ass := assert.New(t)
+	ass.Equal(true, result, "checkUserAuth should be correct in this test")
+	//cached
+	result = checkUserAuth(Configs.Admin.RootUser, Configs.Admin.RootPassword)
 	ass.Equal(true, result, "checkUserAuth should be correct in this test")
 }
 
@@ -203,11 +197,19 @@ func TestFailCheckUserAccessToMethod(t *testing.T) {
 	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong user")
 	result = checkUserAccessToMethod("System.FlushCacheZ", "ergoz")
 	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong method")
+	//cached
+	result = checkUserAccessToMethod("System.FlushCache", "dsa")
+	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong user")
+	result = checkUserAccessToMethod("System.FlushCacheZ", "ergoz")
+	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong method")
 }
 
 func TestCheckUserAccessToMethod(t *testing.T) {
 	result := checkUserAccessToMethod("System.FlushCache", "ergoz")
 	ass := assert.New(t)
+	ass.Equal(true, result, "checkUserAuth should be correct in this test")
+	//cached
+	result = checkUserAccessToMethod("System.FlushCache", "ergoz")
 	ass.Equal(true, result, "checkUserAuth should be correct in this test")
 }
 
@@ -217,16 +219,50 @@ func TestCheckUserAccessToMethod(t *testing.T) {
 ====================================================
 */
 
-func TestCheckAuth(t *testing.T) {
+func TestParseRequestAuthData(t *testing.T) {
+	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
+	if err != nil {
+		t.Error("parseRequestAuthData Not correct http.NewRequest")
+	}
+	ass := assert.New(t)
+	req.Header.Set("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	user, password := parseRequestAuthData(req)
+	ass.Equal(Configs.Admin.RootUser, user, "parseRequestAuthData should be correct in this test")
+	ass.Equal(Configs.Admin.RootPassword, password, "parseRequestAuthData should be correct in this test")
 
+	req, err = http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
+	if err != nil {
+		t.Error("parseRequestAuthData Not correct http.NewRequest")
+	}
+	user, password = parseRequestAuthData(req)
+	ass.Equal("", user, "parseRequestAuthData should be correct in this test")
+	ass.Equal("", password, "parseRequestAuthData should be correct in this test")
 }
 
 func TestGetUser(t *testing.T) {
-
+	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
+	if err != nil {
+		t.Error("getUser Not correct http.NewRequest")
+	}
+	ass := assert.New(t)
+	req.Header.Set("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	user := getUser(req)
+	ass.Equal(Configs.Admin.RootUser, user, "getUser should be correct in this test")
 }
 
 func TestCheckAPIMethodAccess(t *testing.T) {
+	ass := assert.New(t)
+	isAllow := checkAPIMethodAccess(Configs.Admin.RootUser, "Log.Get")
+	ass.Equal(true, isAllow, "checkAPIMethodAccess should be correct in this test")
+	//cached
+	isAllow = checkAPIMethodAccess(Configs.Admin.RootUser, "Log.Get")
+	ass.Equal(true, isAllow, "checkAPIMethodAccess should be correct in this test")
 
+	isAllow = checkAPIMethodAccess(Configs.Admin.RootUser, "ASD.DSA")
+	ass.Equal(false, isAllow, "checkAPIMethodAccess should be correct in this test")
+	//cached
+	isAllow = checkAPIMethodAccess(Configs.Admin.RootUser, "ASD.DSA")
+	ass.Equal(false, isAllow, "checkAPIMethodAccess should be correct in this test")
 }
 
 /*
@@ -271,5 +307,4 @@ func TestDeleteDataBase(t *testing.T) {
 	err := os.Remove(Configs.Db.DbConnectionString)
 	ass := assert.New(t)
 	ass.Nil(err)
-
 }
