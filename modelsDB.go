@@ -34,16 +34,24 @@ func (c User) TableName() string {
 }
 
 func checkUserAccessToMethod(method, user string) bool {
-	var u User
-	db := DBConn.Preload("Methods", Method{Name: method}).First(&u, User{Login: user})
-	if db.Error != nil {
-		Logger.Error(db.Error)
+	accessRight, found := Cache.Get(fmt.Sprintf("UserMethodAccess:%s:%s", user, method))
+	if found == false {
+		var u User
+		db := DBConn.Preload("Methods", Method{Name: method}).First(&u, User{Login: user})
+		if db.Error != nil {
+			Logger.Error(db.Error)
+			Cache.Set(fmt.Sprintf("UserMethodAccess:%s:%s", user, method), false, cache.NoExpiration)
+			return false
+		}
+		Logger.Debug("[checkUserAccessToMethod] ", printObject(db.Value))
+		if u.Methods == nil {
+			Cache.Set(fmt.Sprintf("UserMethodAccess:%s:%s", user, method), false, cache.NoExpiration)
+			return false
+		}
+		Cache.Set(fmt.Sprintf("UserMethodAccess:%s:%s", user, method), true, cache.NoExpiration)
+		return true
 	}
-	Logger.Debug("[checkUserAccessToMethod] ", db.Value)
-	if u.Methods == nil {
-		return false
-	}
-	return true
+	return accessRight.(bool)
 }
 
 func checkUserAuth(user, password string) bool {

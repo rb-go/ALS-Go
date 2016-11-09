@@ -7,3 +7,4 @@ config.yml
 *.exe
 vendor/*
 .gradle
+test_*.db

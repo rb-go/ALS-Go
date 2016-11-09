@@ -3,9 +3,10 @@ package main
 import (
 	"bytes"
 	"net/http"
+	"os"
+	"strconv"
 	"testing"
-
-	"fmt"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -19,6 +20,7 @@ var testBasicMethodsList []string
 func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 	applicationExitFunction = func(c int) { okForTest = false }
+	os.Setenv("TESTING", "YES")
 }
 
 /*
@@ -161,8 +163,8 @@ func TestFailInitDataBase(t *testing.T) {
 }
 
 func TestInitDataBase(t *testing.T) {
-	Configs.Db.DbType = "testdb"
-	Configs.Db.DbConnectionString = ""
+	Configs.Db.DbType = "sqlite3"
+	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
 	initDataBase()
 }
 
@@ -186,16 +188,23 @@ func TestFailCheckUserAuth(t *testing.T) {
 }
 
 func TestCheckUserAuth(t *testing.T) {
-	var u User
-	db := DBConn.First(&u, User{})
-	fmt.Println(db.Value)
-	result := checkUserAuth("ergoz", "123")
+	result := checkUserAuth(Configs.Admin.RootUser, Configs.Admin.RootPassword)
 	ass := assert.New(t)
 	ass.Equal(true, result, "checkUserAuth should be correct in this test")
 }
 
-func TestCheckUserAccessToMethod(t *testing.T) {
+func TestFailCheckUserAccessToMethod(t *testing.T) {
+	ass := assert.New(t)
+	result := checkUserAccessToMethod("System.FlushCache", "dsa")
+	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong user")
+	result = checkUserAccessToMethod("System.FlushCacheZ", "ergoz")
+	ass.Equal(false, result, "checkUserAccessToMethod should not be correct in this test when wrong method")
+}
 
+func TestCheckUserAccessToMethod(t *testing.T) {
+	result := checkUserAccessToMethod("System.FlushCache", "ergoz")
+	ass := assert.New(t)
+	ass.Equal(true, result, "checkUserAuth should be correct in this test")
 }
 
 /*
@@ -204,7 +213,7 @@ func TestCheckUserAccessToMethod(t *testing.T) {
 ====================================================
 */
 
-func TestCcheckAuth(t *testing.T) {
+func TestCheckAuth(t *testing.T) {
 
 }
 
@@ -251,4 +260,12 @@ func TestGetFileCall(t *testing.T) {
 	ass := assert.New(t)
 	ass.NotEmpty(result)
 	ass.Contains(result, "Go-RPC-Server_test.go", "getFileCall data be equal")
+}
+
+func TestDeleteDataBase(t *testing.T) {
+	DBConn.Close()
+	err := os.Remove(Configs.Db.DbConnectionString)
+	ass := assert.New(t)
+	ass.Nil(err)
+
 }

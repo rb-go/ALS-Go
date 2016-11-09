@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/Riftbit/ALS-Go/httpmodels"
-	_ "github.com/erikstmartin/go-testdb"
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/jinzhu/gorm"
@@ -34,26 +33,19 @@ func abstractExitFunction(exit int) {
 }
 
 func initConfigs() {
-
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		fmt.Println(err.Error())
+		LogPrintln(err)
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
-		fmt.Println("error reading config", err)
+		LogPrintln("error reading config", err)
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
-
-	initLogger()
-
-	Cache = cache.New(10*time.Minute, 30*time.Second)
-
-	processMGOAdditionalConf()
 }
 
 func initDataBase() {
@@ -81,6 +73,7 @@ func initRuntime() {
 	runtime.GOMAXPROCS(numCPU)
 	debug.SetMaxThreads(Configs.System.MaxThreads)
 	initValidators()
+	Cache = cache.New(10*time.Minute, 30*time.Second)
 }
 
 func initValidators() {
@@ -104,6 +97,8 @@ func rpcPrepare() {
 func main() {
 	parseCommandLineParams()
 	initConfigs()
+	processMGOAdditionalConf()
+	initLogger()
 	initRuntime()
 	initDataBase()
 	rpcPrepare()
