@@ -20,7 +20,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/patrickmn/go-cache"
+	cache "github.com/patrickmn/go-cache"
 	"gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
 )
@@ -35,17 +35,18 @@ func abstractExitFunction(exit int) {
 func initConfigs() {
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		LogPrintln(err)
+		logPrintln(err)
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
-		LogPrintln("error reading config", err)
+		logPrintln("error reading config", err)
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
+	Cache = cache.New(10*time.Minute, 30*time.Second)
 }
 
 func initDataBase() {
@@ -73,7 +74,6 @@ func initRuntime() {
 	runtime.GOMAXPROCS(numCPU)
 	debug.SetMaxThreads(Configs.System.MaxThreads)
 	initValidators()
-	Cache = cache.New(10*time.Minute, 30*time.Second)
 }
 
 func initValidators() {

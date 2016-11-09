@@ -30,7 +30,7 @@ func initLogger() {
 
 	_, ok := allowedTimestampsFormat[Configs.Log.TimestampFormat]
 	if ok == false {
-		LogPrintln("Wrong Timestamp Format value in config!")
+		logPrintln("Wrong Timestamp Format value in config!")
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
@@ -45,7 +45,7 @@ func initLogger() {
 		formatter = &logrus.JSONFormatter{TimestampFormat: Configs.Log.TimestampFormat}
 		break
 	default:
-		LogPrintln("Error Log config formatter")
+		logPrintln("Error Log config formatter")
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 		break
@@ -53,7 +53,7 @@ func initLogger() {
 
 	level, err := logrus.ParseLevel(Configs.Log.LogLevel)
 	if err != nil {
-		LogPrintln(err)
+		logPrintln(err)
 		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
@@ -65,7 +65,7 @@ func initLogger() {
 	}
 }
 
-func LogPrintln(args ...interface{}) {
+func logPrintln(args ...interface{}) {
 	isTesting := os.Getenv("TESTING")
 	if isTesting != "YES" {
 		log.Println(args)
