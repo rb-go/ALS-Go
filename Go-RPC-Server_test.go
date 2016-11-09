@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"net/http/httptest"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -166,6 +168,43 @@ func TestInitDatabaseStructure(t *testing.T) {
 
 func TestInitDatabaseData(t *testing.T) {
 	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
+}
+
+func TestAuthentificator(t *testing.T) {
+	ass := assert.New(t)
+
+	ts := httptest.NewServer(authentificator(rpcV2))
+	defer ts.Close()
+	var u bytes.Buffer
+	u.WriteString(string(ts.URL))
+
+	EmptyRequestBody := ""
+	correctRequestBody := "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
+	NotCorrectRequestBody := "{[\"id\": \"55196eba27.0\",] \"method\": \"Log.GetCategories\", \"params\": {}}]"
+
+	//without auth
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", u.String(), bytes.NewBufferString(EmptyRequestBody))
+	_, err := client.Do(req)
+	ass.NoError(err)
+
+	client = &http.Client{}
+	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(EmptyRequestBody))
+	req.Header.Set("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	_, err = client.Do(req)
+	ass.NoError(err)
+
+	client = &http.Client{}
+	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(correctRequestBody))
+	req.Header.Set("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	_, err = client.Do(req)
+	ass.NoError(err)
+
+	client = &http.Client{}
+	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(NotCorrectRequestBody))
+	req.Header.Set("Authorization", "Basic "+b64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	_, err = client.Do(req)
+	ass.NoError(err)
 }
 
 /*
