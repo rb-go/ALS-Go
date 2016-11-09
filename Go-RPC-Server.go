@@ -47,6 +47,7 @@ func initConfigs() {
 		abstractExitFunction(1)
 	}
 	Cache = cache.New(10*time.Minute, 30*time.Second)
+	processMGOAdditionalConf()
 }
 
 func initDataBase() {
@@ -97,7 +98,6 @@ func rpcPrepare() {
 func main() {
 	parseCommandLineParams()
 	initConfigs()
-	processMGOAdditionalConf()
 	initLogger()
 	initRuntime()
 	initDataBase()
