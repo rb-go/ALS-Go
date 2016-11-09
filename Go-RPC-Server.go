@@ -90,7 +90,7 @@ func rpcPrepare() {
 	http.Handle("/", authentificator(rpcV2))
 }
 
-func startServerWithConfigs() {
+func prepareServerWithConfigs() {
 	parseCommandLineParams()
 	initConfigs()
 	initLogger()
@@ -105,12 +105,12 @@ func startServerWithConfigs() {
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 
-	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
-	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
 func main() {
-	startServerWithConfigs()
+	prepareServerWithConfigs()
+	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
+	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 
 func registerAPI(rpcV2 *rpc.Server) ([]string, []string) {
