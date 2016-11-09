@@ -8,17 +8,19 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"reflect"
 	"runtime"
 	"runtime/debug"
 	"time"
 
-	"reflect"
-
 	"github.com/Riftbit/ALS-Go/httpmodels"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/erikstmartin/go-testdb"
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/patrickmn/go-cache"
 	"gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
@@ -36,14 +38,14 @@ func initConfigs() {
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
-		time.Sleep(1 * time.Second)
+		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
 
 	err = yaml.Unmarshal(data, &Configs)
 	if err != nil {
 		fmt.Println("error reading config", err)
-		time.Sleep(1 * time.Second)
+		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
 
@@ -56,16 +58,16 @@ func initConfigs() {
 
 func initDataBase() {
 	var err error
-	DBConn, err = gorm.Open("mysql", Configs.Db.DbConnectionString)
+	DBConn, err = gorm.Open(Configs.Db.DbType, Configs.Db.DbConnectionString)
 	if err != nil {
-		Logger.Fatalf("ORM NOT WORKS! - %s", err)
-		time.Sleep(1 * time.Second)
+		Logger.Errorf("ORM NOT WORKS! - %s", err)
+		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	}
 	// Open doesn't open a connection. Validate DSN data:
 	if !isDBConnected() {
-		Logger.Fatalf("DB Connection NOT WORKS! - %s", err.Error())
-		time.Sleep(1 * time.Second)
+		Logger.Errorf("DB Connection NOT WORKS! - %s", err.Error())
+		time.Sleep(10 * time.Millisecond)
 		abstractExitFunction(1)
 	} else {
 		Logger.Info("DB Connection WORKS!")

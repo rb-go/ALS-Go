@@ -37,6 +37,7 @@ type conf struct {
 		RootEmail    string `yaml:"rootEmail"`
 	}
 	Db struct {
+		DbType             string `yaml:"dbType"`
 		DbConnectionString string `yaml:"dbConnectionString"`
 	}
 	Log struct {

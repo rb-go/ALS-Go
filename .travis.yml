@@ -37,6 +37,7 @@ install:
  - go get -u golang.org/x/tools/cmd/goimports
  - go get -u golang.org/x/tools/cmd/cover
  - go get -u github.com/mattn/goveralls
+ - go get -u github.com/erikstmartin/go-testdb
 
 before_script:
 

@@ -5,12 +5,16 @@ import (
 	"net/http"
 	"testing"
 
+	"fmt"
+
 	"github.com/stretchr/testify/assert"
 )
 
 var rawRequestBody string
 var rawDataBody []byte
 var okForTest bool
+var testAdminMethodsList []string
+var testBasicMethodsList []string
 
 func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
@@ -142,10 +146,74 @@ func TestRegisterApi(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test; this test not for race or run in more than 1 thread")
 	}
-	adminMethodsList, basicMethodsList := registerAPI(rpcV2)
+	testAdminMethodsList, testBasicMethodsList = registerAPI(rpcV2)
 	ass := assert.New(t)
-	ass.NotEmpty(adminMethodsList)
-	ass.NotEmpty(basicMethodsList)
+	ass.NotEmpty(testAdminMethodsList)
+	ass.NotEmpty(testBasicMethodsList)
+}
+
+func TestFailInitDataBase(t *testing.T) {
+	initDataBase()
+	if okForTest == true {
+		t.Error("Wrong processing initDataBase when wrong connection string")
+	}
+	okForTest = true
+}
+
+func TestInitDataBase(t *testing.T) {
+	Configs.Db.DbType = "testdb"
+	Configs.Db.DbConnectionString = ""
+	initDataBase()
+}
+
+func TestInitDatabaseStructure(t *testing.T) {
+	initDatabaseStructure()
+}
+
+func TestInitDatabaseData(t *testing.T) {
+	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
+}
+
+/*
+====================================================
+	MODELSDB TESTS
+====================================================
+*/
+func TestFailCheckUserAuth(t *testing.T) {
+	result := checkUserAuth("asdasd", "321")
+	ass := assert.New(t)
+	ass.Equal(false, result, "checkUserAuth should be wrong in this test")
+}
+
+func TestCheckUserAuth(t *testing.T) {
+	var u User
+	db := DBConn.First(&u, User{})
+	fmt.Println(db.Value)
+	result := checkUserAuth("ergoz", "123")
+	ass := assert.New(t)
+	ass.Equal(true, result, "checkUserAuth should be correct in this test")
+}
+
+func TestCheckUserAccessToMethod(t *testing.T) {
+
+}
+
+/*
+====================================================
+	AUTH TESTS
+====================================================
+*/
+
+func TestCcheckAuth(t *testing.T) {
+
+}
+
+func TestGetUser(t *testing.T) {
+
+}
+
+func TestCheckAPIMethodAccess(t *testing.T) {
+
 }
 
 /*

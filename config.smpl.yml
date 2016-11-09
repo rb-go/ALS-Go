@@ -1,5 +1,5 @@
 system:
-  maxThreads: 10
+  maxThreads: 100
   listenOn: ":8080"
 
 admin:
@@ -8,8 +8,9 @@ admin:
   rootEmail: "ergozru@gmail.com"
 
 db:
+  dbType: "mysql"
   #[username[:password]@][protocol[(address)]]/dbname[?param1=value1&...&paramN=valueN]
-  dbConnectionString: "als-go:p@ssword@tcp(172.16.104.21:3306)/als-go?charset=utf8"
+  dbConnectionString: "als-go:p@ssword@tcp(172.172.172.172:3306)/als-go?charset=utf8"
 
 log:
   formatter: "text"
