@@ -21,7 +21,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	cache "github.com/patrickmn/go-cache"
-	"gopkg.in/validator.v2"
+	validator "gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -74,11 +74,6 @@ func initRuntime() {
 	Logger.Infof("Init runtime to use %d CPUs and %d threads", numCPU, Configs.System.MaxThreads)
 	runtime.GOMAXPROCS(numCPU)
 	debug.SetMaxThreads(Configs.System.MaxThreads)
-	initValidators()
-}
-
-func initValidators() {
-	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 }
 
 func parseCommandLineParams() {
@@ -107,6 +102,8 @@ func main() {
 
 	initDatabaseStructure()
 	initDatabaseData(adminMethodsList, basicMethodsList)
+
+	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 
 	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
