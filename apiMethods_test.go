@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"testing"
 
+	"os"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
@@ -23,9 +25,14 @@ func getReadyRequestFortests() {
 	reqWithNotCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
 }
 
+func initDB() {
+	initDataBase()
+}
+
 func init() {
 	applicationExitFunction = func(c int) { okForTest = false }
 	getReadyRequestFortests()
+	initDB()
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 }
@@ -173,4 +180,11 @@ func TestApiLogModifyTTL(t *testing.T) {
 
 	result := logAPI.ModifyTTL(reqWithCorrectAuth, &args, &reply)
 	ass.Nil(result)
+}
+
+func TestDeleteDataBaseAfterMethodTests(t *testing.T) {
+	DBConn.Close()
+	err := os.Remove(Configs.Db.DbConnectionString)
+	ass := assert.New(t)
+	ass.Nil(err)
 }
