@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
@@ -22,15 +24,11 @@ var testAdminMethodsList []string
 var testBasicMethodsList []string
 
 var logAPI *Log
-var reqWithCorrectAuth *http.Request
-var reqWithNotCorrectAuth *http.Request
 var emptySearchFilter map[string]interface{}
 
 func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 	applicationExitFunction = func(c int) { okForTest = false }
-
-	getReadyRequestFortests()
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 }
@@ -351,16 +349,25 @@ func TestGetFileCall(t *testing.T) {
 	ass.Contains(result, "Go-RPC-Server_test.go", "getFileCall data be equal")
 }
 
-func getReadyRequestFortests() {
-	reqWithCorrectAuth, _ := http.NewRequest("POST", "http://api.local/", nil)
-	reqWithCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+/*
+====================================================
+	API METHODS TESTS
+====================================================
+*/
 
-	reqWithNotCorrectAuth, _ := http.NewRequest("POST", "http://api.local/", nil)
-	reqWithNotCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wronguserpassword")))
+func getReadyRequestForTests(correct bool) *http.Request {
+	if correct == true {
+		req, _ := http.NewRequest("POST", "http://api.local/", nil)
+		req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+		return req
+	} else {
+		req, _ := http.NewRequest("POST", "http://api.local/", nil)
+		req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wronguserpassword")))
+		return req
+	}
 }
 
 func TestApiLogAdd(t *testing.T) {
-	getReadyRequestFortests()
 	ass := assert.New(t)
 
 	args := httpmodels.RequestLogAdd{}
@@ -371,8 +378,8 @@ func TestApiLogAdd(t *testing.T) {
 	args.Message = "This is test message to TestApiLogAdd"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
-	printObject(args)
-	result := logAPI.Add(reqWithCorrectAuth, &args, &reply)
+	fmt.Println(args)
+	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -394,7 +401,7 @@ func TestApiLogAddCustom(t *testing.T) {
 	args.ExpiresAt = 1490569965
 	args.Tags = []string{"tags", "test", "go"}
 	args.AdditionalData = additionalDataStruct{Customer: "apitester", State: 1}
-	result := logAPI.AddCustom(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.AddCustom(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -410,7 +417,7 @@ func TestApiLogGet(t *testing.T) {
 	args.Limit = 1
 	args.Offset = 0
 
-	result := logAPI.Get(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -423,7 +430,7 @@ func TestApiLogGetCount(t *testing.T) {
 	args.Category = "api"
 	args.SearchFilter = emptySearchFilter
 
-	result := logAPI.GetCount(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.GetCount(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -433,7 +440,7 @@ func TestApiLogGetCategories(t *testing.T) {
 	args := struct{}{}
 	reply := httpmodels.ResponseLogGetCategories{}
 
-	result := logAPI.GetCategories(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.GetCategories(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -446,7 +453,7 @@ func TestApiLogRemove(t *testing.T) {
 	args.Category = "api"
 	args.SearchFilter = emptySearchFilter
 
-	result := logAPI.Remove(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.Remove(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -458,7 +465,7 @@ func TestApiLogRemoveCategory(t *testing.T) {
 
 	args.Category = "api"
 
-	result := logAPI.RemoveCategory(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.RemoveCategory(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -474,7 +481,7 @@ func TestApiLogTransfer(t *testing.T) {
 	args.Message = "This is test message to TestApiLogTransfer"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
-	result := logAPI.Add(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
 	var argss *httpmodels.RequestLogTransferLog
@@ -484,7 +491,7 @@ func TestApiLogTransfer(t *testing.T) {
 	argss.OldCategory = "api_new"
 	argss.SearchFilter = emptySearchFilter
 
-	result = logAPI.Transfer(reqWithCorrectAuth, argss, replyy)
+	result = logAPI.Transfer(getReadyRequestForTests(true), argss, replyy)
 	ass.Nil(result)
 }
 
@@ -498,7 +505,7 @@ func TestApiLogModifyTTL(t *testing.T) {
 	args.SearchFilter = emptySearchFilter
 	args.NewTTL = 1590569965
 
-	result := logAPI.ModifyTTL(reqWithCorrectAuth, &args, &reply)
+	result := logAPI.ModifyTTL(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
