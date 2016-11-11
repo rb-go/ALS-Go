@@ -9,9 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var logApi *Log
+var logAPI *Log
 var reqWithCorrectAuth *http.Request
 var reqWithNotCorrectAuth *http.Request
+var emptySearchFilter map[string]interface{}
 
 func getReadyRequestFortests() {
 	reqWithCorrectAuth, _ := http.NewRequest("POST", "http://api.local/", nil)
@@ -37,10 +38,10 @@ func TestApiLogAdd(t *testing.T) {
 	args.Message = "This is test message to TestApiLogAdd"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
-	result := logApi.Add(reqWithCorrectAuth, args, reply)
+	result := logAPI.Add(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 
-	result = logApi.Add(reqWithNotCorrectAuth, args, reply)
+	result = logAPI.Add(reqWithNotCorrectAuth, args, reply)
 	ass.NotNil(result)
 }
 
@@ -62,7 +63,7 @@ func TestApiLogAddCustom(t *testing.T) {
 	args.ExpiresAt = 1490569965
 	args.Tags = []string{"tags", "test", "go"}
 	args.AdditionalData = additionalDataStruct{Customer: "apitester", State: 1}
-	result := logApi.Add(reqWithCorrectAuth, args, reply)
+	result := logAPI.AddCustom(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -73,12 +74,12 @@ func TestApiLogGet(t *testing.T) {
 	var reply *httpmodels.ResponseLogGet
 
 	args.Category = "api"
-	args.SearchFilter = struct{}{}
+	args.SearchFilter = emptySearchFilter
 	args.Sort = []string{"+timestamp"}
 	args.Limit = 1
 	args.Offset = 0
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.Get(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -89,9 +90,9 @@ func TestApiLogGetCount(t *testing.T) {
 	var reply *httpmodels.ResponseLogGetCount
 
 	args.Category = "api"
-	args.SearchFilter = struct{}{}
+	args.SearchFilter = emptySearchFilter
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.GetCount(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -101,7 +102,7 @@ func TestApiLogGetCategories(t *testing.T) {
 	var args *struct{}
 	var reply *httpmodels.ResponseLogGetCategories
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.GetCategories(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -112,9 +113,9 @@ func TestApiLogRemove(t *testing.T) {
 	var reply *httpmodels.ResponseLogRemoveLog
 
 	args.Category = "api"
-	args.SearchFilter = struct{}{}
+	args.SearchFilter = emptySearchFilter
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.Remove(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -126,7 +127,7 @@ func TestApiLogRemoveCategory(t *testing.T) {
 
 	args.Category = "api"
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.RemoveCategory(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
 
@@ -142,7 +143,7 @@ func TestApiLogTransfer(t *testing.T) {
 	args.Message = "This is test message to TestApiLogTransfer"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
-	result := logApi.Add(reqWithCorrectAuth, args, reply)
+	result := logAPI.Add(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 
 	var argss *httpmodels.RequestLogTransferLog
@@ -150,9 +151,9 @@ func TestApiLogTransfer(t *testing.T) {
 
 	argss.NewCategory = "api"
 	argss.OldCategory = "api_new"
-	argss.SearchFilter = struct{}{}
+	argss.SearchFilter = emptySearchFilter
 
-	result = logApi.Get(reqWithCorrectAuth, argss, replyy)
+	result = logAPI.Transfer(reqWithCorrectAuth, argss, replyy)
 	ass.Nil(result)
 }
 
@@ -163,9 +164,9 @@ func TestApiLogModifyTTL(t *testing.T) {
 	var reply *httpmodels.ResponseLogModifyTTL
 
 	args.Category = "api_new"
-	args.SearchFilter = struct{}{}
+	args.SearchFilter = emptySearchFilter
 	args.NewTTL = 1590569965
 
-	result := logApi.Get(reqWithCorrectAuth, args, reply)
+	result := logAPI.ModifyTTL(reqWithCorrectAuth, args, reply)
 	ass.Nil(result)
 }
