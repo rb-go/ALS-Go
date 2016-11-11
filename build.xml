@@ -34,7 +34,7 @@
         <exec dir="${basedir}" executable="go" failonerror="true">
             <arg value="get"/>
             <arg value="-u"/>
-            <arg path="./..."/>
+            <arg path="github.com/RiftBit/ALS-Go"/>
         </exec>
 
     </target>
@@ -94,21 +94,6 @@
         <exec executable="diff" failonerror="true">
             <arg value="&lt;(golint ./...)"/>
             <arg value="&lt;(printf '')"/>
-        </exec>
-
-        <exec executable="go" failonerror="true">
-            <arg value="test"/>
-            <arg value="-v"/>
-            <arg value="-cpu=2"/>
-            <arg path="./..."/>
-        </exec>
-
-        <exec executable="go" failonerror="true">
-            <arg value="test"/>
-            <arg value="-v"/>
-            <arg value="-cpu=1,2,4"/>
-            <arg value="-race"/>
-            <arg path="./..."/>
         </exec>
 
         <exec executable="go" failonerror="true">
