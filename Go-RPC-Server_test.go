@@ -155,6 +155,7 @@ func TestRegisterApi(t *testing.T) {
 }
 
 func TestFailInitDataBase(t *testing.T) {
+	Configs.Db.DbConnectionString = Configs.Db.DbConnectionString + "&timeout=10ms"
 	initDataBase()
 	if okForTest == true {
 		t.Error("Wrong processing initDataBase when wrong connection string")
