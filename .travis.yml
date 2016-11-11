@@ -51,7 +51,7 @@ install:
 
 before_script:
 # wait mongodb
-  - sleep 15
+#  - sleep 15
 
 script:
  - go vet ./...
