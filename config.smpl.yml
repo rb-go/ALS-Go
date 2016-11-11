@@ -39,7 +39,7 @@ log:
 mongo:
   connectionTimeout: 10000 #msec
   commonDB:
-    connection: "172.16.104.228:27017"
+    connection: "127.0.0.1:27017"
 
   additionalDB:
     -
