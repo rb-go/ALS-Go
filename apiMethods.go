@@ -25,6 +25,8 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 
 	connectionString := getConnectionStringByCategory(args.Category)
 
+	fmt.Println(connectionString)
+
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
 		Logger.Error("[" + getFuncName(1) + "] createMGOConnection: " + err.Error())
@@ -32,7 +34,7 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 	}
 
 	user := getUser(r)
-	println(user)
+	fmt.Println(user)
 	collection, err := useMGOCol(useMGODB(session, user), args.Category)
 	if err != nil {
 		Logger.Error("useMGOCol: " + err.Error())
