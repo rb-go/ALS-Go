@@ -499,8 +499,11 @@ func TestApiLogModifyTTL(t *testing.T) {
 	args := httpmodels.RequestLogModifyTTL{}
 	reply := httpmodels.ResponseLogModifyTTL{}
 
+	type searchFilterWithExp map[string]interface{}
+	paramsSearch := searchFilterWithExp{"ExpiresAt": 1490569965}
+
 	args.Category = "api_new"
-	args.SearchFilter = emptySearchFilter
+	args.SearchFilter = paramsSearch
 	args.NewTTL = 1590569965
 
 	result := logAPI.ModifyTTL(getReadyRequestForTests(true), &args, &reply)
