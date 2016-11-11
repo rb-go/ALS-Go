@@ -43,7 +43,7 @@ mongo:
 
   additionalDB:
     -
-      connection: "172.16.104.255:27017"
+      connection: "127.0.0.1:27017"
       collections: ["customer_log","archive_customer_contract","archive_customer_data", "archive_customer_log", "monitor"]
   #  -
   #    connection: "192.168.99.100:27019"

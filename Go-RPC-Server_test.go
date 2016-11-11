@@ -10,8 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"fmt"
-
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
@@ -376,7 +374,7 @@ func TestApiLogAdd(t *testing.T) {
 	args.Message = "This is test message to TestApiLogAdd"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
-	fmt.Println(args)
+
 	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
@@ -399,6 +397,7 @@ func TestApiLogAddCustom(t *testing.T) {
 	args.ExpiresAt = 1490569965
 	args.Tags = []string{"tags", "test", "go"}
 	args.AdditionalData = additionalDataStruct{Customer: "apitester", State: 1}
+
 	result := logAPI.AddCustom(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
@@ -479,6 +478,7 @@ func TestApiLogTransfer(t *testing.T) {
 	args.Message = "This is test message to TestApiLogTransfer"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
+
 	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
