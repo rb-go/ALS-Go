@@ -341,9 +341,3 @@ func TestGetFileCall(t *testing.T) {
 	ass.Contains(result, "Go-RPC-Server_test.go", "getFileCall data be equal")
 }
 
-func TestDeleteDataBase(t *testing.T) {
-	DBConn.Close()
-	err := os.Remove(Configs.Db.DbConnectionString)
-	ass := assert.New(t)
-	ass.Nil(err)
-}

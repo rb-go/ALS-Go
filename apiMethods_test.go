@@ -3,12 +3,8 @@ package main
 import (
 	"encoding/base64"
 	"net/http"
-	"testing"
-
 	"os"
-
-	"strconv"
-	"time"
+	"testing"
 
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
@@ -33,14 +29,6 @@ func init() {
 	getReadyRequestFortests()
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
-}
-
-func TestInitDataBaseForMethod(t *testing.T) {
-	Configs.Db.DbType = "sqlite3"
-	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
-	initDataBase()
-	initDatabaseStructure()
-	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
 }
 
 func TestApiLogAdd(t *testing.T) {
