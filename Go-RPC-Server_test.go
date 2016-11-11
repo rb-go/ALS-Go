@@ -356,10 +356,11 @@ func getReadyRequestFortests() {
 	reqWithCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
 
 	reqWithNotCorrectAuth, _ := http.NewRequest("POST", "http://api.local/", nil)
-	reqWithNotCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
+	reqWithNotCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wronguserpassword")))
 }
 
 func TestApiLogAdd(t *testing.T) {
+	getReadyRequestFortests()
 	ass := assert.New(t)
 
 	args := httpmodels.RequestLogAdd{}
@@ -373,9 +374,6 @@ func TestApiLogAdd(t *testing.T) {
 	printObject(args)
 	result := logAPI.Add(reqWithCorrectAuth, &args, &reply)
 	ass.Nil(result)
-
-	result = logAPI.Add(reqWithNotCorrectAuth, &args, &reply)
-	ass.NotNil(result)
 }
 
 func TestApiLogAddCustom(t *testing.T) {

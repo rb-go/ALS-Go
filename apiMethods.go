@@ -24,16 +24,21 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 	}
 
 	connectionString := getConnectionStringByCategory(args.Category)
+
 	session, err := createMGOConnection(connectionString)
 	if err != nil {
 		Logger.Error("[" + getFuncName(1) + "] createMGOConnection: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Connection Problems"}
 	}
-	collection, err := useMGOCol(useMGODB(session, getUser(r)), args.Category)
+
+	user := getUser(r)
+	println(user)
+	collection, err := useMGOCol(useMGODB(session, user), args.Category)
 	if err != nil {
 		Logger.Error("useMGOCol: " + err.Error())
 		return &json2.Error{Code: json2.E_INTERNAL, Message: "Log Select Collection Problems"}
 	}
+
 	defer session.Close()
 
 	args.ID = bson.NewObjectId()
