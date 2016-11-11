@@ -7,6 +7,9 @@ import (
 
 	"os"
 
+	"strconv"
+	"time"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
@@ -25,16 +28,17 @@ func getReadyRequestFortests() {
 	reqWithNotCorrectAuth.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
 }
 
-func initDB() {
-	initDataBase()
-}
-
 func init() {
 	applicationExitFunction = func(c int) { okForTest = false }
 	getReadyRequestFortests()
-	initDB()
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
+}
+
+func TestInitDataBaseForMethod(t *testing.T) {
+	Configs.Db.DbType = "sqlite3"
+	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
+	initDataBase()
 }
 
 func TestApiLogAdd(t *testing.T) {
