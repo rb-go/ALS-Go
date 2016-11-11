@@ -356,15 +356,13 @@ func TestGetFileCall(t *testing.T) {
 */
 
 func getReadyRequestForTests(correct bool) *http.Request {
+	req, _ := http.NewRequest("POST", "http://api.local/", nil)
 	if correct == true {
-		req, _ := http.NewRequest("POST", "http://api.local/", nil)
 		req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
-		return req
 	} else {
-		req, _ := http.NewRequest("POST", "http://api.local/", nil)
 		req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wronguserpassword")))
-		return req
 	}
+	return req
 }
 
 func TestApiLogAdd(t *testing.T) {
