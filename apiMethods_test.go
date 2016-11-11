@@ -39,6 +39,8 @@ func TestInitDataBaseForMethod(t *testing.T) {
 	Configs.Db.DbType = "sqlite3"
 	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
 	initDataBase()
+	initDatabaseStructure()
+	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
 }
 
 func TestApiLogAdd(t *testing.T) {
