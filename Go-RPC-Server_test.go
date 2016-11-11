@@ -482,14 +482,14 @@ func TestApiLogTransfer(t *testing.T) {
 	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
-	var argss *httpmodels.RequestLogTransferLog
-	var replyy *httpmodels.ResponseLogTransferLog
+	argss := httpmodels.RequestLogTransferLog{}
+	replyy := httpmodels.ResponseLogTransferLog{}
 
 	argss.NewCategory = "api"
 	argss.OldCategory = "api_new"
 	argss.SearchFilter = emptySearchFilter
 
-	result = logAPI.Transfer(getReadyRequestForTests(true), argss, replyy)
+	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
 	ass.Nil(result)
 }
 
