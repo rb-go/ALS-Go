@@ -6,6 +6,14 @@ os:
   - linux
 
 services:
+- mongodb
+
+addons:
+  apt:
+    sources:
+    - mongodb-3.2-precise
+    packages:
+    - mongodb-org-server
 
 go:
   - 1.6.3
