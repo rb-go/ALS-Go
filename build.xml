@@ -44,7 +44,6 @@
         <exec dir="${basedir}" executable="go" failonerror="true">
             <arg value="get"/>
             <arg value="-u"/>
-            <arg path="./..."/>
         </exec>
 
         <exec dir="${basedir}" executable="go" failonerror="true">
