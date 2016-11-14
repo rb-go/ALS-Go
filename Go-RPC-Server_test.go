@@ -147,9 +147,10 @@ func TestPrepareServerWithConfigs(t *testing.T) {
 	prepareServerWithConfigs()
 }
 
-
 func TestFailMakeDBConnection(t *testing.T) {
-	makeDBConnection()
+	ass := assert.New(t)
+	_, _, errjs := makeLogDBConnection("asd", "dsa", "127.0.1.1:1234")
+	ass.Error(errjs)
 }
 
 /*
