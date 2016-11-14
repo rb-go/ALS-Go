@@ -535,8 +535,8 @@ func TestApiLogTransfer(t *testing.T) {
 	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
 	ass.Error(result)
 
-	argss.NewCategory = "api"
-	argss.OldCategory = "api_new"
+	argss.OldCategory = "api"
+	argss.NewCategory = "api_new"
 	argss.SearchFilter = emptySearchFilter
 
 	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
