@@ -432,6 +432,13 @@ func TestApiLogGet(t *testing.T) {
 	args.SearchFilter = firstSF
 	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
+
+	byt = "{ \"$or\": [ { \"_id\": { \"$lt\": \"" + tempLogID + "\" } }, { \"_id\": \"" + tempLogID + "\" } ] }"
+	var secondSF map[string]interface{}
+	json.Unmarshal([]byte(byt), &secondSF)
+	args.SearchFilter = secondSF
+	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
 }
 
 func TestApiLogGetCount(t *testing.T) {
