@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -425,7 +426,10 @@ func TestApiLogGet(t *testing.T) {
 	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
-	args.SearchFilter = map[string][]string{"_id": map[string][]string{"$in": []string{tempLogID}}}
+	byt := "{ \"_id\": { \"$in\": [\"" + tempLogID + "\"] } }"
+	var firstSF map[string]interface{}
+	json.Unmarshal([]byte(byt), &firstSF)
+	args.SearchFilter = firstSF
 	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
