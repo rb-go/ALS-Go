@@ -76,14 +76,14 @@ before_deploy: "echo 'Deploing started'"
 
 deploy:
   provider: releases
-    api_key: $GITHUB_OAUTH_TOKEN
-    file:
-      - "./out/alsgo_linux_x64"
-      - "./out/alsgo_linux_x64.exe"
-      - "./out/config.yml"
-    skip_cleanup: true
-    on:
-      tags: true
+  api_key: "$GITHUB_OAUTH_TOKEN"
+  file:
+    - "./out/alsgo_linux_x64"
+    - "./out/alsgo_linux_x64.exe"
+    - "./out/config.yml"
+  skip_cleanup: true
+  on:
+    tags: true
 
 after_deploy: "echo 'Deploing finished!'"
 
