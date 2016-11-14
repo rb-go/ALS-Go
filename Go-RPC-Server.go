@@ -91,7 +91,6 @@ func rpcPrepare() {
 }
 
 func prepareServerWithConfigs() {
-	initConfigs()
 	initLogger()
 	initRuntime()
 	initDataBase()
@@ -109,6 +108,7 @@ func prepareServerWithConfigs() {
 
 func main() {
 	parseCommandLineParams()
+	initConfigs()
 	prepareServerWithConfigs()
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }

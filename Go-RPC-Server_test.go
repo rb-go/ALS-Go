@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strconv"
 	"testing"
 	"time"
+
+	"fmt"
 
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/gorilla/rpc/v2/json2"
@@ -73,32 +74,8 @@ func TestCommandLineFlags(t *testing.T) {
 	configPath = "./config.smpl.yml"
 }
 
-func TestFailInitDataBase(t *testing.T) {
-	Configs.Db.DbConnectionString = Configs.Db.DbConnectionString + "&timeout=10ms"
-	initDataBase()
-	if okForTest == true {
-		t.Error("Wrong processing initDataBase when wrong connection string")
-	}
-	okForTest = true
-}
-
-func TestInitDataBase(t *testing.T) {
-	Configs.Db.DbType = "sqlite3"
-	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
-	initDataBase()
-}
-
-/*
-func TestInitDatabaseStructure(t *testing.T) {
-	initDatabaseStructure()
-}
-
-func TestInitDatabaseData(t *testing.T) {
-	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
-}*/
-
-func TestPrepareServerWithConfigs(t *testing.T) {
-	prepareServerWithConfigs()
+func TestInitConfigs(t *testing.T) {
+	initConfigs()
 }
 
 //TestFailInitLoggerWithWrongTimestampFormat - negative test
@@ -110,6 +87,11 @@ func TestFailInitLoggerWithWrongTimestampFormat(t *testing.T) {
 	}
 	okForTest = true
 	Configs.Log.TimestampFormat = "2006-01-02T15:04:05.999999999Z07:00"
+}
+
+func TestInitLoggerWithJsonFormatter(t *testing.T) {
+	Configs.Log.Formatter = "json"
+	initLogger()
 }
 
 //TestFailInitLoggerWithWrongFormatter - negative test
@@ -134,13 +116,35 @@ func TestFailInitLoggerWithWrongLogLevel(t *testing.T) {
 	Configs.Log.LogLevel = "panic"
 }
 
-func TestInitLoggerWithJsonFormatter(t *testing.T) {
-	Configs.Log.Formatter = "json"
+func TestInitLogger(t *testing.T) {
 	initLogger()
 }
 
-func TestInitLogger(t *testing.T) {
-	initLogger()
+func TestFailInitDataBase(t *testing.T) {
+	initDataBase()
+	if okForTest == true {
+		t.Error("Wrong processing initDataBase when wrong connection string")
+	}
+	okForTest = true
+}
+
+func TestInitDataBase(t *testing.T) {
+	Configs.Db.DbType = "sqlite3"
+	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
+	initDataBase()
+}
+
+/*
+func TestInitDatabaseStructure(t *testing.T) {
+	initDatabaseStructure()
+}
+
+func TestInitDatabaseData(t *testing.T) {
+	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
+}
+*/
+func TestPrepareServerWithConfigs(t *testing.T) {
+	prepareServerWithConfigs()
 }
 
 /*

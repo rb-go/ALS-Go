@@ -10,8 +10,8 @@
 [![Release](https://img.shields.io/badge/release-v2.2.1-blue.svg?style=flat)](https://github.com/RiftBit/ALS-Go/releases)
 
 ## System requirements 
-- MongoDB 3.2+
-- MySQL 5.6+
+- MongoDB 3.2+ - for logs
+- MySQL or MSSQL or PostgreSQL - for auth data
 
 ## Installation
 ### Linux
@@ -23,7 +23,7 @@ in dev
 ## Api Methods
 
 | Method Name           | Dev Status | Doc Status | Description |
-|-----------------------|:----------:|:----------:|:-----------:|
+|-----------------------|:----------:|:----------:|-------------|
 | Log.Add               |    Ready   |   In dev   |    In dev   |
 | Log.AddCustom         |    Ready   |   In dev   |    In dev   |
 | Log.Get               |    Ready   |   In dev   |    In dev   |
