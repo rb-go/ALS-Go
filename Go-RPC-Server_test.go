@@ -379,13 +379,16 @@ func TestApiLogAdd(t *testing.T) {
 	args := httpmodels.RequestLogAdd{}
 	reply := httpmodels.ResponseLogAdd{}
 
+	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Level = "error"
 	args.Category = "api"
 	args.Message = "This is test message to TestApiLogAdd"
 	args.Timestamp = 1420074061
 	args.ExpiresAt = 1490569965
 
-	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 	tempLogID = reply.LogID
 }
@@ -401,6 +404,9 @@ func TestApiLogAddCustom(t *testing.T) {
 		State    int
 	}
 
+	result := logAPI.AddCustom(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Level = "error"
 	args.Category = "api"
 	args.Message = "This is test message to TestApiLogAddCustom"
@@ -409,7 +415,7 @@ func TestApiLogAddCustom(t *testing.T) {
 	args.Tags = []string{"tags", "test", "go"}
 	args.AdditionalData = additionalDataStruct{Customer: "apitester", State: 1}
 
-	result := logAPI.AddCustom(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.AddCustom(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -419,13 +425,16 @@ func TestApiLogGet(t *testing.T) {
 	args := httpmodels.RequestLogGetLog{}
 	reply := httpmodels.ResponseLogGet{}
 
+	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Category = "api"
 	args.SearchFilter = emptySearchFilter
 	args.Sort = []string{"+timestamp"}
 	args.Limit = 1
 	args.Offset = 0
 
-	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
 	byt := "{ \"_id\": { \"$in\": [\"" + tempLogID + "\"] } }"
@@ -449,10 +458,13 @@ func TestApiLogGetCount(t *testing.T) {
 	args := httpmodels.RequestLogGetCount{}
 	reply := httpmodels.ResponseLogGetCount{}
 
+	result := logAPI.GetCount(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Category = "api"
 	args.SearchFilter = emptySearchFilter
 
-	result := logAPI.GetCount(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.GetCount(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -472,10 +484,13 @@ func TestApiLogRemove(t *testing.T) {
 	args := httpmodels.RequestLogRemoveLog{}
 	reply := httpmodels.ResponseLogRemoveLog{}
 
+	result := logAPI.Remove(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Category = "api"
 	args.SearchFilter = emptySearchFilter
 
-	result := logAPI.Remove(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.Remove(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -485,9 +500,12 @@ func TestApiLogRemoveCategory(t *testing.T) {
 	args := httpmodels.RequestLogRemoveCategory{}
 	reply := httpmodels.ResponseLogRemoveCategory{}
 
+	result := logAPI.RemoveCategory(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Category = "api"
 
-	result := logAPI.RemoveCategory(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.RemoveCategory(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
@@ -506,15 +524,23 @@ func TestApiLogTransfer(t *testing.T) {
 
 	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
+	result = logAPI.Add(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	result = logAPI.Add(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
 
 	argss := httpmodels.RequestLogTransferLog{}
 	replyy := httpmodels.ResponseLogTransferLog{}
+
+	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
+	ass.Error(result)
 
 	argss.NewCategory = "api"
 	argss.OldCategory = "api_new"
 	argss.SearchFilter = emptySearchFilter
 
 	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
+	fmt.Println(printObject(replyy))
 	ass.Nil(result)
 }
 
@@ -527,11 +553,14 @@ func TestApiLogModifyTTL(t *testing.T) {
 	type searchFilterWithExp map[string]interface{}
 	paramsSearch := searchFilterWithExp{"ExpiresAt": 1490569965}
 
+	result := logAPI.ModifyTTL(getReadyRequestForTests(true), &args, &reply)
+	ass.Error(result)
+
 	args.Category = "api_new"
 	args.SearchFilter = paramsSearch
 	args.NewTTL = 1590569965
 
-	result := logAPI.ModifyTTL(getReadyRequestForTests(true), &args, &reply)
+	result = logAPI.ModifyTTL(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
