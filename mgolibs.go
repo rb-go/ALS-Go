@@ -169,9 +169,6 @@ func prepareSearchFilter(searchFilter map[string]interface{}) map[string]interfa
 }
 
 func findIDKeyValuesAndFixThem(searchFilter *map[string]interface{}, baseKey string) {
-	if baseKey == "" {
-		baseKey = "_id"
-	}
 	data := *searchFilter
 	currentType := reflect.TypeOf(data[baseKey]).Kind()
 	if currentType == reflect.String {

@@ -91,7 +91,6 @@ func rpcPrepare() {
 }
 
 func prepareServerWithConfigs() {
-	parseCommandLineParams()
 	initConfigs()
 	initLogger()
 	initRuntime()
@@ -105,11 +104,12 @@ func prepareServerWithConfigs() {
 
 	validator.SetValidationFunc("CategoryNameValidators", httpmodels.CategoryNameValidator)
 
+	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 }
 
 func main() {
+	parseCommandLineParams()
 	prepareServerWithConfigs()
-	Logger.Infof("Starting server on <%s>", Configs.System.ListenOn)
 	Logger.Fatal(http.ListenAndServe(Configs.System.ListenOn, nil))
 }
 

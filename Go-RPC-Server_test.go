@@ -134,6 +134,10 @@ func TestRpcPrepare(t *testing.T) {
 	rpcPrepare()
 }
 
+func TestPrepareServerWithConfigs(t *testing.T) {
+	prepareServerWithConfigs()
+}
+
 func TestGetDataBody(t *testing.T) {
 	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
 	if err != nil {
@@ -198,8 +202,14 @@ func TestAuthentificator(t *testing.T) {
 
 	//without auth
 	client := &http.Client{}
-	req, _ := http.NewRequest("POST", u.String(), bytes.NewBufferString(EmptyRequestBody))
+	req, _ := http.NewRequest("GET", u.String(), bytes.NewBufferString(EmptyRequestBody))
 	_, err := client.Do(req)
+	ass.NoError(err)
+
+	client = &http.Client{}
+	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(correctRequestBody))
+	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wrongpassword")))
+	_, err = client.Do(req)
 	ass.NoError(err)
 
 	client = &http.Client{}
