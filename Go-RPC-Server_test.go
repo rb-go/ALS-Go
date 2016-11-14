@@ -10,7 +10,11 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"github.com/Riftbit/ALS-Go/httpmodels"
+	"github.com/gorilla/rpc/v2/json2"
+	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
 )
@@ -22,6 +26,7 @@ var testAdminMethodsList []string
 var testBasicMethodsList []string
 
 var logAPI *Log
+var systemAPI *System
 var emptySearchFilter map[string]interface{}
 
 func init() {
@@ -516,4 +521,135 @@ func TestDeleteDataBaseAfterMethodTests(t *testing.T) {
 	err := os.Remove(Configs.Db.DbConnectionString)
 	ass := assert.New(t)
 	ass.Nil(err)
+}
+
+/*
+====================================================
+	SYSTEM API METHODS TESTS
+====================================================
+*/
+
+func TestApiSystemGetCacheAll(t *testing.T) {
+	ass := assert.New(t)
+
+	args := struct{}{}
+	reply := struct {
+		Count int
+		Items map[string]cache.Item
+	}{}
+
+	result := systemAPI.GetCacheAll(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.NotEqual(0, reply.Count)
+}
+
+func TestApiSystemGetCache(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct{ Key string }{Key: cahceKey}
+	reply := struct {
+		Key  string
+		Data interface{}
+	}{}
+
+	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.NotNil(reply.Data)
+	ass.Equal(1, reply.Data)
+}
+
+func TestApiSystemDeleteCache(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct{ Key string }{Key: cahceKey}
+	reply := struct{ Status int }{}
+
+	result := systemAPI.DeleteCache(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.Equal(1, reply.Status)
+}
+
+func TestApiSystemGetCacheAfterDelete(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct{ Key string }{Key: cahceKey}
+	reply := struct {
+		Key  string
+		Data interface{}
+	}{}
+
+	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
+	ass.NotNil(result)
+	ass.Equal(json2.ErrNullResult, result)
+}
+
+func TestApiSystemSetCache(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct {
+		Key  string
+		Data interface{}
+		TTL  time.Duration
+	}{}
+	reply := struct{ Status int }{}
+
+	args.Key = cahceKey
+	args.Data = 1
+	args.TTL = cache.NoExpiration
+
+	result := systemAPI.SetCache(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.Equal(1, reply.Status)
+}
+
+func TestApiSystemGetCacheAfterSet(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct{ Key string }{Key: cahceKey}
+	reply := struct {
+		Key  string
+		Data interface{}
+	}{}
+
+	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.NotNil(reply.Data)
+	ass.Equal(1, reply.Data)
+}
+
+func TestApiSystemFlushCache(t *testing.T) {
+	ass := assert.New(t)
+
+	args := struct{}{}
+	reply := struct{ Status int }{}
+
+	result := systemAPI.FlushCache(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+	ass.Equal(1, reply.Status)
+}
+
+func TestApiSystemGetCacheAfterFlush(t *testing.T) {
+	ass := assert.New(t)
+
+	cahceKey := fmt.Sprintf("MongoDB:EnsureIndex:%s:%s", Configs.Admin.RootUser, "api")
+
+	args := struct{ Key string }{Key: cahceKey}
+	reply := struct {
+		Key  string
+		Data interface{}
+	}{}
+
+	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
+	ass.NotNil(result)
+	ass.Equal(json2.ErrNullResult, result)
 }
