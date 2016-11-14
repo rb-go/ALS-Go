@@ -28,6 +28,7 @@ var testBasicMethodsList []string
 var logAPI *Log
 var systemAPI *System
 var emptySearchFilter map[string]interface{}
+var temp_log_id string
 
 func init() {
 	rawRequestBody = "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
@@ -383,6 +384,7 @@ func TestApiLogAdd(t *testing.T) {
 
 	result := logAPI.Add(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
+	temp_log_id = reply.LogID
 }
 
 func TestApiLogAddCustom(t *testing.T) {
@@ -421,6 +423,12 @@ func TestApiLogGet(t *testing.T) {
 	args.Offset = 0
 
 	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
+	ass.Nil(result)
+
+	first_sf := map[string]interface{}{"_id": map[string]interface{}{"$in": []string{temp_log_id}}}
+
+	args.SearchFilter = first_sf
+	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
 
