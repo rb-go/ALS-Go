@@ -540,7 +540,6 @@ func TestApiLogTransfer(t *testing.T) {
 	argss.SearchFilter = emptySearchFilter
 
 	result = logAPI.Transfer(getReadyRequestForTests(true), &argss, &replyy)
-	fmt.Println(printObject(replyy))
 	ass.Nil(result)
 }
 
