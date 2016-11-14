@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strconv"
 	"testing"
 	"time"
-
-	"fmt"
 
 	"github.com/Riftbit/ALS-Go/httpmodels"
 	"github.com/gorilla/rpc/v2/json2"
@@ -74,8 +73,32 @@ func TestCommandLineFlags(t *testing.T) {
 	configPath = "./config.smpl.yml"
 }
 
-func TestInitConfigs(t *testing.T) {
-	initConfigs()
+func TestFailInitDataBase(t *testing.T) {
+	Configs.Db.DbConnectionString = Configs.Db.DbConnectionString + "&timeout=10ms"
+	initDataBase()
+	if okForTest == true {
+		t.Error("Wrong processing initDataBase when wrong connection string")
+	}
+	okForTest = true
+}
+
+func TestInitDataBase(t *testing.T) {
+	Configs.Db.DbType = "sqlite3"
+	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
+	initDataBase()
+}
+
+/*
+func TestInitDatabaseStructure(t *testing.T) {
+	initDatabaseStructure()
+}
+
+func TestInitDatabaseData(t *testing.T) {
+	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
+}*/
+
+func TestPrepareServerWithConfigs(t *testing.T) {
+	prepareServerWithConfigs()
 }
 
 //TestFailInitLoggerWithWrongTimestampFormat - negative test
@@ -126,18 +149,6 @@ func TestInitLogger(t *testing.T) {
 ====================================================
 */
 
-func TestInitRuntime(t *testing.T) {
-	initRuntime()
-}
-
-func TestRpcPrepare(t *testing.T) {
-	rpcPrepare()
-}
-
-func TestPrepareServerWithConfigs(t *testing.T) {
-	prepareServerWithConfigs()
-}
-
 func TestGetDataBody(t *testing.T) {
 	req, err := http.NewRequest("POST", "http://api.local/", bytes.NewBufferString(rawRequestBody))
 	if err != nil {
@@ -163,29 +174,6 @@ func TestRegisterApi(t *testing.T) {
 	ass := assert.New(t)
 	ass.NotEmpty(testAdminMethodsList)
 	ass.NotEmpty(testBasicMethodsList)
-}
-
-func TestFailInitDataBase(t *testing.T) {
-	Configs.Db.DbConnectionString = Configs.Db.DbConnectionString + "&timeout=10ms"
-	initDataBase()
-	if okForTest == true {
-		t.Error("Wrong processing initDataBase when wrong connection string")
-	}
-	okForTest = true
-}
-
-func TestInitDataBase(t *testing.T) {
-	Configs.Db.DbType = "sqlite3"
-	Configs.Db.DbConnectionString = "test_" + strconv.Itoa(int(time.Now().UTC().Unix())) + ".db"
-	initDataBase()
-}
-
-func TestInitDatabaseStructure(t *testing.T) {
-	initDatabaseStructure()
-}
-
-func TestInitDatabaseData(t *testing.T) {
-	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
 }
 
 func TestAuthentificator(t *testing.T) {
