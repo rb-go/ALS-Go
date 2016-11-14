@@ -225,7 +225,9 @@ func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, 
 	}
 	defer sessionFrom.Close()
 
-	found := getFromMGO(collectionFrom, args.SearchFilter, 0, 0, nil)
+	found := getFromMGO(collectionFrom, args.SearchFilter, -1, 0, nil)
+
+	fmt.Println(printObject(found))
 
 	//CONNECT TO "TO" DB
 	sessionTo, collectionTo, errjs := makeDBConnection(getUser(r), args.NewCategory)
