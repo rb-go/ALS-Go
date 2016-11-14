@@ -13,7 +13,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func makeDBConnection(db string, category string) (*mgo.Session, *mgo.Collection, *json2.Error) {
+func makeLogDBConnection(db string, category string) (*mgo.Session, *mgo.Collection, *json2.Error) {
 	connectionString := getConnectionStringByCategory(category)
 
 	session, err := createMGOConnection(connectionString)
@@ -41,7 +41,7 @@ func (h *Log) Add(r *http.Request, args *httpmodels.RequestLogAdd, reply *httpmo
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -74,7 +74,7 @@ func (h *Log) AddCustom(r *http.Request, args *httpmodels.RequestLogAddCustom, r
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -109,7 +109,7 @@ func (h *Log) Get(r *http.Request, args *httpmodels.RequestLogGetLog, reply *htt
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -128,7 +128,7 @@ func (h *Log) GetCount(r *http.Request, args *httpmodels.RequestLogGetCount, rep
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -171,7 +171,7 @@ func (h *Log) Remove(r *http.Request, args *httpmodels.RequestLogRemoveLog, repl
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -196,7 +196,7 @@ func (h *Log) RemoveCategory(r *http.Request, args *httpmodels.RequestLogRemoveC
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}
@@ -219,7 +219,7 @@ func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, 
 	}
 
 	//CONNECT TO "FROM" DB AND GET DATA
-	sessionFrom, collectionFrom, errjs := makeDBConnection(getUser(r), args.OldCategory)
+	sessionFrom, collectionFrom, errjs := makeLogDBConnection(getUser(r), args.OldCategory)
 	if errjs != nil {
 		return errjs
 	}
@@ -228,7 +228,7 @@ func (h *Log) Transfer(r *http.Request, args *httpmodels.RequestLogTransferLog, 
 	found := getFromMGO(collectionFrom, args.SearchFilter, -1, 0, nil)
 
 	//CONNECT TO "TO" DB
-	sessionTo, collectionTo, errjs := makeDBConnection(getUser(r), args.NewCategory)
+	sessionTo, collectionTo, errjs := makeLogDBConnection(getUser(r), args.NewCategory)
 	if errjs != nil {
 		return errjs
 	}
@@ -257,7 +257,7 @@ func (h *Log) ModifyTTL(r *http.Request, args *httpmodels.RequestLogModifyTTL, r
 		return &json2.Error{Code: json2.E_BAD_PARAMS, Message: errs.Error()}
 	}
 
-	session, collection, errjs := makeDBConnection(getUser(r), args.Category)
+	session, collection, errjs := makeLogDBConnection(getUser(r), args.Category)
 	if errjs != nil {
 		return errjs
 	}

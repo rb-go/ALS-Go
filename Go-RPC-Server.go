@@ -176,8 +176,8 @@ func authentificator(next http.Handler) http.Handler {
 	})
 }
 
-func answerWriter(w http.ResponseWriter, code int, body []byte, isJson bool) {
-	if isJson {
+func answerWriter(w http.ResponseWriter, code int, body []byte, isJSON bool) {
+	if isJSON {
 		w.Header().Set("Content-Type", `application/json; charset=utf-8`)
 	}
 	w.WriteHeader(code)

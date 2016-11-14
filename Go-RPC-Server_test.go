@@ -147,6 +147,11 @@ func TestPrepareServerWithConfigs(t *testing.T) {
 	prepareServerWithConfigs()
 }
 
+
+func TestFailMakeDBConnection(t *testing.T) {
+	makeDBConnection()
+}
+
 /*
 ====================================================
 	Go-RPC-Server TESTS
