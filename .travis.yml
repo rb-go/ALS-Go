@@ -61,9 +61,15 @@ script:
 # - go test -v -cpu=1,2,4 -short ./...
  - go test -v -covermode=count -coverprofile=coverage.out
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
- - GOOS=linux && go build ./... -v -o ./out/alsgo_linux_x64
- - GOOS=windows && go build ./... -v -o ./out/alsgo_linux_x64.exe
- - cp ./config.smpl.yml ./out/config.yml
+ - mkdir ./out && cp ./config.smpl.yml ./out/config.yml
+ - GOOS=linux && GOARCH=amd64 && go build -v -o ./out/alsgo_linux_amd64 ./...
+ - GOOS=linux && GOARCH=386 && go build -v -o ./out/alsgo_linux_x86 ./...
+ - GOOS=linux && GOARCH=arm && go build -v -o ./out/alsgo_linux_arm ./...
+ - GOOS=linux && GOARCH=arm64 && go build -v -o ./out/alsgo_linux_arm64 ./...
+ - GOOS=linux && GOARCH=ppc64 && go build -v -o ./out/alsgo_linux_ppc64 ./...
+ - GOOS=linux && GOARCH=s390x && go build -v -o ./out/alsgo_linux_s390x  ./...
+ - GOOS=windows && GOARCH=amd64 && go build -v -o ./out/alsgo_windows_amd64.exe ./...
+ - GOOS=windows && GOARCH=386 && go build -v -o ./out/alsgo_windows_x86.exe ./...
 
 
 after_success:
@@ -78,8 +84,14 @@ deploy:
   provider: releases
   api_key: "$GITHUB_OAUTH_TOKEN"
   file:
-    - "./out/alsgo_linux_x64"
-    - "./out/alsgo_linux_x64.exe"
+    - "./out/alsgo_linux_amd64"
+    - "./out/alsgo_linux_x86"
+    - "./out/alsgo_linux_arm"
+    - "./out/alsgo_linux_arm64"
+    - "./out/alsgo_linux_ppc64"
+    - "./out/alsgo_linux_s390x"
+    - "./out/alsgo_windows_amd64.exe"
+    - "./out/alsgo_windows_x86.exe"
     - "./out/config.yml"
   skip_cleanup: true
   on:
