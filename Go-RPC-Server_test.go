@@ -557,7 +557,7 @@ func TestApiSystemGetCache(t *testing.T) {
 	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 	ass.NotNil(reply.Data)
-	ass.Equal(1, reply.Data)
+	ass.Equal("1", reply.Data)
 }
 
 func TestApiSystemDeleteCache(t *testing.T) {
@@ -602,7 +602,7 @@ func TestApiSystemSetCache(t *testing.T) {
 	reply := struct{ Status int }{}
 
 	args.Key = cahceKey
-	args.Data = 1
+	args.Data = "1"
 	args.TTL = cache.NoExpiration
 
 	result := systemAPI.SetCache(getReadyRequestForTests(true), &args, &reply)
@@ -624,7 +624,7 @@ func TestApiSystemGetCacheAfterSet(t *testing.T) {
 	result := systemAPI.GetCache(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 	ass.NotNil(reply.Data)
-	ass.Equal(1, reply.Data)
+	ass.Equal("1", reply.Data)
 }
 
 func TestApiSystemFlushCache(t *testing.T) {

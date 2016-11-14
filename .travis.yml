@@ -61,8 +61,9 @@ script:
 # - go test -v -cpu=1,2,4 -short ./...
  - go test -v -covermode=count -coverprofile=coverage.out
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
- - GOOS=linux && go build ./...
- - GOOS=windows && go build ./...
+ - GOOS=linux && go build ./... -v -o ./out/alsgo_linux_x64
+ - GOOS=windows && go build ./... -v -o ./out/alsgo_linux_x64.exe
+ - cp ./config.smpl.yml ./out/config.yml
 
 
 after_success:
@@ -71,10 +72,19 @@ after_success:
 after_failure:
   - go env && pwd
 
-before_deploy:
+before_deploy: "echo 'Deploing started'"
 
 deploy:
+  provider: releases
+    api_key: $GITHUB_OAUTH_TOKEN
+    file:
+      - "./out/alsgo_linux_x64"
+      - "./out/alsgo_linux_x64.exe"
+      - "./out/config.yml"
+    skip_cleanup: true
+    on:
+      tags: true
 
-after_deploy:
+after_deploy: "echo 'Deploing finished!'"
 
 after_script:
