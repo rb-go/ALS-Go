@@ -190,6 +190,7 @@ func TestAuthentificator(t *testing.T) {
 
 	EmptyRequestBody := ""
 	correctRequestBody := "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
+	correctRequestBodyWithNoAllowedMethod := "{\"id\": \"55196eba27a55\", \"jsonrpc\": \"2.0\", \"method\": \"Log.GetCategories\", \"params\": {}}"
 	NotCorrectRequestBody := "{[\"id\": \"55196eba27.0\",] \"method\": \"Log.GetCategories\", \"params\": {}}]"
 
 	//without auth
@@ -201,6 +202,12 @@ func TestAuthentificator(t *testing.T) {
 	client = &http.Client{}
 	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(correctRequestBody))
 	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":wrongpassword")))
+	_, err = client.Do(req)
+	ass.NoError(err)
+
+	client = &http.Client{}
+	req, _ = http.NewRequest("POST", u.String(), bytes.NewBufferString(correctRequestBodyWithNoAllowedMethod))
+	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(Configs.Admin.RootUser+":"+Configs.Admin.RootPassword)))
 	_, err = client.Do(req)
 	ass.NoError(err)
 

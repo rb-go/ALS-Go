@@ -155,21 +155,15 @@ func authentificator(next http.Handler) http.Handler {
 			rawDataBody := getDataBody(r)
 			Logger.Debug("[authentificator] Received Request: ", string(rawDataBody))
 			if rawDataBody == nil {
-				w.Header().Set("Content-Type", `application/json; charset=utf-8`)
-				w.WriteHeader(405)
-				w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
+				answerWriter(w, 405, []byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`), true)
 			} else {
 				jsonData, err := getRequestJSON(rawDataBody)
 				if err != nil {
-					w.Header().Set("Content-Type", `application/json; charset=utf-8`)
-					w.WriteHeader(405)
-					w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`))
+					answerWriter(w, 405, []byte(`{"jsonrpc": "2.0", "error": {"code": -32700, "message": "Parse error"}, "id": null}`), true)
 				} else {
 					methodName = jsonData["method"].(string)
 					if checkAPIMethodAccess(userlogin, methodName) == false {
-						w.Header().Set("Content-Type", `application/json; charset=utf-8`)
-						w.WriteHeader(403)
-						w.Write([]byte(`{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Permission denied"}, "id": null}`))
+						answerWriter(w, 403, []byte(`{"jsonrpc": "2.0", "error": {"code": -32600, "message": "Permission denied"}, "id": null}`), true)
 					} else {
 						next.ServeHTTP(w, r)
 					}
@@ -177,10 +171,17 @@ func authentificator(next http.Handler) http.Handler {
 			}
 		} else {
 			w.Header().Set("WWW-Authenticate", `Basic realm="API"`)
-			w.WriteHeader(401)
-			w.Write([]byte("401 Unauthorized\n"))
+			answerWriter(w, 401, []byte(`401 Unauthorized\n`), true)
 		}
 	})
+}
+
+func answerWriter(w http.ResponseWriter, code int, body []byte, isJson bool) {
+	if isJson {
+		w.Header().Set("Content-Type", `application/json; charset=utf-8`)
+	}
+	w.WriteHeader(code)
+	w.Write(body)
 }
 
 func getDataBody(r *http.Request) []byte {
