@@ -425,7 +425,7 @@ func TestApiLogGet(t *testing.T) {
 	result := logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 
-	args.SearchFilter = map[string]interface{}{"_id": map[string][]string{"$in": []string{tempLogID}}}
+	args.SearchFilter = map[string][]string{"_id": map[string][]string{"$in": []string{tempLogID}}}
 	result = logAPI.Get(getReadyRequestForTests(true), &args, &reply)
 	ass.Nil(result)
 }
