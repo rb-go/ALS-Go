@@ -111,7 +111,7 @@ func prepareServerWithConfigs() {
 }
 
 func main() {
-	fmt.Printf("Version:   [%s]\nBuild:     [%s]\nBuild Date: [%s]\n", version, build, buildDate)
+	fmt.Printf("Version:    [%s]\nBuild:      [%s]\nBuild Date: [%s]\n", version, build, buildDate)
 	parseCommandLineParams()
 	initConfigs()
 	prepareServerWithConfigs()
