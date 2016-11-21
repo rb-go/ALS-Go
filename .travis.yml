@@ -4,6 +4,7 @@ sudo: false
 
 os:
   - linux
+  - osx
 
 services:
 - mongodb
@@ -26,14 +27,15 @@ go:
 matrix:
   allow_failures:
     - go: tip
+    - os: osx
 
 #branches:
 #  only:
 #  - master
 
-env:
-  global:
-    - GOARCH=amd64
+#env:
+#  global:
+#    - GOARCH=amd64
 
 notifications:
   email:
@@ -41,6 +43,8 @@ notifications:
     on_failure: always
 
 before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pandoc; fi
   - go env && pwd
 
 install:
@@ -52,7 +56,7 @@ install:
  - go get -u github.com/mattn/goveralls
  - go get -u github.com/erikstmartin/go-testdb
 
-before_script:
+#before_script:
 # wait mongodb
 #  - sleep 15
 
@@ -60,16 +64,18 @@ script:
  - go vet ./...
  - diff <(goimports -d .) <(printf "")
  - diff <(golint ./...) <(printf "")
-# - go test -v -cpu=2 -short ./...
-# - go test -v -cpu=1,2,4 -short ./...
  - go test -v -covermode=count -coverprofile=coverage.out
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+# - go test -v -cpu=2 -short ./...
+# - go test -v -cpu=1,2,4 -short ./...
 
-after_success:
-  - go env && pwd
+#after_script:
 
-after_failure:
-  - go env && pwd
+#after_success:
+#  - go env && pwd
+
+#after_failure:
+#  - go env && pwd
 
 
 before_deploy:
@@ -77,7 +83,7 @@ before_deploy:
   - mkdir release
   - pandoc README.md -f markdown -t html -s -o README.html
   - cp config.smpl.yml config.yml
-  - 'GOARCH=386   GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-i386.tar.gz als-go README.html config.yml'
+  - 'GOARCH=386   GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; go env && pwd; tar -zcf release/als-go-linux-i386.tar.gz als-go README.html config.yml'
   - 'GOARCH=amd64 GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-amd64.tar.gz als-go README.html config.yml'
   - 'GOARCH=arm   GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-arm.tar.gz als-go README.html config.yml'
   - 'GOARCH=arm64 GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-arm64.tar.gz als-go README.html config.yml'
@@ -85,7 +91,7 @@ before_deploy:
   - 'GOARCH=s390x GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-s390x.tar.gz als-go README.html config.yml'
   - 'GOARCH=386   GOOS=freebsd go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml'
   - 'GOARCH=amd64 GOOS=freebsd go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
-  - 'GOARCH=386 GOOS=windows go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
+  - 'GOARCH=386   GOOS=windows go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
   - 'GOARCH=amd64 GOOS=windows go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml'
 
 
@@ -112,4 +118,3 @@ deploy:
 
 after_deploy: "echo 'Deploing finished!'"
 
-after_script:
