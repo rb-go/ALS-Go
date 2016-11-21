@@ -84,26 +84,26 @@ before_deploy:
   - cp config.smpl.yml config.yml
   - export GO_BILD_LDFLAGS='-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
   - echo $GO_BILD_LDFLAGS
-  - export GOARCH=amd64 && export GOOS=windows && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
-  - export GOARCH=386 &&   export GOOS=windows && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && zip release/als-go-windows-i386.zip als-go.exe README.html config.yml
-  - export GOARCH=amd64 && export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml
-  - export GOARCH=38 &&    export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml
-  - export GOARCH=amd64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 &&   export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=arm &&   export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-arm.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=arm64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-arm64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=ppc64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-ppc64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=s390x && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-s390x.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386   && export GOOS=netbsd  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-netbsd-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=netbsd  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-netbsd-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 &&   export GOOS=openbsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-openbsd-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=openbsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-openbsd-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 &&   export GOOS=solaris && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-solaris-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=solaris && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-solaris-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 &&   export GOOS=plan9   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-plan9-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=plan9   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-plan9-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 &&   export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-darwin-i386.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-darwin-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=windows && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
+  - export GOARCH=386 &&   export GOOS=windows && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go.exe && zip release/als-go-windows-i386.zip als-go.exe README.html config.yml
+  - export GOARCH=amd64 && export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml
+  - export GOARCH=38 &&    export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml
+  - export GOARCH=amd64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 &&   export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=arm &&   export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-arm.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=arm64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-arm64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=ppc64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-ppc64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=s390x && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-linux-s390x.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386   && export GOOS=netbsd  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-netbsd-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=netbsd  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-netbsd-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 &&   export GOOS=openbsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-openbsd-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=openbsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-openbsd-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 &&   export GOOS=solaris && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-solaris-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=solaris && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-solaris-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 &&   export GOOS=plan9   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-plan9-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=plan9   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-plan9-amd64.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 &&   export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-darwin-i386.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=amd64 && export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -o als-go && tar -zcvf release/als-go-darwin-amd64.tar.gz als-go README.html config.yml init.d-alsgo
   - ls -1 $(go env GOROOT)/pkg
   
 deploy:
