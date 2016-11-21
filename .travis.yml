@@ -44,6 +44,7 @@ notifications:
 
 before_install:
   - go env && pwd
+  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb
 
 install:
  - go get -t ./...
@@ -53,7 +54,6 @@ install:
  - go get -u golang.org/x/tools/cmd/cover
  - go get -u github.com/mattn/goveralls
  - go get -u github.com/erikstmartin/go-testdb
- - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb
 
 before_script:
   - sleep 1
