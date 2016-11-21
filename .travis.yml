@@ -28,10 +28,11 @@ matrix:
     - go: tip
     - os: osx
 
-branches:
-  only:
-  - master
-  - /^v*$/
+#branches:
+#  only:
+#  - master
+#  - develop
+#  - /^v*.*.*$/
 
 #env:
 #  global:
@@ -92,26 +93,24 @@ before_deploy:
   - 'GOARCH=386 &&   GOOS=windows && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
 
 deploy:
-  skip_cleanup: true
-  tags: true
-  provider: releases
-  api_key: $GITHUB_OAUTH_TOKEN
-  file:
-    - "release/als-go-linux-i386.tar.gz"
-    - "release/als-go-linux-amd64.tar.gz"
-    - "release/als-go-linux-arm.tar.gz"
-    - "release/als-go-linux-arm64.tar.gz"
-    - "release/als-go-linux-ppc64.tar.gz"
-    - "release/als-go-linux-s390x.tar.gz"
-    - "release/als-go-freebsd-i386.tar.gz"
-    - "release/als-go-freebsd-amd64.tar.gz"
-    - "release/als-go-windows-i386.zip"
-    - "release/als-go-windows-amd64.zip"
-  on:
-    repo: RiftBit/ALS-Go
-    tags: true
-  go: 1.7.3
-  all_branches: true
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GITHUB_OAUTH_TOKEN
+    file:
+      - "release/als-go-linux-i386.tar.gz"
+      - "release/als-go-linux-amd64.tar.gz"
+      - "release/als-go-linux-arm.tar.gz"
+      - "release/als-go-linux-arm64.tar.gz"
+      - "release/als-go-linux-ppc64.tar.gz"
+      - "release/als-go-linux-s390x.tar.gz"
+      - "release/als-go-freebsd-i386.tar.gz"
+      - "release/als-go-freebsd-amd64.tar.gz"
+      - "release/als-go-windows-i386.zip"
+      - "release/als-go-windows-amd64.zip"
+    on:
+      repo: RiftBit/ALS-Go
+      tags: true
+      go: 1.7.3
 
 after_deploy:
   - echo 'Deploing finished!'
