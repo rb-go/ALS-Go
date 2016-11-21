@@ -27,9 +27,9 @@ matrix:
   allow_failures:
     - go: tip
 
-branches:
-  only:
-  - master
+#branches:
+#  only:
+#  - master
 
 env:
   global:
