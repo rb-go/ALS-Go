@@ -4,7 +4,6 @@ sudo: false
 
 os:
   - linux
-  - osx
 
 services:
 - mongodb
@@ -32,6 +31,7 @@ matrix:
 branches:
   only:
   - master
+  - /^v*$/
 
 #env:
 #  global:
@@ -43,8 +43,6 @@ notifications:
     on_failure: always
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pandoc; fi
   - go env && pwd
 
 install:
