@@ -8,7 +8,7 @@ os:
 services:
 - mongodb
 
-gobuild_args: --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\""
+gobuild_args: --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""
 
 addons:
   apt:
