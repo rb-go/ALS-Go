@@ -8,12 +8,15 @@ os:
 services:
 - mongodb
 
+gobuild_args: --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\""
+
 addons:
   apt:
     sources:
     - mongodb-3.2-precise
     packages:
     - mongodb-org-server
+    - pandoc
 
 go:
   - 1.6.3
@@ -61,16 +64,6 @@ script:
 # - go test -v -cpu=1,2,4 -short ./...
  - go test -v -covermode=count -coverprofile=coverage.out
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
- - mkdir ./out && cp ./config.smpl.yml ./out/config.yml
- - GOOS=linux && GOARCH=amd64 && go build -v -o ./out/alsgo_linux_amd64
- - GOOS=linux && GOARCH=386 && go build -v -o ./out/alsgo_linux_x86
- - GOOS=linux && GOARCH=arm && go build -v -o ./out/alsgo_linux_arm
- - GOOS=linux && GOARCH=arm64 && go build -v -o ./out/alsgo_linux_arm64
- - GOOS=linux && GOARCH=ppc64 && go build -v -o ./out/alsgo_linux_ppc64
- - GOOS=linux && GOARCH=s390x && go build -v -o ./out/alsgo_linux_s390x
- - GOOS=windows && GOARCH=amd64 && go build -v -o ./out/alsgo_windows_amd64.exe
- - GOOS=windows && GOARCH=386 && go build -v -o ./out/alsgo_windows_x86.exe
-
 
 after_success:
   - go env && pwd
@@ -78,24 +71,44 @@ after_success:
 after_failure:
   - go env && pwd
 
-before_deploy: "echo 'Deploing started'"
+
+before_deploy:
+  - 'echo "Deploing started"'
+  - mkdir release
+  - pandoc README.md -f markdown -t html -s -o README.html
+  - cp config.smpl.yml config.yml
+  - 'GOARCH=386   GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-i386.tar.gz als-go README.html config.yml'
+  - 'GOARCH=amd64 GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-amd64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=arm   GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-arm.tar.gz als-go README.html config.yml'
+  - 'GOARCH=arm64 GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-arm64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=ppc64 GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-ppc64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=s390x GOOS=linux go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-linux-s390x.tar.gz als-go README.html config.yml'
+  - 'GOARCH=386   GOOS=freebsd go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml'
+  - 'GOARCH=amd64 GOOS=freebsd go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=386 GOOS=windows go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
+  - 'GOARCH=amd64 GOOS=windows go build --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml'
+
 
 deploy:
-  provider: releases
-  api_key: "$GITHUB_OAUTH_TOKEN"
-  file:
-    - "./out/alsgo_linux_amd64"
-    - "./out/alsgo_linux_x86"
-    - "./out/alsgo_linux_arm"
-    - "./out/alsgo_linux_arm64"
-    - "./out/alsgo_linux_ppc64"
-    - "./out/alsgo_linux_s390x"
-    - "./out/alsgo_windows_amd64.exe"
-    - "./out/alsgo_windows_x86.exe"
-    - "./out/config.yml"
   skip_cleanup: true
+  tags: true
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file:
+    - "release/als-go-linux-i386.tar.gz"
+    - "release/als-go-linux-amd64.tar.gz"
+    - "release/als-go-linux-arm.tar.gz"
+    - "release/als-go-linux-arm64.tar.gz"
+    - "release/als-go-linux-ppc64.tar.gz"
+    - "release/als-go-linux-s390x.tar.gz"
+    - "release/als-go-freebsd-i386.tar.gz"
+    - "release/als-go-freebsd-amd64.tar.gz"
+    - "release/als-go-windows-i386.tar.gz"
+    - "release/als-go-windows-amd64.tar.gz"
   on:
+    repo: RiftBit/ALS-Go
     tags: true
+  go: 1.7
 
 after_deploy: "echo 'Deploing finished!'"
 

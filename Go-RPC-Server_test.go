@@ -143,6 +143,7 @@ func TestInitDatabaseData(t *testing.T) {
 	initDatabaseData(testAdminMethodsList, testBasicMethodsList)
 }
 */
+
 func TestPrepareServerWithConfigs(t *testing.T) {
 	prepareServerWithConfigs()
 }
