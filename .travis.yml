@@ -82,10 +82,10 @@ before_deploy:
   - mkdir release
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
-  - GOARCH=amd64 && GOOS=windows && go build --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
+  - GOARCH=amd64 && GOOS=windows && go env && go build --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
   - GOARCH=386 && GOOS=windows && go build --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -v -o als-go.exe && zip release/als-go-windows-i386.zip als-go.exe README.html config.yml
   - ls -1 $(go env GOROOT)/pkg
-  - 'GOARCH=amd64 && GOOS=freebsd && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=amd64 && GOOS=freebsd && go env && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
   - 'GOARCH=386 &&   GOOS=freebsd && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go && tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml'
   - 'GOARCH=amd64 && GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go && tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml init.d-alsgo'
   - 'GOARCH=386 &&   GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go && tar -zcvf release/als-go-linux-i386.tar.gz als-go README.html config.yml init.d-alsgo'
