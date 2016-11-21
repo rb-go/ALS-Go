@@ -25,6 +25,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var (
+	version, build, buildDate string
+)
+
 var applicationExitFunction = func(code int) { os.Exit(code) }
 var rpcV2 *rpc.Server
 
@@ -107,6 +111,7 @@ func prepareServerWithConfigs() {
 }
 
 func main() {
+	fmt.Printf("Version:   [%s]\nBuild:     [%s]\nBuild Date: [%s]\n", version, build, buildDate)
 	parseCommandLineParams()
 	initConfigs()
 	prepareServerWithConfigs()

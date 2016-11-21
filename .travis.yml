@@ -21,7 +21,7 @@ addons:
 
 go:
   - 1.6.3
-  - 1.7.1
+  - 1.7.3
   - tip
 
 matrix:
@@ -29,9 +29,9 @@ matrix:
     - go: tip
     - os: osx
 
-#branches:
-#  only:
-#  - master
+branches:
+  only:
+  - master
 
 #env:
 #  global:
@@ -80,18 +80,18 @@ script:
 before_deploy:
   - 'echo "Deploing started"'
   - mkdir release
-  - pandoc README.md -f markdown -t html -s -o README.html
+  - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
-  - 'GOARCH=amd64 && GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml'
-  - 'GOARCH=386 &&   GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-i386.tar.gz als-go README.html config.yml'
-  - 'GOARCH=arm &&   GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-arm.tar.gz als-go README.html config.yml'
-  - 'GOARCH=arm64 && GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-arm64.tar.gz als-go README.html config.yml'
-  - 'GOARCH=ppc64 && GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-ppc64.tar.gz als-go README.html config.yml'
-  - 'GOARCH=s390x && GOOS=linux && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-linux-s390x.tar.gz als-go README.html config.yml'
-  - 'GOARCH=amd64 && GOOS=freebsd && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
-  - 'GOARCH=386 &&   GOOS=freebsd && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go; tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml'
-  - 'GOARCH=amd64 && GOOS=windows && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml'
-  - 'GOARCH=386 &&   GOOS=windows && go build -v --ldflags "-X \"main.VERSION=$TRAVIS_TAG commit $TRAVIS_COMMIT\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
+  - 'GOARCH=amd64 && GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=386 &&   GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-i386.tar.gz als-go README.html config.yml'
+  - 'GOARCH=arm &&   GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-arm.tar.gz als-go README.html config.yml'
+  - 'GOARCH=arm64 && GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-arm64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=ppc64 && GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-ppc64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=s390x && GOOS=linux && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-linux-s390x.tar.gz als-go README.html config.yml'
+  - 'GOARCH=amd64 && GOOS=freebsd && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml'
+  - 'GOARCH=386 &&   GOOS=freebsd && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go; tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml'
+  - 'GOARCH=amd64 && GOOS=windows && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go.exe; zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml'
+  - 'GOARCH=386 &&   GOOS=windows && go build -v --ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"" -o als-go.exe; zip release/als-go-windows-i386.zip als-go.exe README.html config.yml'
 
 deploy:
   skip_cleanup: true
@@ -112,8 +112,10 @@ deploy:
   on:
     repo: RiftBit/ALS-Go
     tags: true
-  go: 1.7
+  go: 1.7.3
+  all_branches: true
 
 after_deploy:
   - echo 'Deploing finished!'
 
+#TRAVIS_GO_VERSION - The version of Go a job is using is available as:
