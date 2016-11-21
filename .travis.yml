@@ -110,7 +110,7 @@ deploy:
       - "release/als-go-windows-amd64.zip"
     on:
       repo: RiftBit/ALS-Go
-      #tags: true
+      tags: true
       go: 1.7.3
 
 after_deploy:
