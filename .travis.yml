@@ -85,9 +85,9 @@ before_deploy:
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
   - export GO_BILD_LDFLAGS='-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
-  - go get github.com/karalabe/xgo
-  - xgo --go=1.7.3 --ldflags "$GO_BILD_LDFLAGS" -v ./ && ls -la
-#  - export CGO_ENABLED=1
+  - go get github.com/karalabe/xgo  
+  - export CGO_ENABLED=1
+  - xgo --go=1.7.3 --ldflags "$GO_BILD_LDFLAGS" -x -v ./ && ls -la
   - export GOARCH=amd64 && export GOOS=windows && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
   - export GOARCH=amd64 && export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml
   - export GOARCH=386 &&   export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml
