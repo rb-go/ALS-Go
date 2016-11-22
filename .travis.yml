@@ -17,6 +17,7 @@ addons:
     - mongodb-3.2-precise
     packages:
     - mongodb-org-server
+    - pandoc
    
 
 go:
@@ -43,8 +44,8 @@ notifications:
     on_success: change
     on_failure: always
 
-before_install:
-  - go env
+#before_install:
+#  - go env
 
 install:
  - go get -t ./...
@@ -78,7 +79,6 @@ script:
 
 before_deploy:
   - echo 'Deploing started'
-  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && dpkg -i pandoc-1.18-1-amd64.deb --force-not-root --root=$HOME 
   - mkdir release
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
@@ -117,5 +117,3 @@ deploy:
 
 after_deploy:
   - echo 'Deploing finished!'
-
-#$TRAVIS_GO_VERSION - The version of Go a job is using is available as:
