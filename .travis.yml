@@ -68,6 +68,18 @@ script:
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 # - go test -v -cpu=2 -short ./...
 # - go test -v -cpu=1,2,4 -short ./...
+  - mkdir release
+  - GOARCH=amd64 GOOS=linux; go env; go build -v -o als-go; tar -zcvf release/als-go-linux-amd64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=386 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-i386_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=arm && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=arm64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=ppc64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-ppc64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - export GOARCH=s390x && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-s390x_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+#  - export CGO_ENABLED=1
+  - export GOARCH=amd64 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
+  - export GOARCH=386 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
+  - ls -1 $(go env GOROOT)/pkg
+
 
 #after_script:
 
@@ -80,21 +92,10 @@ script:
 
 before_deploy:
   - echo 'Deploing started'
-  - mkdir release
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
 #  - export GO_BILD_LDFLAGS='-X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
 # --ldflags "$GO_BILD_LDFLAGS" 
-  - GOARCH=amd64 GOOS=linux; go env; go build -v -o als-go; tar -zcvf release/als-go-linux-amd64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=386 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-i386_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=arm && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=arm64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=ppc64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-ppc64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=s390x && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-s390x_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
-#  - export CGO_ENABLED=1
-  - export GOARCH=amd64 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
-  - export GOARCH=386 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
-  - ls -1 $(go env GOROOT)/pkg
   
 deploy:
   - provider: releases
