@@ -8,8 +8,9 @@ os:
 
 services:
   - mongodb
+  - mysql
 
-#gobuild_args: '--ldflags "-X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""'
+gobuild_args: '--ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""'
 
 addons:
   apt:
@@ -24,6 +25,7 @@ addons:
 go:
   - 1.6.3
   - 1.7.3
+  - release
   - tip
 
 matrix:
@@ -45,8 +47,8 @@ notifications:
     on_success: change
     on_failure: always
 
-#before_install:
-#  - go env
+before_install:
+  - mysql -e "create database IF NOT EXISTS als-go;" -utravis
 
 install:
  - go get -t ./...
@@ -58,7 +60,6 @@ install:
  - go get -u github.com/erikstmartin/go-testdb
 
 before_script:
-#  - sleep 1
 
 script:
  - go vet ./...
@@ -68,49 +69,43 @@ script:
  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
  #- go test -v -cpu=2 -short ./...
  #- go test -v -cpu=1,2,4 -short ./...
- - mkdir release
- - GOARCH=amd64 GOOS=linux; go env; go build -v -o als-go; tar -zcvf release/als-go-linux-amd64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- - export GOARCH=386 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-i386_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- - export GOARCH=arm && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- - export GOARCH=arm64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-arm64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- - export GOARCH=ppc64 && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-ppc64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- - export GOARCH=s390x && export GOOS=linux && go env && go build -v -o als-go && tar -zcvf release/als-go-linux-s390x_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
- #- export CGO_ENABLED=1
- - export GOARCH=amd64 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
- - export GOARCH=386 && export GOOS=windows && go env && go build -v -o als-go.exe && zip release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
- - ls -1 $(go env GOROOT)/pkg
 
 
-#after_script:
+after_script:
 
-#after_success:
-#  - go env && pwd
+after_success:
 
-#after_failure:
-#  - go env && pwd
+after_failure:
 
 
 before_deploy:
-  - echo 'Deploing started'
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
-#  - export GO_BILD_LDFLAGS='-X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
-# --ldflags "$GO_BILD_LDFLAGS" 
+  - mkdir release
+  - export GO_BILD_LDFLAGS='-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
+  - GOARCH=amd64 GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go; tar -zcvf release/als-go-linux-amd64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=386   GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-i386_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=arm   GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-arm_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=arm64 GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-arm64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=ppc64 GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-ppc64_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=s390x GOOS=linux; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-s390x_g$TRAVIS_GO_VERSION.tar.gz als-go README.html config.yml init.d-alsgo
+  - GOARCH=amd64 GOOS=windows; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && zip release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
+  - GOARCH=386   GOOS=windows; go env; go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && zip release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip als-go.exe README.html config.yml
+  - ls -1 $(go env GOROOT)/pkg
   
 deploy:
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
     file:
-      - "release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip"
-      - "release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip"
       - "release/als-go-linux-i386_g$TRAVIS_GO_VERSION.tar.gz"
       - "release/als-go-linux-amd64_g$TRAVIS_GO_VERSION.tar.gz"
       - "release/als-go-linux-arm_g$TRAVIS_GO_VERSION.tar.gz"
       - "release/als-go-linux-arm64_g$TRAVIS_GO_VERSION.tar.gz"
       - "release/als-go-linux-ppc64_g$TRAVIS_GO_VERSION.tar.gz"
       - "release/als-go-linux-s390x_g$TRAVIS_GO_VERSION.tar.gz"
-
+      - "release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip"
+      - "release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip"
     on:
       repo: RiftBit/ALS-Go
       tags: true
@@ -118,4 +113,3 @@ deploy:
       all_branches: true
 
 after_deploy:
-  - echo 'Deploing finished!'
