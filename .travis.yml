@@ -48,7 +48,7 @@ notifications:
     on_failure: always
 
 before_install:
-  - mysql -e "create database IF NOT EXISTS 'als-go';" -utravis
+  - mysql -e "create database IF NOT EXISTS test;" -uroot
 
 install:
  - go get -t ./...

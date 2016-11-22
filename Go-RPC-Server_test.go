@@ -129,7 +129,7 @@ func TestFailInitDataBase(t *testing.T) {
 
 func TestInitDataBase(t *testing.T) {
 	Configs.Db.DbType = "mysql"
-	Configs.Db.DbConnectionString = "travis:@tcp(127.0.0.1:3306)/als-go?charset=utf8&timeout=100ms"
+	Configs.Db.DbConnectionString = "root:@tcp(127.0.0.1:3306)/test?charset=utf8&timeout=100ms"
 	initDataBase()
 }
 
