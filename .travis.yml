@@ -46,8 +46,6 @@ notifications:
 
 before_install:
   - go env && pwd
-  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb
-  - sudo aptitude install gcc-mingw-w64 -y
 
 install:
  - go get -t ./...
@@ -80,13 +78,17 @@ script:
 
 
 before_deploy:
-  - 'echo "Deploing started"'
+  - echo 'Deploing started'
+  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb
+  - sudo aptitude install gcc-mingw-w64 -y
+  - go install github.com/mattn/go-sqlite3
   - ls -1 $(go env GOROOT)/pkg
   - mkdir release
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
   - export GO_BILD_LDFLAGS='-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
   - echo $GO_BILD_LDFLAGS
+  - - export GOARCH=amd64 && export GOOS=windows && CC=x86_64-w64-mingw32-gcc && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
   - export GOARCH=amd64 && export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-amd64.tar.gz als-go README.html config.yml
   - export GOARCH=38 &&    export GOOS=freebsd && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-freebsd-i386.tar.gz als-go README.html config.yml
   - export GOARCH=amd64 && export GOOS=linux   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-linux-amd64.tar.gz als-go README.html config.yml init.d-alsgo
@@ -105,7 +107,6 @@ before_deploy:
   - export GOARCH=amd64 && export GOOS=plan9   && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-plan9-amd64.tar.gz als-go README.html config.yml init.d-alsgo
   - export GOARCH=386 &&   export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-darwin-i386.tar.gz als-go README.html config.yml init.d-alsgo
   - export GOARCH=amd64 && export GOOS=darwin  && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go && tar -zcvf release/als-go-darwin-amd64.tar.gz als-go README.html config.yml init.d-alsgo
-  - export GOARCH=amd64 && export GOOS=windows && CC=x86_64-w64-mingw32-gcc && go env && go build --ldflags "$GO_BILD_LDFLAGS" -v -o als-go.exe && ls -la && zip release/als-go-windows-amd64.zip als-go.exe README.html config.yml
   - ls -1 $(go env GOROOT)/pkg
   
 deploy:
