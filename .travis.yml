@@ -79,7 +79,7 @@ after_failure:
 
 
 before_deploy:
-  - pandoc README.md -f markdown_github -t html -s -o README.html
+  - pandoc README.md -f markdown -t html -s -o README.html
   - cp config.smpl.yml config.yml
   - mkdir release
   - export GO_BILD_LDFLAGS='-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"'
