@@ -78,7 +78,7 @@ script:
 
 before_deploy:
   - echo 'Deploing started'
-  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb --force-not-root --root=$HOME 
+  - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && dpkg -i pandoc-1.18-1-amd64.deb --force-not-root --root=$HOME 
   - mkdir release
   - pandoc README.md -f markdown_github -t html -s -o README.html
   - cp config.smpl.yml config.yml
