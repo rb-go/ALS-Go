@@ -6,7 +6,8 @@ os:
   - linux
 
 services:
-- mongodb
+  - mongodb
+  - docker
 
 gobuild_args: '--ldflags "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""'
 
