@@ -17,9 +17,7 @@ addons:
     packages:
     - mongodb-org-server
    # - gcc_mingw64
-    - gcc-mingw-w64
-    - gcc-mingw-w64-i686
-    - gcc-mingw-w64-x86-64
+   
 
 go:
   - 1.6.3
@@ -49,6 +47,7 @@ notifications:
 before_install:
   - go env && pwd
   - wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb && sudo dpkg -i pandoc-1.18-1-amd64.deb
+  - sudo aptitude install gcc-mingw-w64 -y
 
 install:
  - go get -t ./...
