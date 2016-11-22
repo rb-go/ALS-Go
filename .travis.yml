@@ -16,7 +16,7 @@ addons:
     - mongodb-3.2-precise
     packages:
     - mongodb-org-server
-    - gcc_mingw64
+   # - gcc_mingw64
     - gcc-mingw-w64
 
 go:
