@@ -1,6 +1,5 @@
 # ALS-Go
-[Website](https://www.riftbit.com) |
-[Contributing](https://www.riftbit.com/How-to-Contribute)
+[Website](https://www.riftbit.com) | [Contributing](https://www.riftbit.com/How-to-Contribute)
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/RiftBit/ALS-Go)
