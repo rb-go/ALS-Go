@@ -576,11 +576,8 @@ func TestApiLogModifyTTL(t *testing.T) {
 	ass.Nil(result)
 }
 
-func TestDeleteDataBaseAfterMethodTests(t *testing.T) {
+func TestCloseDataBaseAfterMethodTests(t *testing.T) {
 	DBConn.Close()
-	err := os.Remove(Configs.Db.DbConnectionString)
-	ass := assert.New(t)
-	ass.Nil(err)
 }
 
 /*
