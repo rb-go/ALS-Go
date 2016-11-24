@@ -10,7 +10,7 @@ services:
   - mongodb
   - mysql
 
-#gobuild_args: '--ldflags "-X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""'
+gobuild_args: "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""
 
 addons:
   apt:
