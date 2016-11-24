@@ -1,7 +1,7 @@
 # ALS-Go
 [Website](https://www.riftbit.com) | [Contributing](https://www.riftbit.com/How-to-Contribute)
 
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/RiftBit/ALS-Go.svg)](LICENSE)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/RiftBit/ALS-Go)
 [![Coverage Status](https://coveralls.io/repos/github/RiftBit/ALS-Go/badge.svg?branch=master&v2.3.0)](https://coveralls.io/github/RiftBit/ALS-Go?branch=master)
 [![Build Status](https://travis-ci.org/RiftBit/ALS-Go.svg?branch=master)](https://travis-ci.org/RiftBit/ALS-Go)
