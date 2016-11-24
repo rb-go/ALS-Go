@@ -10,8 +10,6 @@ services:
   - mongodb
   - mysql
 
-gobuild_args: "-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""
-
 addons:
   apt:
     sources:
@@ -39,7 +37,7 @@ matrix:
 
 env:
   global:
-    - GO_BUILD_LDFLAGS="-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\""
+    - GO_BUILD_LDFLAGS=-s -w -X \"main.version=$TRAVIS_TAG\" -X \"main.build=$(git rev-parse --short HEAD)\" -X \"main.buildDate=$(date --rfc-3339=seconds)\"
 
 notifications:
   email:
