@@ -3,7 +3,7 @@
 
 [![license](https://img.shields.io/github/license/RiftBit/ALS-Go.svg)](LICENSE)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/RiftBit/ALS-Go)
-[![Coverage Status](https://coveralls.io/repos/github/RiftBit/ALS-Go/badge.svg?branch=master&v2.3.0)](https://coveralls.io/github/RiftBit/ALS-Go?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/RiftBit/ALS-Go/badge.svg?branch=master)](https://coveralls.io/github/RiftBit/ALS-Go?branch=master)
 [![Build Status](https://travis-ci.org/RiftBit/ALS-Go.svg?branch=master)](https://travis-ci.org/RiftBit/ALS-Go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/RiftBit/ALS-Go)](https://goreportcard.com/report/github.com/RiftBit/ALS-Go)
 [![Release](https://img.shields.io/badge/release-v2.3.9-blue.svg?style=flat)](https://github.com/RiftBit/ALS-Go/releases)
