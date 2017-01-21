@@ -13,7 +13,6 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/riftbit/ALS-Go/httpmodels"
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/jinzhu/gorm"
@@ -21,6 +20,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	cache "github.com/patrickmn/go-cache"
+	"github.com/riftbit/ALS-Go/httpmodels"
 	validator "gopkg.in/validator.v2"
 	"gopkg.in/yaml.v2"
 )

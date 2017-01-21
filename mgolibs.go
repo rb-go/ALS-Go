@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/riftbit/ALS-Go/mongomodels"
 	"github.com/patrickmn/go-cache"
+	"github.com/riftbit/ALS-Go/mongomodels"
 	"github.com/tmc/mgohacks"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

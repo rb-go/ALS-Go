@@ -12,9 +12,9 @@ import (
 
 	"fmt"
 
-	"github.com/riftbit/ALS-Go/httpmodels"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
+	"github.com/riftbit/ALS-Go/httpmodels"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
 )
