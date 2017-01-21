@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/riftbit/ALS-Go/httpmodels"
-	"github.com/riftbit/ALS-Go/mongomodels"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
+	"github.com/riftbit/ALS-Go/httpmodels"
+	"github.com/riftbit/ALS-Go/mongomodels"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
