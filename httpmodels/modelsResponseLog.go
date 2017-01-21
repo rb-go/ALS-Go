@@ -1,7 +1,7 @@
 package httpmodels
 
 import (
-	"github.com/Riftbit/ALS-Go/mongomodels"
+	"github.com/riftbit/ALS-Go/mongomodels"
 	"gopkg.in/mgo.v2/bson"
 )
 

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Riftbit/ALS-Go/httpmodels"
-	"github.com/Riftbit/ALS-Go/mongomodels"
+	"github.com/riftbit/ALS-Go/httpmodels"
+	"github.com/riftbit/ALS-Go/mongomodels"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/patrickmn/go-cache"
 	"gopkg.in/mgo.v2"

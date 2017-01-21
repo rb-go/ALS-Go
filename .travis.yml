@@ -22,7 +22,7 @@ addons:
 
 go:
   - 1.6.3
-  - 1.7.3
+  - 1.7.4
   - tip
 
 matrix:
@@ -99,7 +99,7 @@ deploy:
       - "release/als-go-windows-amd64_g$TRAVIS_GO_VERSION.zip"
       - "release/als-go-windows-386_g$TRAVIS_GO_VERSION.zip"
     on:
-      repo: RiftBit/ALS-Go
+      repo: riftbit/ALS-Go
       tags: true
       #go: 1.7.3
       all_branches: true

@@ -13,7 +13,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/Riftbit/ALS-Go/httpmodels"
+	"github.com/riftbit/ALS-Go/httpmodels"
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json2"
 	"github.com/jinzhu/gorm"

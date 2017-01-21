@@ -1,12 +1,12 @@
 # ALS-Go
 [Website](https://www.riftbit.com) | [Contributing](https://www.riftbit.com/How-to-Contribute)
 
-[![license](https://img.shields.io/github/license/RiftBit/ALS-Go.svg)](LICENSE)
-[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/RiftBit/ALS-Go)
-[![Coverage Status](https://coveralls.io/repos/github/RiftBit/ALS-Go/badge.svg?branch=master)](https://coveralls.io/github/RiftBit/ALS-Go?branch=master)
-[![Build Status](https://travis-ci.org/RiftBit/ALS-Go.svg?branch=master)](https://travis-ci.org/RiftBit/ALS-Go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/RiftBit/ALS-Go)](https://goreportcard.com/report/github.com/RiftBit/ALS-Go)
-[![Release](https://img.shields.io/badge/release-v2.3.9-blue.svg?style=flat)](https://github.com/RiftBit/ALS-Go/releases)
+[![license](https://img.shields.io/github/license/riftbit/ALS-Go.svg)](LICENSE)
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/riftbit/ALS-Go)
+[![Coverage Status](https://coveralls.io/repos/github/riftbit/ALS-Go/badge.svg?branch=master)](https://coveralls.io/github/riftbit/ALS-Go?branch=master)
+[![Build Status](https://travis-ci.org/riftbit/ALS-Go.svg?branch=master)](https://travis-ci.org/riftbit/ALS-Go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/riftbit/ALS-Go)](https://goreportcard.com/report/github.com/riftbit/ALS-Go)
+[![Release](https://img.shields.io/badge/release-v2.3.9-blue.svg?style=flat)](https://github.com/riftbit/ALS-Go/releases)
 
 ## System requirements 
 - MongoDB 3.2+ - for logs
